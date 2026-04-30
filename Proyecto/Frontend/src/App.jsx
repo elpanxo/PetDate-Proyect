@@ -1,3 +1,14 @@
+<<<<<<< HEAD
+import { useState } from 'react'
+import reactLogo from './assets/react.svg'
+import viteLogo from './assets/vite.svg'
+import heroImg from './assets/hero.png'
+import './App.css'
+
+import { Container, Row, Col, Button, Card, Navbar, Nav } from 'react-bootstrap'
+
+function App() {
+=======
 import { useState, useEffect } from 'react'
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
 import { Container, Row, Col, Button, Card, Navbar, Nav } from 'react-bootstrap'
@@ -22,6 +33,7 @@ function HomeContent() {
     navigate('/login')
   }
 
+>>>>>>> 6adb7cca59ef81c0d2b7cb338c9be4f12bd94edc
   return (
     <>
       {/* Navbar */}
@@ -33,6 +45,8 @@ function HomeContent() {
             <Nav.Link href="#">Servicios</Nav.Link>
             <Nav.Link href="#">Contacto</Nav.Link>
           </Nav>
+<<<<<<< HEAD
+=======
           <Nav>
             {user && (
               <>
@@ -45,6 +59,7 @@ function HomeContent() {
               </>
             )}
           </Nav>
+>>>>>>> 6adb7cca59ef81c0d2b7cb338c9be4f12bd94edc
         </Container>
       </Navbar>
 
@@ -92,6 +107,9 @@ function HomeContent() {
   )
 }
 
+<<<<<<< HEAD
+export default App
+=======
 // Componente para proteger rutas
 function PrivateRoute({ children }) {
   const isAuthenticated = localStorage.getItem('user') !== null
@@ -116,3 +134,4 @@ function App() {
 }
 
 export default App
+>>>>>>> 6adb7cca59ef81c0d2b7cb338c9be4f12bd94edc
