@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
@@ -7,6 +8,32 @@ import './App.css'
 import { Container, Row, Col, Button, Card, Navbar, Nav } from 'react-bootstrap'
 
 function App() {
+=======
+import { useState, useEffect } from 'react'
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
+import { Container, Row, Col, Button, Card, Navbar, Nav } from 'react-bootstrap'
+import Login from './components/login/Login'
+import Register from './components/login/Register'
+import './App.css'
+
+// Componente del contenido principal (lo que ya tenías)
+function HomeContent() {
+  const [user, setUser] = useState(null)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const userData = localStorage.getItem('user')
+    if (userData) {
+      setUser(JSON.parse(userData))
+    }
+  }, [])
+
+  const handleLogout = () => {
+    localStorage.removeItem('user')
+    navigate('/login')
+  }
+
+>>>>>>> 6adb7cca59ef81c0d2b7cb338c9be4f12bd94edc
   return (
     <>
       {/* Navbar */}
@@ -18,6 +45,21 @@ function App() {
             <Nav.Link href="#">Servicios</Nav.Link>
             <Nav.Link href="#">Contacto</Nav.Link>
           </Nav>
+<<<<<<< HEAD
+=======
+          <Nav>
+            {user && (
+              <>
+                <Navbar.Text className="me-3 text-white">
+                  Hola, {user.name}
+                </Navbar.Text>
+                <Button variant="outline-light" size="sm" onClick={handleLogout}>
+                  Cerrar Sesión
+                </Button>
+              </>
+            )}
+          </Nav>
+>>>>>>> 6adb7cca59ef81c0d2b7cb338c9be4f12bd94edc
         </Container>
       </Navbar>
 
@@ -65,4 +107,31 @@ function App() {
   )
 }
 
+<<<<<<< HEAD
 export default App
+=======
+// Componente para proteger rutas
+function PrivateRoute({ children }) {
+  const isAuthenticated = localStorage.getItem('user') !== null
+  return isAuthenticated ? children : <Navigate to="/login" />
+}
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route 
+        path="/" 
+        element={
+          <PrivateRoute>
+            <HomeContent />
+          </PrivateRoute>
+        } 
+      />
+    </Routes>
+  )
+}
+
+export default App
+>>>>>>> 6adb7cca59ef81c0d2b7cb338c9be4f12bd94edc
