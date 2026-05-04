@@ -9,7 +9,7 @@ function Navbar() {
       <div className="container-fluid px-4 d-flex align-items-center">
 
         {/* Brand */}
-        <div className="d-flex align-items-center gap-3 flex-shrink-0">
+        <Link to="/" className="d-flex align-items-center gap-3 flex-shrink-0 text-decoration-none">
           <img
             src={logo}
             alt="PetDate"
@@ -17,7 +17,7 @@ function Navbar() {
             style={{ width: '48px', height: '48px', objectFit: 'contain' }}
           />
           <span className="brand-text">PetDate</span>
-        </div>
+        </Link>
 
         {/* Navigation links (centro) */}
         <div className="d-none d-md-flex justify-content-center flex-grow-1">
@@ -29,7 +29,10 @@ function Navbar() {
               <a className="nav-link nav-link-custom" href="#nosotros">Nosotros</a>
             </li>
             <li className="nav-item">
-              <a className="nav-link nav-link-custom" href="#agenda">Agenda</a>
+              <a className="nav-link nav-link-custom" href="#servicios">Servicios</a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link nav-link-custom" href="#blogs">Blogs</a>
             </li>
             <li className="nav-item">
               <a className="nav-link nav-link-custom" href="#contacto">Contacto</a>
