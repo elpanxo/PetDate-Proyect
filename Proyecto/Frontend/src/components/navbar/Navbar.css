@@ -1,0 +1,60 @@
+.bg-custom {
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.brand-logo {
+  border-radius: 8px;
+}
+
+.brand-text {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.nav-link-custom {
+  font-weight: 600;
+  color: #333 !important;
+  letter-spacing: 0.05rem;
+}
+
+.nav-link-custom:hover {
+  color: #9479a8 !important;
+}
+
+.btn-login {
+  background-color: transparent;
+  color: #7e6492;
+  border: 2px solid #7e6492;
+  border-radius: 8px;
+  padding: 5px 16px;
+  font-weight: 400;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-login:hover {
+  background-color: #7e6492;
+  color: #fff;
+}
+
+.btn-register {
+  background-color: transparent;
+  color: #7e6492;
+  border: 2px solid #7e6492;
+  border-radius: 8px;
+  padding: 5px 16px;
+  font-weight: 400;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-register:hover {
+  background-color: #7e6492;
+  color: #fff;
+}
