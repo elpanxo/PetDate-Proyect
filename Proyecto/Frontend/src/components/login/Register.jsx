@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Form, Button, Card, Alert } from 'react-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
+import AuthNavbar from '../navbar/AuthNavbar';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -33,7 +34,9 @@ const Register = () => {
   };
 
   return (
-    <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
+    <>
+    <AuthNavbar />
+    <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh', paddingTop: '70px' }}>
       <Row className="w-100">
         <Col md={6} lg={5} className="mx-auto">
           <Card className="shadow">
@@ -104,6 +107,7 @@ const Register = () => {
         </Col>
       </Row>
     </Container>
+    </>
   );
 };
 

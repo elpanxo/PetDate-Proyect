@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Form, Button, Card, Alert } from 'react-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
+import AuthNavbar from '../navbar/AuthNavbar';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -16,7 +17,9 @@ const Login = () => {
   };
 
   return (
-    <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
+    <>
+    <AuthNavbar />
+    <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh', paddingTop: '70px' }}>
       <Row className="w-100">
         <Col md={6} lg={4} className="mx-auto">
           <Card className="shadow">
@@ -64,6 +67,7 @@ const Login = () => {
         </Col>
       </Row>
     </Container>
+    </>
   );
 };
 
