@@ -11,7 +11,7 @@ const Register = () => {
   const [success, setSuccess] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
@@ -26,27 +26,10 @@ const Register = () => {
       return;
     }
 
-    try {
-      const response = await fetch('http://localhost:8080/usuarios', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ nombre: name, correo: email, contrasena: password }),
-      });
-
-      if (response.ok) {
-        setSuccess('¡Registro exitoso! Redirigiendo al login...');
-        setTimeout(() => {
-          navigate('/login');
-        }, 2000);
-      } else {
-        const data = await response.json();
-        setError(data.message || 'Error en el registro');
-      }
-    } catch (err) {
-      setError('Error de conexión con el servidor');
-    }
+    setSuccess('¡Registro exitoso! Redirigiendo al login...');
+    setTimeout(() => {
+      navigate('/login');
+    }, 2000);
   };
 
   return (

@@ -8,30 +8,11 @@ const Login = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setError('');
-
-    try {
-      const response = await fetch('http://localhost:8080/usuarios/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ correo: email, contrasena: password }),
-      });
-
-      if (response.ok) {
-        const user = await response.json();
-        localStorage.setItem('user', JSON.stringify({ email: user.correo, name: user.nombre }));
-        navigate('/');
-      } else {
-        const data = await response.json();
-        setError(data.message || 'Correo o contraseña incorrectos');
-      }
-    } catch (err) {
-      setError('Error de conexión con el servidor');
-    }
+    localStorage.setItem('user', JSON.stringify({ email, name: email.split('@')[0] }));
+    navigate('/');
   };
 
   return (

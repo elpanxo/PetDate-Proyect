@@ -1,22 +1,11 @@
-<<<<<<< HEAD
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
-
-import { Container, Row, Col, Button, Card, Navbar, Nav } from 'react-bootstrap'
-
-function App() {
-=======
 import { useState, useEffect } from 'react'
-import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
-import { Container, Row, Col, Button, Card, Navbar, Nav } from 'react-bootstrap'
+import { Routes, Route, useNavigate } from 'react-router-dom'
+import { Container, Row, Col, Button, Card } from 'react-bootstrap'
 import Login from './components/login/Login'
 import Register from './components/login/Register'
+import AppNavbar from './components/navbar/Navbar'
 import './App.css'
 
-// Componente del contenido principal (lo que ya tenías)
 function HomeContent() {
   const [user, setUser] = useState(null)
   const navigate = useNavigate()
@@ -33,37 +22,10 @@ function HomeContent() {
     navigate('/login')
   }
 
->>>>>>> 6adb7cca59ef81c0d2b7cb338c9be4f12bd94edc
   return (
     <>
-      {/* Navbar */}
-      <Navbar bg="dark" variant="dark" expand="lg">
-        <Container>
-          <Navbar.Brand href="#">Mi App</Navbar.Brand>
-          <Nav className="me-auto">
-            <Nav.Link href="#">Inicio</Nav.Link>
-            <Nav.Link href="#">Servicios</Nav.Link>
-            <Nav.Link href="#">Contacto</Nav.Link>
-          </Nav>
-<<<<<<< HEAD
-=======
-          <Nav>
-            {user && (
-              <>
-                <Navbar.Text className="me-3 text-white">
-                  Hola, {user.name}
-                </Navbar.Text>
-                <Button variant="outline-light" size="sm" onClick={handleLogout}>
-                  Cerrar Sesión
-                </Button>
-              </>
-            )}
-          </Nav>
->>>>>>> 6adb7cca59ef81c0d2b7cb338c9be4f12bd94edc
-        </Container>
-      </Navbar>
-
-      {/* Contenido */}
+      <AppNavbar />
+      <main style={{ paddingTop: '70px' }}>
       <Container className="mt-4">
         <Row>
           <Col md={4}>
@@ -103,35 +65,20 @@ function HomeContent() {
           </Col>
         </Row>
       </Container>
+      </main>
     </>
   )
 }
 
-<<<<<<< HEAD
-export default App
-=======
-// Componente para proteger rutas
-function PrivateRoute({ children }) {
-  const isAuthenticated = localStorage.getItem('user') !== null
-  return isAuthenticated ? children : <Navigate to="/login" />
-}
 
 function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route 
-        path="/" 
-        element={
-          <PrivateRoute>
-            <HomeContent />
-          </PrivateRoute>
-        } 
-      />
+      <Route path="/" element={<HomeContent />} />
     </Routes>
   )
 }
 
 export default App
->>>>>>> 6adb7cca59ef81c0d2b7cb338c9be4f12bd94edc
