@@ -5,22 +5,34 @@ import cl.PetDate.ms_usuarios.repositories.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UsuarioService {
 
-    private final UsuarioRepository usuarioRepository;
+    private static final String SEQUENCE_NAME = "usuarios_sequence";
 
-    public UsuarioService(UsuarioRepository usuarioRepository) {
+    private final UsuarioRepository usuarioRepository;
+    private final SequenceGeneratorService sequenceGeneratorService;
+
+    public UsuarioService(
+            UsuarioRepository usuarioRepository,
+            SequenceGeneratorService sequenceGeneratorService
+    ) {
         this.usuarioRepository = usuarioRepository;
+        this.sequenceGeneratorService = sequenceGeneratorService;
     }
 
     public Usuario crearUsuario(Usuario usuario) {
 
+        // Validar correo duplicado
         if (usuarioRepository.findByCorreo(usuario.getCorreo()).isPresent()) {
             throw new RuntimeException("El correo ya está registrado");
         }
+
+        // Generar ID autoincremental
+        usuario.setId(
+                sequenceGeneratorService.generateSequence(SEQUENCE_NAME)
+        );
 
         return usuarioRepository.save(usuario);
     }
@@ -41,14 +53,28 @@ public class UsuarioService {
 
     public Usuario actualizarUsuario(String id, Usuario usuarioActualizado) {
 
-        Usuario usuario = usuarioRepository.findById(Integer.valueOf(id))
+        Usuario usuario = usuarioRepository.findById(Long.valueOf(id))
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // Actualizar campos
         usuario.setNombre(usuarioActualizado.getNombre());
         usuario.setCorreo(usuarioActualizado.getCorreo());
         usuario.setContrasena(usuarioActualizado.getContrasena());
+        usuario.setTelefono(usuarioActualizado.getTelefono());
+        usuario.setDireccion(usuarioActualizado.getDireccion());
 
         return usuarioRepository.save(usuario);
+    }
+
+    public Usuario buscarPorId(Long id) {
+        return usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    }
+
+    public void eliminarUsuario(Long id) {
+
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        usuarioRepository.delete(usuario);
     }
 }
