@@ -17,6 +17,10 @@
   }
 }
 
+h2 {
+  font: 1.5rem 'Aclonica', cursive;
+}
+
 .hero {
   position: relative;
 

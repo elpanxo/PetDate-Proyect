@@ -42,7 +42,7 @@ function Footer() {
                 rel="noreferrer"
                 className="footer__social-link"
               >
-                <span className="footer__social-icon">📸</span> Instagram
+                <span className="footer__social-icon">Instagram</span>
               </a>
             </li>
             <li>
@@ -52,7 +52,7 @@ function Footer() {
                 rel="noreferrer"
                 className="footer__social-link"
               >
-                <span className="footer__social-icon">👤</span> Facebook
+                <span className="footer__social-icon">Facebook</span>
               </a>
             </li>
             <li>
@@ -62,7 +62,7 @@ function Footer() {
                 rel="noreferrer"
                 className="footer__social-link footer__social-link--wsp"
               >
-                <span className="footer__social-icon">💬</span> WhatsApp
+                <span className="footer__social-icon">WhatsApp</span>
               </a>
             </li>
             <li>
@@ -70,7 +70,7 @@ function Footer() {
                 href="mailto:contacto@petdate.cl"
                 className="footer__social-link"
               >
-                <span className="footer__social-icon">✉️</span> contacto@petdate.cl
+                <span className="footer__social-icon">contacto@petdate.cl</span>
               </a>
             </li>
           </ul>
@@ -79,7 +79,7 @@ function Footer() {
       </div>
 
       <div className="footer__bottom">
-        <span>Hecho con ❤️ para las mascotas de Chile</span>
+        <span>Hecho con ❤︎ para las mascotas de Chile</span>
       </div>
     </footer>
   )
