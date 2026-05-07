@@ -1,4 +1,6 @@
+import { Link } from 'react-router-dom'
 import AppNavbar from '../navbar/Navbar'
+import Footer from '../footer/Footer'
 import './Home.css'
 
 const promotions = [
@@ -37,10 +39,10 @@ function Home() {
       </section>
 
       {/* Botón flotante urgencias */}
-      <div className="fab">
+      <Link to="/servicios?tipo=Urgencia+24%2F7" className="fab">
         <span className="fab__icon">🚨</span>
         <span className="fab__label">Urgencia 24/7</span>
-      </div>
+      </Link>
 
       {/* Promociones */}
       <section className="home-promos">
@@ -65,37 +67,7 @@ function Home() {
         </div>
       </section>
 
-      <section className="home-about">
-        <div className="home-about__content">
-          <h2 className="home-about__title">¿Quienes somos?</h2>
-          <p className="home-about__text">
-            PetDate nace de una necesidad real: los dueños de mascotas merecen una forma simple, organizada y confiable de gestionar el bienestar de sus compañeros. Somos un equipo de tres estudiantes de Ingeniería apasionados por los animales y la tecnología, que decidimos crear la plataforma que siempre quisimos tener como dueños de mascotas.
-          </p>
-          <p className="home-about__text">
-            Nuestra misión es centralizar toda la información relacionada con el cuidado de las mascotas en un solo lugar. Porque sabemos lo frustrante que es buscar el carnet de vacunas en una gaveta, olvidar la fecha del próximo control o perder el historial médico de tu mejor amigo. PetDate existe para que eso no vuelva a pasar.
-          </p>
-          <p className="home-about__text">
-            Creemos que cada mascota merece el mejor cuidado posible, y que cada dueño merece las herramientas para dárselo. Nuestra visión es convertirnos en el asistente digital de cabecera de cada hogar con mascotas en Chile, expandiéndonos desde la web hacia dispositivos móviles y construyendo una comunidad donde el bienestar animal sea la prioridad.
-          </p>
-        </div>
-      </section>
-
-      <section className="home-tips">
-        <div className="home-tips__header">
-          <h2 className="home-tips__title">Consejos y Cuidados</h2>
-        </div>
-        <div className="home-tips__grid">
-          {tips.map((tip) => (
-            <article key={tip.id} className="tip-card">
-              <div className="tip-card__media" />
-              <div className="tip-card__body">
-                <h3 className="tip-card__title">{tip.title}</h3>
-                <button className="tip-card__btn">Leer más</button>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
+      <Footer />
     </>
   )
 }
