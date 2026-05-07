@@ -18,6 +18,13 @@ const badgeColor = {
   Servicio: '#e07b54',
 }
 
+const tips = [
+  { id: 1, title: 'Cuál es la forma correcta de llevar a tu mascota' },
+  { id: 2, title: 'Como presentar una nueva mascota a tu casa' },
+  { id: 3, title: 'Qué hacer si tu mascota vomita' },
+  { id: 4, title: 'Informativo sobre el examen Soma de Idexx' },
+]
+
 function Home() {
   return (
     <>

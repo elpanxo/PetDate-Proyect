@@ -26,11 +26,23 @@ public class UsuarioController {
         return usuarioService.listarUsuarios();
     }
 
+    @GetMapping("/{id}")
+    public Usuario buscarPorId(@PathVariable Long id) {
+        return usuarioService.buscarPorId(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public String eliminarUsuario(@PathVariable Long id) {
+
+        usuarioService.eliminarUsuario(id);
+
+        return "Usuario eliminado correctamente";
+    }
+
     @PutMapping("/{id}")
     public Usuario actualizarUsuario(@PathVariable String id, @Valid @RequestBody Usuario usuario) {
         return usuarioService.actualizarUsuario(id, usuario);
     }
-
 
     @GetMapping("/correo/{correo}")
     public Usuario buscarPorCorreo(@PathVariable String correo) {
