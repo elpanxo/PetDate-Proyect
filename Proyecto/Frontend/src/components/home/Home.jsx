@@ -1,4 +1,6 @@
+import { Link } from 'react-router-dom'
 import AppNavbar from '../navbar/Navbar'
+import Footer from '../footer/Footer'
 import './Home.css'
 
 const promotions = [
@@ -30,10 +32,10 @@ function Home() {
       </section>
 
       {/* Botón flotante urgencias */}
-      <div className="fab">
+      <Link to="/servicios?tipo=Urgencia+24%2F7" className="fab">
         <span className="fab__icon">🚨</span>
         <span className="fab__label">Urgencia 24/7</span>
-      </div>
+      </Link>
 
       {/* Promociones */}
       <section className="home-promos">
@@ -57,6 +59,8 @@ function Home() {
           </div>
         </div>
       </section>
+
+      <Footer />
     </>
   )
 }

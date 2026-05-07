@@ -23,19 +23,19 @@ function Navbar() {
         <div className="d-none d-md-flex justify-content-center flex-grow-1">
           <ul className="navbar-nav flex-row gap-4">
             <li className="nav-item">
-              <a className="nav-link nav-link-custom" href="#inicio">Inicio</a>
+              <Link className="nav-link nav-link-custom" to="/">Inicio</Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link nav-link-custom" href="#nosotros">Nosotros</a>
+              <Link className="nav-link nav-link-custom" to="/nosotros">Nosotros</Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link nav-link-custom" href="#servicios">Servicios</a>
+              <Link className="nav-link nav-link-custom" to="/servicios">Servicios</Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link nav-link-custom" href="#blogs">Blogs</a>
+              <Link className="nav-link nav-link-custom" to="/blogs">Blogs</Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link nav-link-custom" href="#contacto">Contacto</a>
+              <Link className="nav-link nav-link-custom" to="/contacto">Contacto</Link>
             </li>
           </ul>
         </div>

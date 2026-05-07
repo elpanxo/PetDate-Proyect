@@ -126,6 +126,7 @@
 
 /* Botón flotante urgencias */
 .fab {
+  text-decoration: none;
   position: fixed;
   bottom: 32px;
   right: 32px;
