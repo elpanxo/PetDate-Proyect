@@ -19,10 +19,10 @@ const badgeColor = {
 }
 
 const tips = [
-  { id: 1, title: 'Cuál es la forma correcta de llevar a tu mascota' },
-  { id: 2, title: 'Como presentar una nueva mascota a tu casa' },
-  { id: 3, title: 'Qué hacer si tu mascota vomita' },
-  { id: 4, title: 'Informativo sobre el examen Soma de Idexx' },
+  { id: 1, title: 'CUÁL ES LA FORMA CORRECTA DE LLEVAR A TU MASCOTA', desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed...' },
+  { id: 2, title: 'CÓMO PRESENTAR UNA NUEVA MASCOTA EN CASA', desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed...' },
+  { id: 3, title: 'QUÉ HACER SI TU GATO VOMITA', desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed...' },
+  { id: 4, title: 'INFORMATIVO SOBRE EL EXAMEN SOMA DE IDEXX...A', desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed...' },
 ]
 
 function Home() {
@@ -30,11 +30,19 @@ function Home() {
     <>
       <AppNavbar />
 
-      {/* Hero / descripción */}
       <section className="home-hero">
-        <div className="home-hero__content">
-          <h1 className="home-hero__title">PetDate</h1>
-          <p className="home-hero__slogan">El lugar donde las mascotas y sus dueños encuentran todo lo que necesitan.</p>
+        <div className="home-hero__inner">
+          <div className="home-hero__text">
+            <h1 className="home-hero__title">
+              Todo lo que tu mascota<br />
+              <span className="home-hero__title--highlight">necesita, en un solo lugar</span>
+            </h1>
+          </div>
+        </div>
+        <div className="home-hero__wave">
+          <svg viewBox="0 0 1440 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,50 C400,100 1040,0 1440,50 L1440,100 L0,100 Z" fill="#f5f0f0" />
+          </svg>
         </div>
       </section>
 
@@ -68,8 +76,13 @@ function Home() {
       </section>
 
       <section className="home-about">
+        <div className="home-about__wave-top">
+          <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,40 C360,80 1080,0 1440,40 L1440,0 L0,0 Z" fill="#f5f0f0" />
+          </svg>
+        </div>
         <div className="home-about__content">
-          <h2 className="home-about__title">¿Quienes somos?</h2>
+          <h2 className="home-about__title">¿Quiénes somos?</h2>
           <p className="home-about__text">
             PetDate nace de una necesidad real: los dueños de mascotas merecen una forma simple, organizada y confiable de gestionar el bienestar de sus compañeros. Somos un equipo de tres estudiantes de Ingeniería apasionados por los animales y la tecnología, que decidimos crear la plataforma que siempre quisimos tener como dueños de mascotas.
           </p>
@@ -80,11 +93,16 @@ function Home() {
             Creemos que cada mascota merece el mejor cuidado posible, y que cada dueño merece las herramientas para dárselo. Nuestra visión es convertirnos en el asistente digital de cabecera de cada hogar con mascotas en Chile, expandiéndonos desde la web hacia dispositivos móviles y construyendo una comunidad donde el bienestar animal sea la prioridad.
           </p>
         </div>
+        <div className="home-about__wave-bottom">
+          <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,40 C360,0 1080,80 1440,40 L1440,80 L0,80 Z" fill="#f5f0f0" />
+          </svg>
+        </div>
       </section>
 
       <section className="home-tips">
         <div className="home-tips__header">
-          <h2 className="home-tips__title">Consejos y Cuidados</h2>
+          <h2 className="home-tips__title">Consejos y cuidados</h2>
         </div>
         <div className="home-tips__grid">
           {tips.map((tip) => (
@@ -92,7 +110,8 @@ function Home() {
               <div className="tip-card__media" />
               <div className="tip-card__body">
                 <h3 className="tip-card__title">{tip.title}</h3>
-                <button className="tip-card__btn">Leer más</button>
+                <p className="tip-card__desc">{tip.desc}</p>
+                <button className="tip-card__btn">Leer ahora</button>
               </div>
             </article>
           ))}
