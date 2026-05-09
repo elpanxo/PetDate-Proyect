@@ -1,35 +1,57 @@
 /* Hero */
 .home-hero {
-  padding-top: 70px;
-  min-height: 280px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #f5f0fa 0%, #eaf4f8 100%);
-  text-align: center;
+  padding-top: 100px;
+  background-color: #8b6f5e;
+  position: relative;
+  overflow: hidden;
 }
 
-.home-hero__content {
-  padding: 48px 24px;
+.home-hero__wave {
+  line-height: 0;
+  margin-bottom: -1px;
+}
+
+.home-hero__wave svg {
+  display: block;
+  width: 100%;
+  height: 100px;
+}
+
+.home-hero__wave path {
+  stroke: none;
+}
+
+.home-hero__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 48px 40px 0;
+  gap: 32px;
+}
+
+.home-hero__text {
+  flex: 1;
+  max-width: 480px;
 }
 
 .home-hero__title {
-  font-size: 3rem;
+  font-size: 2.4rem;
   font-weight: 800;
-  color: #7e6492;
-  margin-bottom: 12px;
+  color: #ffffff;
+  line-height: 1.25;
+  margin: 0 0 28px;
 }
 
-.home-hero__slogan {
-  font-size: 1.15rem;
-  color: #555;
-  max-width: 520px;
-  margin: 0 auto;
+.home-hero__title--highlight {
+  color: #f5c842;
 }
 
 /* Promociones */
 .home-promos {
-  padding: 48px 40px;
+  background: #f5f0f0;
+  padding: 56px 40px;
   text-align: center;
 }
 
@@ -49,34 +71,42 @@
 
 /* Quiénes somos */
 .home-about {
+  background: #b09cbf;
+  position: relative;
+}
+
+.home-about__wave-top,
+.home-about__wave-bottom {
+  line-height: 0;
+}
+
+.home-about__wave-top svg,
+.home-about__wave-bottom svg {
+  display: block;
   width: 100%;
-  padding: 48px 0;
-  background: #f9f7fc;
+  height: 60px;
 }
 
 .home-about__content {
-  width: 100%;
-  max-width: none;
-  margin: 0;
-  padding: 32px 40px;
-  background: #fff;
-  border-radius: 0;
-  box-shadow: none;
+  padding: 40px 80px;
+  max-width: 960px;
+  margin: 0 auto;
 }
 
 .home-about__title {
-  font-size: 1.85rem;
+  font-size: 2rem;
   font-weight: 800;
-  color: #7e6492;
-  margin-bottom: 18px;
+  color: #2d2d2d;
   text-align: center;
+  margin: 0 0 24px;
 }
 
 .home-about__text {
-  font-size: 1rem;
+  font-size: 0.95rem;
   line-height: 1.75;
-  color: #4f4f4f;
-  margin-bottom: 16px;
+  color: #2d2d2d;
+  margin-bottom: 14px;
+  text-align: justify;
 }
 
 .home-about__text:last-child {
@@ -85,8 +115,8 @@
 
 /* Consejos y Cuidados */
 .home-tips {
-  padding: 48px 40px;
-  background: #fff;
+  padding: 56px 40px;
+  background: #f5f0f0;
 }
 
 .home-tips__header {
@@ -103,55 +133,88 @@
 .home-tips__grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 24px;
+  gap: 20px;
 }
 
 .tip-card {
-  background: #fefefe;
+  background: #ffffff;
   border-radius: 20px;
-  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.07);
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
 .tip-card__media {
-  min-height: 180px;
-  background: #ebedef;
+  height: 140px;
+  background: linear-gradient(180deg, #a8d8b0 0%, #7bbf85 40%, #5a9e6a 70%, #c5d88a 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.tip-card__media::before {
+  content: '';
+  position: absolute;
+  top: 18px;
+  left: 20px;
+  width: 50px;
+  height: 22px;
+  background: rgba(255,255,255,0.85);
+  border-radius: 30px;
+  box-shadow: 28px -6px 0 rgba(255,255,255,0.7), 14px -4px 0 rgba(255,255,255,0.9);
+}
+
+.tip-card__media::after {
+  content: '';
+  position: absolute;
+  top: 14px;
+  right: 20px;
+  width: 40px;
+  height: 18px;
+  background: rgba(255,255,255,0.8);
+  border-radius: 30px;
+  box-shadow: 20px -5px 0 rgba(255,255,255,0.65);
 }
 
 .tip-card__body {
-  padding: 24px 20px;
+  padding: 18px 16px 20px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 18px;
+  gap: 10px;
   flex-grow: 1;
 }
 
 .tip-card__title {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #333;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #2d2d2d;
   margin: 0;
-  line-height: 1.45;
+  line-height: 1.4;
+  letter-spacing: 0.02rem;
+}
+
+.tip-card__desc {
+  font-size: 0.78rem;
+  color: #888;
+  margin: 0;
+  line-height: 1.5;
+  flex-grow: 1;
 }
 
 .tip-card__btn {
   align-self: flex-start;
   background: transparent;
-  border: 2px solid #7e6492;
+  border: none;
   color: #7e6492;
-  border-radius: 8px;
-  padding: 10px 18px;
+  font-size: 0.82rem;
   font-weight: 700;
+  padding: 0;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  text-decoration: underline;
 }
 
 .tip-card__btn:hover {
-  background: #7e6492;
-  color: #fff;
+  color: #5f4c72;
 }
 
 /* Tarjeta de promoción */
