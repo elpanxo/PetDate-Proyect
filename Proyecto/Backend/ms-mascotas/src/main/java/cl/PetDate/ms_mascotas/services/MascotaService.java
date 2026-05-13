@@ -1,12 +1,14 @@
 package cl.PetDate.ms_mascotas.services;
 
 import cl.PetDate.ms_mascotas.clients.UsuarioClient;
+import cl.PetDate.ms_mascotas.dto.MascotaRequest;
+import cl.PetDate.ms_mascotas.dto.MascotaResponse;
+import cl.PetDate.ms_mascotas.exceptions.MascotaNotFoundException;
+import cl.PetDate.ms_mascotas.exceptions.UsuarioNotFoundException;
 import cl.PetDate.ms_mascotas.models.Mascota;
 import cl.PetDate.ms_mascotas.repositories.MascotaRepository;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,61 +23,76 @@ public class MascotaService {
     public MascotaService(
             MascotaRepository mascotaRepository,
             SequenceGeneratorService sequenceGeneratorService,
-            UsuarioClient usuarioClient
-    ) {
+            UsuarioClient usuarioClient) {
         this.mascotaRepository = mascotaRepository;
         this.sequenceGeneratorService = sequenceGeneratorService;
         this.usuarioClient = usuarioClient;
     }
 
-    public Mascota crearMascota(Mascota mascota) {
-
+    public MascotaResponse crearMascota(MascotaRequest request) {
         try {
-
-            usuarioClient.buscarUsuarioPorId(mascota.getUsuarioId());
-
+            usuarioClient.buscarUsuarioPorId(request.getUsuarioId());
         } catch (Exception e) {
-
-            throw new RuntimeException("El usuario no existe");
+            throw new UsuarioNotFoundException(request.getUsuarioId());
         }
-
-        mascota.setId(
-                sequenceGeneratorService.generateSequence(SEQUENCE_NAME)
-        );
-
-        return mascotaRepository.save(mascota);
+        Mascota mascota = toEntity(request);
+        mascota.setId(sequenceGeneratorService.generateSequence(SEQUENCE_NAME));
+        return toResponse(mascotaRepository.save(mascota));
     }
 
-    public List<Mascota> listarMascotas() {
-        return mascotaRepository.findAll();
+    public Page<MascotaResponse> listarMascotas(Pageable pageable) {
+        return mascotaRepository.findAll(pageable)
+                .map(this::toResponse);
     }
 
-    public Mascota buscarPorId(Long id) {
+    public MascotaResponse buscarPorId(Long id) {
         return mascotaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Mascota no encontrada"));
+                .map(this::toResponse)
+                .orElseThrow(() -> new MascotaNotFoundException(id));
     }
 
-    public List<Mascota> buscarPorUsuario(Long usuarioId) {
-        return mascotaRepository.findByUsuarioId(usuarioId);
+    public Page<MascotaResponse> buscarPorUsuario(Long usuarioId, Pageable pageable) {
+        return mascotaRepository.findByUsuarioId(usuarioId, pageable)
+                .map(this::toResponse);
     }
 
-    public Mascota actualizarMascota(Long id, Mascota mascotaActualizada) {
-
-        Mascota mascota = buscarPorId(id);
-
-        mascota.setNombre(mascotaActualizada.getNombre());
-        mascota.setEspecie(mascotaActualizada.getEspecie());
-        mascota.setRaza(mascotaActualizada.getRaza());
-        mascota.setEdad(mascotaActualizada.getEdad());
-        mascota.setTamano(mascotaActualizada.getTamano());
-
-        return mascotaRepository.save(mascota);
+    public MascotaResponse actualizarMascota(Long id, MascotaRequest request) {
+        Mascota mascota = mascotaRepository.findById(id)
+                .orElseThrow(() -> new MascotaNotFoundException(id));
+        mascota.setNombre(request.getNombre());
+        mascota.setEspecie(request.getEspecie());
+        mascota.setRaza(request.getRaza());
+        mascota.setEdad(request.getEdad());
+        mascota.setTamano(request.getTamano());
+        return toResponse(mascotaRepository.save(mascota));
     }
 
     public void eliminarMascota(Long id) {
-
-        Mascota mascota = buscarPorId(id);
-
+        Mascota mascota = mascotaRepository.findById(id)
+                .orElseThrow(() -> new MascotaNotFoundException(id));
         mascotaRepository.delete(mascota);
+    }
+
+    private Mascota toEntity(MascotaRequest request) {
+        Mascota m = new Mascota();
+        m.setNombre(request.getNombre());
+        m.setEspecie(request.getEspecie());
+        m.setRaza(request.getRaza());
+        m.setEdad(request.getEdad());
+        m.setTamano(request.getTamano());
+        m.setUsuarioId(request.getUsuarioId());
+        return m;
+    }
+
+    private MascotaResponse toResponse(Mascota m) {
+        MascotaResponse r = new MascotaResponse();
+        r.setId(m.getId());
+        r.setNombre(m.getNombre());
+        r.setEspecie(m.getEspecie());
+        r.setRaza(m.getRaza());
+        r.setEdad(m.getEdad());
+        r.setTamano(m.getTamano());
+        r.setUsuarioId(m.getUsuarioId());
+        return r;
     }
 }

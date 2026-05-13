@@ -10,9 +10,13 @@
         <module name="ms-usuarios" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="eureka-server" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="eureka-server" options="-parameters" />
       <module name="ms-mascotas" options="-parameters" />
       <module name="ms-usuarios" options="-parameters" />
     </option>
