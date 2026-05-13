@@ -1,7 +1,9 @@
 package cl.PetDate.ms_usuarios.controllers;
-import cl.PetDate.ms_usuarios.models.Usuario;
+import cl.PetDate.ms_usuarios.dto.UsuarioRequest;
+import cl.PetDate.ms_usuarios.dto.UsuarioResponse;
 import cl.PetDate.ms_usuarios.services.UsuarioService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,35 +19,36 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public Usuario crearUsuario(@Valid @RequestBody Usuario usuario) {
-        return usuarioService.crearUsuario(usuario);
+    @ResponseStatus(HttpStatus.CREATED)
+    public UsuarioResponse crearUsuario(@Valid @RequestBody UsuarioRequest request) {
+        return usuarioService.crearUsuario(request);
     }
 
     @GetMapping
-    public List<Usuario> listarUsuarios() {
+    public List<UsuarioResponse> listarUsuarios() {
         return usuarioService.listarUsuarios();
     }
 
     @GetMapping("/{id}")
-    public Usuario buscarPorId(@PathVariable Long id) {
+    public UsuarioResponse buscarPorId(@PathVariable Long id) {
         return usuarioService.buscarPorId(id);
     }
 
-    @DeleteMapping("/{id}")
-    public String eliminarUsuario(@PathVariable Long id) {
-
-        usuarioService.eliminarUsuario(id);
-
-        return "Usuario eliminado correctamente";
+    @GetMapping("/correo/{correo}")
+    public UsuarioResponse buscarPorCorreo(@PathVariable String correo) {
+        return usuarioService.buscarPorCorreo(correo);
     }
 
     @PutMapping("/{id}")
-    public Usuario actualizarUsuario(@PathVariable String id, @Valid @RequestBody Usuario usuario) {
-        return usuarioService.actualizarUsuario(id, usuario);
+    public UsuarioResponse actualizarUsuario(
+            @PathVariable Long id,
+            @Valid @RequestBody UsuarioRequest request) {
+        return usuarioService.actualizarUsuario(id, request);
     }
 
-    @GetMapping("/correo/{correo}")
-    public Usuario buscarPorCorreo(@PathVariable String correo) {
-        return usuarioService.buscarPorCorreo(correo);
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminarUsuario(@PathVariable Long id) {
+        usuarioService.eliminarUsuario(id);
     }
 }

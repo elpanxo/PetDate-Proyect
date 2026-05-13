@@ -1,7 +1,12 @@
 package cl.PetDate.ms_usuarios.services;
 
+import cl.PetDate.ms_usuarios.dto.UsuarioRequest;
+import cl.PetDate.ms_usuarios.dto.UsuarioResponse;
+import cl.PetDate.ms_usuarios.exceptions.CorreoDuplicadoException;
+import cl.PetDate.ms_usuarios.exceptions.UsuarioNotFoundException;
 import cl.PetDate.ms_usuarios.models.Usuario;
 import cl.PetDate.ms_usuarios.repositories.UsuarioRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,68 +18,79 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final SequenceGeneratorService sequenceGeneratorService;
+    private final PasswordEncoder passwordEncoder;
 
     public UsuarioService(
             UsuarioRepository usuarioRepository,
-            SequenceGeneratorService sequenceGeneratorService
-    ) {
+            SequenceGeneratorService sequenceGeneratorService,
+            PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.sequenceGeneratorService = sequenceGeneratorService;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    public Usuario crearUsuario(Usuario usuario) {
-
-        // Validar correo duplicado
-        if (usuarioRepository.findByCorreo(usuario.getCorreo()).isPresent()) {
-            throw new RuntimeException("El correo ya está registrado");
+    public UsuarioResponse crearUsuario(UsuarioRequest request) {
+        if (usuarioRepository.findByCorreo(request.getCorreo()).isPresent()) {
+            throw new CorreoDuplicadoException(request.getCorreo());
         }
-
-        // Generar ID autoincremental
-        usuario.setId(
-                sequenceGeneratorService.generateSequence(SEQUENCE_NAME)
-        );
-
-        return usuarioRepository.save(usuario);
+        Usuario usuario = toEntity(request);
+        usuario.setId(sequenceGeneratorService.generateSequence(SEQUENCE_NAME));
+        usuario.setContrasena(passwordEncoder.encode(request.getContrasena()));
+        return toResponse(usuarioRepository.save(usuario));
     }
 
-    public Usuario buscarPorCorreo(String correo) {
-        return usuarioRepository.findByCorreo(correo)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    public List<UsuarioResponse> listarUsuarios() {
+        return usuarioRepository.findAll()
+                .stream().map(this::toResponse).toList();
     }
 
-    public Usuario buscarPorNombre(String nombre) {
-        return usuarioRepository.findByNombre(nombre)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-    }
-
-    public List<Usuario> listarUsuarios() {
-        return usuarioRepository.findAll();
-    }
-
-    public Usuario actualizarUsuario(String id, Usuario usuarioActualizado) {
-
-        Usuario usuario = usuarioRepository.findById(Long.valueOf(id))
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
-        usuario.setNombre(usuarioActualizado.getNombre());
-        usuario.setCorreo(usuarioActualizado.getCorreo());
-        usuario.setContrasena(usuarioActualizado.getContrasena());
-        usuario.setTelefono(usuarioActualizado.getTelefono());
-        usuario.setDireccion(usuarioActualizado.getDireccion());
-
-        return usuarioRepository.save(usuario);
-    }
-
-    public Usuario buscarPorId(Long id) {
+    public UsuarioResponse buscarPorId(Long id) {
         return usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .map(this::toResponse)
+                .orElseThrow(() -> new UsuarioNotFoundException(id));
+    }
+
+    public UsuarioResponse buscarPorCorreo(String correo) {
+        return usuarioRepository.findByCorreo(correo)
+                .map(this::toResponse)
+                .orElseThrow(() -> new UsuarioNotFoundException("correo", correo));
+    }
+
+    public UsuarioResponse actualizarUsuario(Long id, UsuarioRequest request) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new UsuarioNotFoundException(id));
+        usuario.setNombre(request.getNombre());
+        usuario.setCorreo(request.getCorreo());
+        usuario.setContrasena(passwordEncoder.encode(request.getContrasena()));
+        usuario.setTelefono(request.getTelefono());
+        usuario.setDireccion(request.getDireccion());
+        return toResponse(usuarioRepository.save(usuario));
     }
 
     public void eliminarUsuario(Long id) {
-
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
+                .orElseThrow(() -> new UsuarioNotFoundException(id));
         usuarioRepository.delete(usuario);
+    }
+
+    private Usuario toEntity(UsuarioRequest r) {
+        Usuario u = new Usuario();
+        u.setNombre(r.getNombre());
+        u.setCorreo(r.getCorreo());
+        u.setContrasena(r.getContrasena());
+        u.setTelefono(r.getTelefono());
+        u.setDireccion(r.getDireccion());
+        return u;
+    }
+
+    private UsuarioResponse toResponse(Usuario u) {
+        UsuarioResponse r = new UsuarioResponse();
+        r.setId(u.getId());
+        r.setNombre(u.getNombre());
+        r.setCorreo(u.getCorreo());
+        r.setTelefono(u.getTelefono());
+        r.setDireccion(u.getDireccion());
+        r.setFechaRegistro(u.getFechaRegistro());
+        return r;
     }
 }

@@ -27,7 +27,7 @@ public class Usuario {
     @NotNull(message = "La fecha de registro no puede ser nula")
     private LocalDateTime fechaRegistro;
 
-    private int telefono;
+    private String telefono;
 
     private String direccion;
 
@@ -52,8 +52,8 @@ public class Usuario {
     public LocalDateTime getFechaRegistro() { return fechaRegistro; }
     public void setFechaRegistro(LocalDateTime fechaRegistro) { this.fechaRegistro = fechaRegistro; }
 
-    public int getTelefono() { return telefono; }
-    public void setTelefono(int telefono) { this.telefono = telefono; }
+    public String getTelefono() { return telefono; }
+    public void setTelefono(String telefono) { this.telefono = telefono; }
 
     public String getDireccion() { return direccion; }
     public void setDireccion(String direccion) { this.direccion = direccion; }

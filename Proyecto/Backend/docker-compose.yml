@@ -1,0 +1,58 @@
+services:
+
+  mongodb:
+    image: mongo:7.0
+    container_name: petdate-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - petdate-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ms-usuarios:
+    build:
+      context: ./ms-usuarios
+      dockerfile: Dockerfile
+    container_name: petdate-ms-usuarios
+    ports:
+      - "8081:8081"
+    environment:
+      SERVER_PORT: 8081
+      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/db-PetDate
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - petdate-network
+
+  ms-mascotas:
+    build:
+      context: ./ms-mascotas
+      dockerfile: Dockerfile
+    container_name: petdate-ms-mascotas
+    ports:
+      - "8082:8082"
+    environment:
+      SERVER_PORT: 8082
+      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/db-PetDate
+      MS_USUARIOS_URL: http://ms-usuarios:8081
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      ms-usuarios:
+        condition: service_started
+    networks:
+      - petdate-network
+
+volumes:
+  mongo-data:
+
+networks:
+  petdate-network:
+    driver: bridge

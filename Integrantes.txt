@@ -1,0 +1,9 @@
+
+Nombre: Camila González
+Rol: Scrum master
+
+Nombre: Francisco Agüero
+Rol: desarrollador frontend
+
+Nombre: Eliecer Salgado
+Rol: desarrollador Backend
