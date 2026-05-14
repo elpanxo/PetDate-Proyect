@@ -6,7 +6,9 @@ import './ServicioDetalle.css'
 
 function ServicioDetalle() {
   const { id } = useParams()
-  const servicio = servicios.find((s) => s.id === Number(id))
+  const overrides = JSON.parse(localStorage.getItem('servicios_override') || '{}')
+  const base = servicios.find((s) => s.id === Number(id))
+  const servicio = base && overrides[id] ? { ...base, ...overrides[id] } : base
 
   if (!servicio) {
     return (

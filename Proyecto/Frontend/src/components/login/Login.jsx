@@ -13,6 +13,7 @@ const Login = () => {
     e.preventDefault();
     setError('');
     localStorage.setItem('user', JSON.stringify({ email, name: email.split('@')[0] }));
+    window.dispatchEvent(new Event('userChanged'));
     navigate('/');
   };
 
@@ -59,6 +60,14 @@ const Login = () => {
                   <span className="text-muted">¿No tienes cuenta? </span>
                   <Link to="/register" className="text-decoration-none">
                     Regístrate aquí
+                  </Link>
+                </div>
+
+                <hr className="my-3" />
+
+                <div className="text-center">
+                  <Link to="/login-empresa" className="text-decoration-none" style={{ color: '#7e6492', fontSize: '0.9rem', fontWeight: 600 }}>
+                    🏢 ¿Eres empresa? Inicia sesión aquí
                   </Link>
                 </div>
               </Form>
