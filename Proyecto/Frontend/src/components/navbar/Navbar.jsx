@@ -1,9 +1,31 @@
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo/petdate-logo.png';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Navbar.css';
 
 function Navbar() {
+  const [user, setUser] = useState(() => {
+    const stored = localStorage.getItem('user');
+    return stored ? JSON.parse(stored) : null;
+  });
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleUserChange = () => {
+      const stored = localStorage.getItem('user');
+      setUser(stored ? JSON.parse(stored) : null);
+    };
+    window.addEventListener('userChanged', handleUserChange);
+    return () => window.removeEventListener('userChanged', handleUserChange);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    window.dispatchEvent(new Event('userChanged'));
+    navigate('/');
+  };
+
   return (
     <nav className="navbar fixed-top bg-custom">
       <div className="container-fluid px-4 d-flex align-items-center">
@@ -28,6 +50,15 @@ function Navbar() {
             <li className="nav-item">
               <Link className="nav-link nav-link-custom" to="/nosotros">Nosotros</Link>
             </li>
+            {user && user.role === 'empresa' ? (
+              <li className="nav-item">
+                <Link className="nav-link nav-link-custom" to="/mi-empresa">Mi Empresa</Link>
+              </li>
+            ) : user ? (
+              <li className="nav-item">
+                <Link className="nav-link nav-link-custom" to="/mis-mascotas">Mis Mascotas</Link>
+              </li>
+            ) : null}
             <li className="nav-item">
               <Link className="nav-link nav-link-custom" to="/servicios">Servicios</Link>
             </li>
@@ -42,12 +73,23 @@ function Navbar() {
 
         {/* Botones (derecha) */}
         <div className="d-none d-md-flex align-items-center gap-2 flex-shrink-0">
-          <Link to="/login" className="btn btn-login">
-            <span>👤</span> Inicia Sesión
-          </Link>
-          <Link to="/register" className="btn btn-register">
-            <span>📋</span> Registrate
-          </Link>
+          {user ? (
+            <>
+              <span className="navbar-greeting">Hola, {user.name} 🐾</span>
+              <button className="btn btn-logout" onClick={handleLogout}>
+                Cerrar Sesión
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className="btn btn-login">
+                <span>👤</span> Inicia Sesión
+              </Link>
+              <Link to="/register" className="btn btn-register">
+                <span>📋</span> Registrate
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile toggle */}
