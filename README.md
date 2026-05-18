@@ -6,6 +6,7 @@ Página web orientada a la gestión de mascotas y servicios veterinarios, desarr
 
 El proyecto busca centralizar información de mascotas, usuarios y futuros servicios asociados al cuidado animal, incorporando funcionalidades de autenticación, administración de mascotas y una experiencia web moderna.
 
+
 # Equipo de desarrollo
 
 | Nombre | Rol |
