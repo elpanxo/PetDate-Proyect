@@ -9,6 +9,4 @@ FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8081
-ENTRYPOINT ["java", \
-  "-Dspring.data.mongodb.uri=mongodb://mongodb:27017/db-PetDate", \
-  "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]

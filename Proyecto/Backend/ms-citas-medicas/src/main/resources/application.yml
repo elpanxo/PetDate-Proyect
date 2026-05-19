@@ -1,0 +1,16 @@
+server:
+  port: ${SERVER_PORT:8084}
+
+spring:
+  application:
+    name: ms-citas-medicas
+
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/db-PetDate}
+
+ms-usuarios:
+  url: ${MS_USUARIOS_URL:http://localhost:8081}
+
+ms-mascotas:
+  url: ${MS_MASCOTAS_URL:http://localhost:8082}

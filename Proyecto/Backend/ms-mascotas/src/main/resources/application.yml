@@ -1,0 +1,13 @@
+server:
+  port: ${SERVER_PORT:8082}
+
+spring:
+  application:
+    name: ms-mascotas
+
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/db-PetDate}
+
+ms-usuarios:
+  url: ${MS_USUARIOS_URL:http://localhost:8081}

@@ -1,12 +1,12 @@
 services:
 
-  mongodb:
+  petdate-db:
     image: mongo:7.0
-    container_name: petdate-mongodb
+    container_name: db-PetDate
     ports:
       - "27017:27017"
     volumes:
-      - mongo-data:/data/db
+      - petdate-data:/data/db
     networks:
       - petdate-network
     healthcheck:
@@ -14,6 +14,23 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  gateway:
+    build: ./gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      ms-usuarios:
+        condition: service_started
+      ms-mascotas:
+        condition: service_started
+      ms-servicios:
+        condition: service_started
+      ms-citas-medicas:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - petdate-network
 
   ms-usuarios:
     build:
@@ -24,9 +41,9 @@ services:
       - "8081:8081"
     environment:
       SERVER_PORT: 8081
-      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/db-PetDate
+      SPRING_DATA_MONGODB_URI: mongodb://petdate-db:27017/db-PetDate
     depends_on:
-      mongodb:
+      petdate-db:
         condition: service_healthy
     networks:
       - petdate-network
@@ -40,18 +57,54 @@ services:
       - "8082:8082"
     environment:
       SERVER_PORT: 8082
-      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/db-PetDate
+      SPRING_DATA_MONGODB_URI: mongodb://petdate-db:27017/db-PetDate
       MS_USUARIOS_URL: http://ms-usuarios:8081
     depends_on:
-      mongodb:
+      petdate-db:
         condition: service_healthy
       ms-usuarios:
         condition: service_started
     networks:
       - petdate-network
 
+  ms-servicios:
+    build:
+      context: ./ms-servicios
+      dockerfile: Dockerfile
+    container_name: petdate-ms-servicios
+    ports:
+      - "8083:8083"
+    environment:
+      SERVER_PORT: 8083
+      SPRING_DATA_MONGODB_URI: mongodb://petdate-db:27017/db-PetDate
+    depends_on:
+      petdate-db:
+        condition: service_healthy
+    networks:
+      - petdate-network
+
+  ms-citas-medicas:
+    build:
+      context: ./ms-citas-medicas
+      dockerfile: Dockerfile
+    container_name: petdate-ms-citas-medicas
+    ports:
+      - "8084:8084"
+    environment:
+      SERVER_PORT: 8084
+      SPRING_DATA_MONGODB_URI: mongodb://petdate-db:27017/db-PetDate
+    depends_on:
+      petdate-db:
+        condition: service_healthy
+      ms-usuarios:
+        condition: service_started
+      ms-mascotas:
+        condition: service_started
+    networks:
+      - petdate-network
+
 volumes:
-  mongo-data:
+  petdate-data:
 
 networks:
   petdate-network:

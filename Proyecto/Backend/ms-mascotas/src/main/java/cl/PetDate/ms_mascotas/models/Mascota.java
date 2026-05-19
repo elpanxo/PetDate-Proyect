@@ -7,6 +7,9 @@ import jakarta.validation.constraints.Size;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.awt.*;
+import java.util.Date;
+
 @Document(collection = "mascotas")
 public class Mascota {
 
@@ -26,11 +29,25 @@ public class Mascota {
     @Min(value = 0, message = "La edad no puede ser negativa")
     private int edad;
 
-    @NotBlank(message = "El tamaño es obligatorio")
+    @Min(value = 0, message = "El tamaño no puede ser negativa")
     private String tamano;
 
     @NotNull(message = "El usuario es obligatorio")
     private Long usuarioId;
+
+    @Min(value = 0, message = "El peso no puede ser negativa")
+    private float peso;
+
+    @NotNull(message = "El sexo es obligatorio")
+    private String sexo;
+
+    private Date fecha_nacimineto;
+
+    private String color;
+
+    private String observaciones;
+
+    private  String info_medica_basica;
 
     public Mascota() {
     }
@@ -89,5 +106,53 @@ public class Mascota {
 
     public void setUsuarioId(Long usuarioId) {
         this.usuarioId = usuarioId;
+    }
+
+    public float getPeso() {
+        return peso;
+    }
+
+    public void setPeso(float peso) {
+        this.peso = peso;
+    }
+
+    public String getSexo() {
+        return sexo;
+    }
+
+    public void setSexo(String sexo) {
+        this.sexo = sexo;
+    }
+
+    public Date getFecha_nacimineto() {
+        return fecha_nacimineto;
+    }
+
+    public void setFecha_nacimineto(Date fecha_nacimineto) {
+        this.fecha_nacimineto = fecha_nacimineto;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public String getObservaciones() {
+        return observaciones;
+    }
+
+    public void setObservaciones(String observaciones) {
+        this.observaciones = observaciones;
+    }
+
+    public String getInfo_medica_basica() {
+        return info_medica_basica;
+    }
+
+    public void setInfo_medica_basica(String info_medica_basica) {
+        this.info_medica_basica = info_medica_basica;
     }
 }

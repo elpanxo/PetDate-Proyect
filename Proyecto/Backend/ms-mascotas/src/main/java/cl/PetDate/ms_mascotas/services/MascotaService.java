@@ -64,6 +64,12 @@ public class MascotaService {
         mascota.setRaza(request.getRaza());
         mascota.setEdad(request.getEdad());
         mascota.setTamano(request.getTamano());
+        mascota.setSexo(request.getSexo());
+        mascota.setPeso(request.getPeso());
+        mascota.setColor(request.getColor());
+        mascota.setFecha_nacimineto(request.getFecha_nacimineto());
+        mascota.setObservaciones(request.getObservaciones());
+        mascota.setInfo_medica_basica(request.getInfo_medica_basica());
         return toResponse(mascotaRepository.save(mascota));
     }
 
@@ -81,6 +87,12 @@ public class MascotaService {
         m.setEdad(request.getEdad());
         m.setTamano(request.getTamano());
         m.setUsuarioId(request.getUsuarioId());
+        m.setSexo(request.getSexo());
+        m.setPeso(request.getPeso());
+        m.setColor(request.getColor());
+        m.setFecha_nacimineto(request.getFecha_nacimineto());
+        m.setObservaciones(request.getObservaciones());
+        m.setInfo_medica_basica(request.getInfo_medica_basica());
         return m;
     }
 
@@ -93,6 +105,12 @@ public class MascotaService {
         r.setEdad(m.getEdad());
         r.setTamano(m.getTamano());
         r.setUsuarioId(m.getUsuarioId());
+        r.setSexo(m.getSexo());
+        r.setPeso(m.getPeso());
+        r.setColor(m.getColor());
+        r.setFecha_nacimineto(m.getFecha_nacimineto());
+        r.setObservaciones(m.getObservaciones());
+        r.setInfo_medica_basica(m.getInfo_medica_basica());
         return r;
     }
 }
