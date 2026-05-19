@@ -1,0 +1,11 @@
+package cl.PetDate.ms_servicios;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class MsServiciosApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(MsServiciosApplication.class, args);
+    }
+}

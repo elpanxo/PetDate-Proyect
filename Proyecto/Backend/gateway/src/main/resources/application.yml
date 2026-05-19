@@ -1,0 +1,40 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway
+
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          routes:
+
+            - id: ruta-usuarios
+              uri: http://ms-usuarios:8081
+              predicates:
+                - Path=/api/usuarios/**
+              filters:
+                - StripPrefix=1
+
+            - id: ruta-mascotas
+              uri: http://ms-mascotas:8082
+              predicates:
+                - Path=/api/mascotas/**
+              filters:
+                - StripPrefix=1
+
+            - id: ruta-servicios
+              uri: http://ms-servicios:8083
+              predicates:
+                - Path=/api/servicios/**
+              filters:
+                - StripPrefix=1
+
+            - id: ruta-citas-medicas
+              uri: http://ms-citas-medicas:8084
+              predicates:
+                - Path=/api/citas-medicas/**
+              filters:
+                - StripPrefix=1

@@ -1,6 +1,8 @@
 package cl.PetDate.ms_mascotas.dto;
 import jakarta.validation.constraints.*;
 
+import java.util.Date;
+
 public class MascotaRequest {
 
     @NotBlank(message = "El nombre es obligatorio")
@@ -21,6 +23,20 @@ public class MascotaRequest {
 
     @NotNull(message = "El usuarioId es obligatorio")
     private Long usuarioId;
+
+    @Min(value = 0, message = "El peso no puede ser negativa")
+    private float peso;
+
+    @NotNull(message = "El sexo es obligatorio")
+    private String sexo;
+
+    private Date fecha_nacimineto;
+
+    private String color;
+
+    private String observaciones;
+
+    private  String info_medica_basica;
 
     public String getNombre() {
         return nombre;
@@ -68,5 +84,53 @@ public class MascotaRequest {
 
     public void setUsuarioId(Long usuarioId) {
         this.usuarioId = usuarioId;
+    }
+
+    public float getPeso() {
+        return peso;
+    }
+
+    public void setPeso(float peso) {
+        this.peso = peso;
+    }
+
+    public String getSexo() {
+        return sexo;
+    }
+
+    public void setSexo(String sexo) {
+        this.sexo = sexo;
+    }
+
+    public Date getFecha_nacimineto() {
+        return fecha_nacimineto;
+    }
+
+    public void setFecha_nacimineto(Date fecha_nacimineto) {
+        this.fecha_nacimineto = fecha_nacimineto;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public String getObservaciones() {
+        return observaciones;
+    }
+
+    public void setObservaciones(String observaciones) {
+        this.observaciones = observaciones;
+    }
+
+    public String getInfo_medica_basica() {
+        return info_medica_basica;
+    }
+
+    public void setInfo_medica_basica(String info_medica_basica) {
+        this.info_medica_basica = info_medica_basica;
     }
 }

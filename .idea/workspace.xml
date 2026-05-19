@@ -4,41 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c1da51b6-d1bc-4cb2-b95d-8e77a8934dca" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Integrantes.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/docker-compose.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-mascotas/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-mascotas/src/main/java/cl/PetDate/ms_mascotas/dto/MascotaRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-mascotas/src/main/java/cl/PetDate/ms_mascotas/dto/MascotaResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-mascotas/src/main/java/cl/PetDate/ms_mascotas/exceptions/GlobalExceptionHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-mascotas/src/main/java/cl/PetDate/ms_mascotas/exceptions/MascotaNotFoundException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-mascotas/src/main/java/cl/PetDate/ms_mascotas/exceptions/UsuarioNotFoundException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-mascotas/src/test/java/cl/PetDate/ms_mascotas/MascotaServiceTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/java/cl/PetDate/ms_usuarios/configs/SecurityConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/java/cl/PetDate/ms_usuarios/dto/UsuarioRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/java/cl/PetDate/ms_usuarios/dto/UsuarioResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/java/cl/PetDate/ms_usuarios/exceptions/CorreoDuplicadoException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/java/cl/PetDate/ms_usuarios/exceptions/GlobalExceptionHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/java/cl/PetDate/ms_usuarios/exceptions/UsuarioNotFoundException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/test/java/cl/PetDate/ms_usuarios/UsuarioServiceTest.java" afterDir="false" />
+    <list default="true" id="8ceaeccc-7303-4f75-befb-e184f75ee035" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/gateway/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/gateway/src/main/resources/application.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-citas-medicas/src/main/resources/application.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-mascotas/src/main/resources/application.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-servicios/src/main/resources/application.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/resources/application.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Proyecto/Backend/ms-mascotas/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-mascotas/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Proyecto/Backend/ms-mascotas/src/main/java/cl/PetDate/ms_mascotas/clients/UsuarioClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-mascotas/src/main/java/cl/PetDate/ms_mascotas/clients/UsuarioClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Proyecto/Backend/ms-mascotas/src/main/java/cl/PetDate/ms_mascotas/controllers/MascotaController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-mascotas/src/main/java/cl/PetDate/ms_mascotas/controllers/MascotaController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Proyecto/Backend/ms-mascotas/src/main/java/cl/PetDate/ms_mascotas/repositories/MascotaRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-mascotas/src/main/java/cl/PetDate/ms_mascotas/repositories/MascotaRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Proyecto/Backend/ms-mascotas/src/main/java/cl/PetDate/ms_mascotas/services/MascotaService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-mascotas/src/main/java/cl/PetDate/ms_mascotas/services/MascotaService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Proyecto/Backend/ms-mascotas/src/main/java/cl/PetDate/ms_mascotas/services/SequenceGeneratorService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-mascotas/src/main/java/cl/PetDate/ms_mascotas/services/SequenceGeneratorService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Proyecto/Backend/ms-mascotas/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-mascotas/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/java/cl/PetDate/ms_usuarios/controllers/UsuarioController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/java/cl/PetDate/ms_usuarios/controllers/UsuarioController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/java/cl/PetDate/ms_usuarios/models/Usuario.java" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/java/cl/PetDate/ms_usuarios/models/Usuario.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/java/cl/PetDate/ms_usuarios/services/SequenceGeneratorService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/java/cl/PetDate/ms_usuarios/services/SequenceGeneratorService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/java/cl/PetDate/ms_usuarios/services/UsuarioService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/java/cl/PetDate/ms_usuarios/services/UsuarioService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,41 +25,35 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
+        <option value="Dockerfile" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/Proyecto/Backend" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
 }</component>
-  <component name="ProjectId" id="3Det8GhLOB1vYQLXCNW3021sX83" />
+  <component name="ProjectId" id="3DvgRxb8CdsKI48hjt1QyueNeah" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Application.MsCitasMedicasApplication.executor": "Run",
     "Application.MsMascotasApplication.executor": "Run",
+    "Application.MsServiciosApplication.executor": "Run",
     "Application.MsUsuariosApplication.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "eliecer",
+    "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/eliec/OneDrive/Desktop/Eliecer/Duoc/Semestre V/Taller de programacion/PetDate-Proyect"
   }
 }]]></component>
-  <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\eliec\OneDrive\Desktop\Eliecer\Duoc\Semestre V\Taller de programacion\PetDate-Proyect\Proyecto\Backend" />
-      <recent name="C:\Users\eliec\OneDrive\Desktop\Eliecer\Duoc\Semestre V\Taller de programacion\PetDate-Proyect\Proyecto\Backend\ms-mascotas" />
-      <recent name="C:\Users\eliec\OneDrive\Desktop\Eliecer\Duoc\Semestre V\Taller de programacion\PetDate-Proyect\Proyecto\Backend\ms-mascotas\src" />
-    </key>
-  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -92,11 +63,11 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="c1da51b6-d1bc-4cb2-b95d-8e77a8934dca" name="Changes" comment="" />
-      <created>1778654203709</created>
+      <changelist id="8ceaeccc-7303-4f75-befb-e184f75ee035" name="Changes" comment="" />
+      <created>1779167952793</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1778654203709</updated>
+      <updated>1779167952793</updated>
     </task>
     <servers />
   </component>
