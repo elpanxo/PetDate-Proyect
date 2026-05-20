@@ -1,0 +1,45 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          routes:
+
+              - id: auth
+                uri: http://localhost:8081
+                predicates:
+                  - Path=/auth/**
+
+              - id: ms-usuarios
+                uri: http://localhost:8081
+                predicates:
+                  - Path=/usuarios/**
+
+              - id: ms-mascotas
+                uri: http://localhost:8082
+                predicates:
+                  - Path=/mascotas/**
+
+              - id: ms-servicios
+                uri: http://localhost:8083
+                predicates:
+                  - Path=/servicios/**
+
+              - id: ms-promociones
+                uri: http://localhost:8083
+                predicates:
+                  - Path=/promociones/**
+
+              - id: ms-citas-medicas
+                uri: http://localhost:8084
+                predicates:
+                  - Path=/citas/**
+
+jwt:
+  secret: ${JWT_SECRET:hfgkiuefhnbcgdsakjhrecduirnfhyeroifrnhsdfgc}
