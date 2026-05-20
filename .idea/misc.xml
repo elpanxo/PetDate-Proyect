@@ -4,7 +4,7 @@
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
-        <option value="$PROJECT_DIR$/Proyecto/Backend/gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/Proyecto/Backend/api-gateway/pom.xml" />
         <option value="$PROJECT_DIR$/Proyecto/Backend/ms-mascotas/pom.xml" />
         <option value="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/pom.xml" />
         <option value="$PROJECT_DIR$/Proyecto/Backend/ms-servicios/pom.xml" />
@@ -12,7 +12,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_24" project-jdk-name="openjdk-25" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_25" default="true" project-jdk-name="openjdk-25" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>

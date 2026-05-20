@@ -6,17 +6,17 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="api-gateway" />
         <module name="ms-usuarios" />
         <module name="ms-servicios" />
         <module name="ms-mascotas" />
-        <module name="gateway" />
         <module name="ms-citas-medicas" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="gateway" options="-parameters" />
+      <module name="api-gateway" options="-parameters" />
       <module name="ms-citas-medicas" options="-parameters" />
       <module name="ms-mascotas" options="-parameters" />
       <module name="ms-servicios" options="-parameters" />
