@@ -1,4 +1,5 @@
 package cl.PetDate.api_gateway.security;
+
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,8 +19,8 @@ public class JwtAuthFilter implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request,
-                             HttpServletResponse response,
-                             Object handler) throws Exception {
+            HttpServletResponse response,
+            Object handler) throws Exception {
 
         String path = request.getRequestURI();
         String method = request.getMethod();
@@ -52,15 +53,23 @@ public class JwtAuthFilter implements HandlerInterceptor {
     }
 
     private boolean esRutaPublica(String path, String method) {
-        if (path.startsWith("/auth/")) return true;
-        if (path.equals("/error")) return true;
-        if (path.equals("/usuarios") && method.equals("POST")) return true;
-        if (path.startsWith("/servicios") && method.equals("POST")) return true;
+        // Dejar pasar siempre el preflight CORS
+        if (method.equals("OPTIONS"))
+            return true;
+
+        if (path.startsWith("/auth/"))
+            return true;
+        if (path.equals("/error"))
+            return true;
+        if (path.equals("/usuarios") && method.equals("POST"))
+            return true;
+        if (path.startsWith("/servicios") && method.equals("POST"))
+            return true;
         return false;
     }
 
     private void escribirError(HttpServletResponse response,
-                               HttpStatus status, String mensaje) throws Exception {
+            HttpStatus status, String mensaje) throws Exception {
         response.setStatus(status.value());
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

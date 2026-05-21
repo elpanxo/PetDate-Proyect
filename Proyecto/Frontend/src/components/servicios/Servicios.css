@@ -256,6 +256,19 @@
   font-size: 3rem;
 }
 
+.servicios-paginacion {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.servicios-pagina-info {
+  font-size: 0.9rem;
+  color: #666;
+}
+
 /* Responsive */
 @media (max-width: 900px) {
   .servicios-grid {
