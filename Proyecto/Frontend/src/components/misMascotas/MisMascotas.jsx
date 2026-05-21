@@ -1,66 +1,161 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Modal, Button, Form } from 'react-bootstrap';
 import Navbar from '../navbar/Navbar';
 import Footer from '../footer/Footer';
+import api, { ApiError } from '../../api/petdate-api';
 import './MisMascotas.css';
 
+// ─────────────────────────────────────────────
+// Constantes
+// ─────────────────────────────────────────────
 const TIPOS_MASCOTA = ['Perro', 'Gato', 'Ave', 'Conejo', 'Reptil', 'Pez', 'Otro'];
 
+// El backend usa "especie" — mapeamos el tipo del formulario a ese campo
 const EMOJI_TIPO = {
   Perro: '🐶', Gato: '🐱', Ave: '🐦', Conejo: '🐰',
-  Reptil: '🦎', Pez: '🐠', Otro: '🐾'
+  Reptil: '🦎', Pez: '🐠', Otro: '🐾',
 };
 
 const FORM_INICIAL = {
-  nombre: '', tipo: 'Perro', raza: '', edad: '', sexo: 'Macho',
-  peso: '', fechaNacimiento: '', color: '', observaciones: '',
-  infoMedica: '', imagen: ''
+  nombre: '',
+  tipo: 'Perro',       // → especie en el backend
+  raza: '',
+  edad: '',
+  sexo: 'Macho',
+  peso: '',
+  fechaNacimiento: '', // → fecha_nacimineto en el backend
+  color: '',
+  observaciones: '',
+  infoMedica: '',      // → info_medica_basica en el backend
+  imagen: '',
 };
 
+// ─────────────────────────────────────────────
+// Helpers de mapeo frontend ↔ backend
+// ─────────────────────────────────────────────
+
+/** Convierte el form local al body que espera POST/PUT /mascotas */
+function formToRequest(form, usuarioId) {
+  return {
+    nombre:            form.nombre,
+    especie:           form.tipo,
+    raza:              form.raza || 'Sin especificar',
+    edad:              Number(form.edad) || 0,
+    sexo:              form.sexo,
+    tamano:            'Mediano',          // valor por defecto — puedes agregar el campo al form
+    peso:              parseFloat(form.peso) || 0,
+    fecha_nacimineto:  form.fechaNacimiento || null,
+    color:             form.color || '',
+    observaciones:     form.observaciones || '',
+    info_medica_basica: form.infoMedica || '',
+    usuarioId,
+  };
+}
+
+/** Convierte la respuesta del backend al estado local del form */
+function responseToForm(mascota) {
+  return {
+    nombre:          mascota.nombre,
+    tipo:            mascota.especie,
+    raza:            mascota.raza,
+    edad:            String(mascota.edad),
+    sexo:            mascota.sexo,
+    peso:            String(mascota.peso),
+    fechaNacimiento: mascota.fecha_nacimineto
+      ? mascota.fecha_nacimineto.slice(0, 10)   // ISO → 'YYYY-MM-DD'
+      : '',
+    color:           mascota.color || '',
+    observaciones:   mascota.observaciones || '',
+    infoMedica:      mascota.info_medica_basica || '',
+    imagen:          '',   // el backend no almacena imágenes, se mantiene solo en local
+  };
+}
+
+// ─────────────────────────────────────────────
+// Componente
+// ─────────────────────────────────────────────
 function MisMascotas() {
   const navigate = useNavigate();
 
-  const [mascotas, setMascotas] = useState(() => {
-    const stored = localStorage.getItem('mascotas');
-    return stored ? JSON.parse(stored) : [];
-  });
+  // Usuario logueado (guardado en localStorage al hacer login/registro)
+  const [usuario, setUsuario] = useState(null);
 
-  const [showModal, setShowModal] = useState(false);
-  const [editandoId, setEditandoId] = useState(null);
-  const [form, setForm] = useState(FORM_INICIAL);
-  const [errNombre, setErrNombre] = useState(false);
+  // Lista de mascotas
+  const [mascotas, setMascotas]   = useState([]);
+  const [loading, setLoading]     = useState(true);
+  const [error, setError]         = useState('');
 
+  // Modal
+  const [showModal, setShowModal]   = useState(false);
+  const [editandoId, setEditandoId] = useState(null);   // id del backend (number)
+  const [form, setForm]             = useState(FORM_INICIAL);
+  const [errNombre, setErrNombre]   = useState(false);
+  const [guardando, setGuardando]   = useState(false);
+  const [errorModal, setErrorModal] = useState('');
+
+  // ── Verificar sesión y cargar mascotas al montar ──
   useEffect(() => {
-    if (!localStorage.getItem('user')) navigate('/login');
+    const userData = localStorage.getItem('user');
+    if (!userData) { navigate('/login'); return; }
+
+    const user = JSON.parse(userData);
+    if (!user.id) { navigate('/login'); return; }
+
+    setUsuario(user);
+    cargarMascotas(user.id);
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem('mascotas', JSON.stringify(mascotas));
-  }, [mascotas]);
+  // ── Cargar mascotas del usuario desde el backend ──
+  const cargarMascotas = useCallback(async (usuarioId) => {
+    setLoading(true);
+    setError('');
+    try {
+      const page = await api.mascotas.porUsuario(usuarioId, { size: 100 });
+      setMascotas(page.content);
+    } catch (err) {
+      if (err instanceof ApiError && err.status === 401) {
+        navigate('/login');
+      } else {
+        setError('No se pudieron cargar las mascotas. Intenta de nuevo.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [navigate]);
 
+  // ── Abrir modal agregar ──
   const abrirAgregar = () => {
     setEditandoId(null);
     setForm(FORM_INICIAL);
     setErrNombre(false);
+    setErrorModal('');
     setShowModal(true);
   };
 
+  // ── Abrir modal editar ──
   const abrirEditar = (mascota, e) => {
     e.stopPropagation();
     setEditandoId(mascota.id);
-    setForm({ ...mascota });
+    setForm(responseToForm(mascota));
     setErrNombre(false);
+    setErrorModal('');
     setShowModal(true);
   };
 
-  const eliminar = (id, e) => {
+  // ── Eliminar mascota ──
+  const eliminar = async (id, e) => {
     e.stopPropagation();
-    if (window.confirm('¿Seguro que quieres eliminar esta mascota?')) {
+    if (!window.confirm('¿Seguro que quieres eliminar esta mascota?')) return;
+    try {
+      await api.mascotas.eliminar(id);
       setMascotas(prev => prev.filter(m => m.id !== id));
+    } catch (err) {
+      alert('No se pudo eliminar la mascota. Intenta de nuevo.');
     }
   };
 
+  // ── Preview imagen (solo local, el backend no almacena imágenes) ──
   const handleImagen = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -69,18 +164,44 @@ function MisMascotas() {
     reader.readAsDataURL(file);
   };
 
-  const guardar = () => {
+  // ── Guardar (crear o actualizar) ──
+  const guardar = async () => {
     if (!form.nombre.trim()) { setErrNombre(true); return; }
-    if (editandoId) {
-      setMascotas(prev => prev.map(m => m.id === editandoId ? { ...m, ...form } : m));
-    } else {
-      setMascotas(prev => [...prev, { ...form, id: Date.now().toString(), agenda: [] }]);
+
+    setGuardando(true);
+    setErrorModal('');
+
+    try {
+      const body = formToRequest(form, usuario.id);
+
+      if (editandoId) {
+        // PUT /mascotas/{id}
+        const actualizada = await api.mascotas.actualizar(editandoId, body);
+        setMascotas(prev => prev.map(m => m.id === editandoId ? actualizada : m));
+      } else {
+        // POST /mascotas
+        const nueva = await api.mascotas.crear(body);
+        setMascotas(prev => [...prev, nueva]);
+      }
+
+      setShowModal(false);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        if (err.status === 404) setErrorModal('Usuario no encontrado. Vuelve a iniciar sesión.');
+        else setErrorModal(err.message || 'Error al guardar la mascota.');
+      } else {
+        setErrorModal('Error de conexión. Verifica que el servidor esté activo.');
+      }
+    } finally {
+      setGuardando(false);
     }
-    setShowModal(false);
   };
 
   const campo = (field, value) => setForm(prev => ({ ...prev, [field]: value }));
 
+  // ─────────────────────────────────────────────
+  // Render
+  // ─────────────────────────────────────────────
   return (
     <>
       <Navbar />
@@ -94,43 +215,75 @@ function MisMascotas() {
           <button className="mm-btn-agregar" onClick={abrirAgregar}>+ Agregar Mascota</button>
         </div>
 
-        {mascotas.length === 0 ? (
+        {/* Estado de carga */}
+        {loading && (
+          <div className="mm-empty">
+            <div className="mm-empty-icon">⏳</div>
+            <h3>Cargando mascotas...</h3>
+          </div>
+        )}
+
+        {/* Error de carga */}
+        {!loading && error && (
+          <div className="mm-empty">
+            <div className="mm-empty-icon">⚠️</div>
+            <h3>{error}</h3>
+            <button className="mm-btn-agregar" onClick={() => cargarMascotas(usuario?.id)}>
+              Reintentar
+            </button>
+          </div>
+        )}
+
+        {/* Sin mascotas */}
+        {!loading && !error && mascotas.length === 0 && (
           <div className="mm-empty">
             <div className="mm-empty-icon">🐾</div>
             <h3>Aún no tienes mascotas registradas</h3>
             <p>Agrega tu primera mascota para empezar a gestionar su perfil y agenda</p>
             <button className="mm-btn-agregar" onClick={abrirAgregar}>+ Agregar mi primera mascota</button>
           </div>
-        ) : (
+        )}
+
+        {/* Grid de mascotas */}
+        {!loading && !error && mascotas.length > 0 && (
           <div className="mm-grid">
             {mascotas.map(m => (
-              <div className="mm-card" key={m.id} onClick={() => navigate(`/mis-mascotas/${m.id}`)}>
+              <div
+                className="mm-card"
+                key={m.id}
+                onClick={() => navigate(`/mis-mascotas/${m.id}`)}
+              >
                 <div className="mm-card-img">
-                  {m.imagen
-                    ? <img src={m.imagen} alt={m.nombre} />
-                    : <span className="mm-card-emoji">{EMOJI_TIPO[m.tipo] || '🐾'}</span>
-                  }
+                  <span className="mm-card-emoji">{EMOJI_TIPO[m.especie] || '🐾'}</span>
                 </div>
                 <div className="mm-card-body">
                   <h3 className="mm-card-nombre">{m.nombre}</h3>
-                  <p className="mm-card-tipo">{m.tipo}{m.raza ? ` · ${m.raza}` : ''}</p>
-                  {m.edad && <p className="mm-card-edad">{m.edad} {m.edad === '1' ? 'año' : 'años'}</p>}
+                  <p className="mm-card-tipo">{m.especie}{m.raza ? ` · ${m.raza}` : ''}</p>
+                  {m.edad > 0 && (
+                    <p className="mm-card-edad">{m.edad} {m.edad === 1 ? 'año' : 'años'}</p>
+                  )}
                 </div>
                 <div className="mm-card-actions">
-                  <button className="mm-btn-edit" onClick={(e) => abrirEditar(m, e)}>✏️ Editar</button>
+                  <button className="mm-btn-edit"   onClick={(e) => abrirEditar(m, e)}>✏️ Editar</button>
                   <button className="mm-btn-delete" onClick={(e) => eliminar(m.id, e)}>🗑️ Eliminar</button>
                 </div>
               </div>
             ))}
           </div>
         )}
+
       </div>
 
+      {/* ── Modal agregar / editar ── */}
       <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" centered>
         <Modal.Header closeButton>
           <Modal.Title>{editandoId ? 'Editar mascota' : 'Agregar mascota'}</Modal.Title>
         </Modal.Header>
+
         <Modal.Body>
+          {errorModal && (
+            <div className="alert alert-danger" role="alert">{errorModal}</div>
+          )}
           <Form>
             <div className="mm-form-grid">
 
@@ -140,6 +293,9 @@ function MisMascotas() {
                 {form.imagen && (
                   <img src={form.imagen} alt="preview" className="mm-img-preview" />
                 )}
+                <Form.Text className="text-muted">
+                  La foto se guarda solo en este dispositivo.
+                </Form.Text>
               </Form.Group>
 
               <Form.Group>
@@ -166,7 +322,11 @@ function MisMascotas() {
 
               <Form.Group>
                 <Form.Label>Edad (años)</Form.Label>
-                <Form.Control type="number" min="0" value={form.edad} onChange={e => campo('edad', e.target.value)} />
+                <Form.Control
+                  type="number" min="0" max="50"
+                  value={form.edad}
+                  onChange={e => campo('edad', e.target.value)}
+                />
               </Form.Group>
 
               <Form.Group>
@@ -179,12 +339,20 @@ function MisMascotas() {
 
               <Form.Group>
                 <Form.Label>Peso (kg)</Form.Label>
-                <Form.Control type="number" step="0.1" min="0" value={form.peso} onChange={e => campo('peso', e.target.value)} />
+                <Form.Control
+                  type="number" step="0.1" min="0"
+                  value={form.peso}
+                  onChange={e => campo('peso', e.target.value)}
+                />
               </Form.Group>
 
               <Form.Group>
                 <Form.Label>Fecha de nacimiento</Form.Label>
-                <Form.Control type="date" value={form.fechaNacimiento} onChange={e => campo('fechaNacimiento', e.target.value)} />
+                <Form.Control
+                  type="date"
+                  value={form.fechaNacimiento}
+                  onChange={e => campo('fechaNacimiento', e.target.value)}
+                />
               </Form.Group>
 
               <Form.Group>
@@ -194,21 +362,39 @@ function MisMascotas() {
 
               <Form.Group className="mm-form-full">
                 <Form.Label>Observaciones</Form.Label>
-                <Form.Control as="textarea" rows={2} value={form.observaciones} onChange={e => campo('observaciones', e.target.value)} />
+                <Form.Control
+                  as="textarea" rows={2}
+                  value={form.observaciones}
+                  onChange={e => campo('observaciones', e.target.value)}
+                />
               </Form.Group>
 
               <Form.Group className="mm-form-full">
                 <Form.Label>Información médica básica</Form.Label>
-                <Form.Control as="textarea" rows={2} value={form.infoMedica} onChange={e => campo('infoMedica', e.target.value)} />
+                <Form.Control
+                  as="textarea" rows={2}
+                  value={form.infoMedica}
+                  onChange={e => campo('infoMedica', e.target.value)}
+                />
               </Form.Group>
 
             </div>
           </Form>
         </Modal.Body>
+
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>Cancelar</Button>
-          <Button style={{ backgroundColor: '#7e6492', border: 'none' }} onClick={guardar}>
-            {editandoId ? 'Guardar cambios' : 'Agregar mascota'}
+          <Button variant="secondary" onClick={() => setShowModal(false)} disabled={guardando}>
+            Cancelar
+          </Button>
+          <Button
+            style={{ backgroundColor: '#7e6492', border: 'none' }}
+            onClick={guardar}
+            disabled={guardando}
+          >
+            {guardando
+              ? (editandoId ? 'Guardando...' : 'Agregando...')
+              : (editandoId ? 'Guardar cambios' : 'Agregar mascota')
+            }
           </Button>
         </Modal.Footer>
       </Modal>
