@@ -12,14 +12,16 @@
       <change afterPath="$PROJECT_DIR$/Proyecto/Backend/api-gateway/src/main/resources/application.yml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-citas-medicas/src/main/resources/application.yml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-mascotas/src/main/resources/application.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-servicios/src/main/java/cl/PetDate/ms_servicios/controllers/AuthController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-servicios/src/main/java/cl/PetDate/ms_servicios/dto/AuthRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-servicios/src/main/java/cl/PetDate/ms_servicios/dto/AuthResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-servicios/src/main/java/cl/PetDate/ms_servicios/services/JwtService.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-servicios/src/main/resources/application.yml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/java/cl/PetDate/ms_usuarios/controllers/AuthController.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/java/cl/PetDate/ms_usuarios/dto/AuthRequest.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/java/cl/PetDate/ms_usuarios/dto/AuthResponse.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/java/cl/PetDate/ms_usuarios/security/JwtService.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
@@ -31,17 +33,17 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Dockerfile" />
+        <option value="Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/Proyecto/Backend" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 3
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
   <component name="ProjectId" id="3DywUrCnKGmb2V835LUbty8uPYh" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -51,9 +53,11 @@
   "keyToString": {
     "Application.ApiGatewayApplication.executor": "Run",
     "Application.MsMascotasApplication.executor": "Run",
+    "Application.MsServiciosApplication.executor": "Run",
     "Application.MsUsuariosApplication.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/eliec/OneDrive/Desktop/Eliecer/Duoc/Semestre V/Taller de programacion/PetDate-Proyect"

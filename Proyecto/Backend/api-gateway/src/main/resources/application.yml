@@ -11,6 +11,11 @@ spring:
         webmvc:
           routes:
 
+              - id: auth-servicios
+                uri: http://localhost:8083
+                predicates:
+                  - Path=/auth/servicios/**
+
               - id: auth
                 uri: http://localhost:8081
                 predicates:
