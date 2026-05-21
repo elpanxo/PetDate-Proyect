@@ -16,7 +16,7 @@ services:
       retries: 5
 
   gateway:
-    build: ./gateway
+    build: ./api-gateway
     ports:
       - "8080:8080"
     depends_on:

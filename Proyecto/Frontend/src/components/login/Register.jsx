@@ -2,57 +2,165 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Form } from 'react-bootstrap';
 import AuthNavbar from '../navbar/AuthNavbar';
-import { servicios } from '../servicios/serviciosData';
+import { ApiError } from '../../api/petdate-api';
+import api from '../../api/petdate-api';
 import './Register.css';
 
+// ─────────────────────────────────────────────
+// Rubros disponibles — tipoServicio que recibe el backend
+// ─────────────────────────────────────────────
 const RUBROS = [
-  { label: 'Veterinaria', servicioId: 1 },
-  { label: 'Veterinaria 24/7', servicioId: 2 },
-  { label: 'Servicios (Peluquería / Spa)', servicioId: 3 },
-  { label: 'Tienda de mascotas', servicioId: 4 },
+  { label: 'Veterinaria',                 tipoServicio: 'Veterinaria' },
+  { label: 'Veterinaria 24/7',            tipoServicio: 'Veterinaria 24/7' },
+  { label: 'Servicios (Peluquería / Spa)', tipoServicio: 'Peluquería / Spa' },
+  { label: 'Tienda de mascotas',           tipoServicio: 'Tienda de mascotas' },
 ];
 
-const FORM_CLIENTE_INICIAL = { nombre: '', email: '', telefono: '', password: '', confirm: '' };
-const FORM_EMPRESA_INICIAL = { empresa: '', rubro: RUBROS[0].servicioId, rut: '', direccion: '', telefono: '', email: '', password: '', confirm: '', terminos: false };
+const FORM_CLIENTE_INICIAL = {
+  nombre: '',
+  email: '',
+  telefono: '',
+  password: '',
+  confirm: '',
+};
 
+const FORM_EMPRESA_INICIAL = {
+  empresa: '',
+  rubro: RUBROS[0].tipoServicio,
+  rut: '',
+  direccion: '',
+  comuna: '',
+  telefono: '',
+  email: '',
+  password: '',
+  confirm: '',
+  terminos: false,
+};
+
+// ─────────────────────────────────────────────
+// Helpers de validación local
+// ─────────────────────────────────────────────
+function validarCliente(c) {
+  if (c.password !== c.confirm)    return 'Las contraseñas no coinciden';
+  if (c.password.length < 6)       return 'La contraseña debe tener al menos 6 caracteres';
+  return null;
+}
+
+function validarEmpresa(e) {
+  if (!e.terminos)                  return 'Debes aceptar los términos y condiciones';
+  if (e.password !== e.confirm)     return 'Las contraseñas no coinciden';
+  if (e.password.length < 6)        return 'La contraseña debe tener al menos 6 caracteres';
+  return null;
+}
+
+// ─────────────────────────────────────────────
+// Componente
+// ─────────────────────────────────────────────
 const Register = () => {
   const [tipo, setTipo] = useState('cliente');
   const navigate = useNavigate();
 
-  const [cliente, setCliente] = useState(FORM_CLIENTE_INICIAL);
+  // Estado formulario cliente
+  const [cliente, setCliente]           = useState(FORM_CLIENTE_INICIAL);
   const [errorCliente, setErrorCliente] = useState('');
+  const [loadingCliente, setLoadingCliente] = useState(false);
 
-  const [empresa, setEmpresa] = useState(FORM_EMPRESA_INICIAL);
+  // Estado formulario empresa
+  const [empresa, setEmpresa]           = useState(FORM_EMPRESA_INICIAL);
   const [errorEmpresa, setErrorEmpresa] = useState('');
+  const [loadingEmpresa, setLoadingEmpresa] = useState(false);
 
   const campoCliente = (field, value) => setCliente(p => ({ ...p, [field]: value }));
   const campoEmpresa = (field, value) => setEmpresa(p => ({ ...p, [field]: value }));
 
-  const handleCliente = (e) => {
+  // ── Registro cliente ────────────────────────
+  const handleCliente = async (e) => {
     e.preventDefault();
     setErrorCliente('');
-    if (cliente.password !== cliente.confirm) return setErrorCliente('Las contraseñas no coinciden');
-    if (cliente.password.length < 6) return setErrorCliente('La contraseña debe tener al menos 6 caracteres');
-    localStorage.setItem('user', JSON.stringify({ email: cliente.email, name: cliente.nombre, role: 'cliente' }));
-    window.dispatchEvent(new Event('userChanged'));
-    navigate('/mis-mascotas');
+
+    const errorLocal = validarCliente(cliente);
+    if (errorLocal) return setErrorCliente(errorLocal);
+
+    setLoadingCliente(true);
+    try {
+      // POST /usuarios  (ruta pública, no requiere token)
+      const usuarioCreado = await api.usuarios.crear({
+        nombre:     cliente.nombre,
+        correo:     cliente.email,
+        contrasena: cliente.password,
+        telefono:   cliente.telefono,
+      });
+
+      // Login automático tras el registro
+      await api.auth.login(cliente.email, cliente.password);
+
+      // Guardamos datos mínimos del usuario para la UI
+      localStorage.setItem('user', JSON.stringify({
+        id:    usuarioCreado.id,
+        email: usuarioCreado.correo,
+        name:  usuarioCreado.nombre,
+        role:  'cliente',
+      }));
+      window.dispatchEvent(new Event('userChanged'));
+      navigate('/mis-mascotas');
+
+    } catch (err) {
+      if (err instanceof ApiError) {
+        if (err.status === 409) setErrorCliente('Este correo ya está registrado');
+        else setErrorCliente(err.message || 'Error al crear la cuenta');
+      } else {
+        setErrorCliente('Error de conexión. Verifica que el servidor esté activo.');
+      }
+    } finally {
+      setLoadingCliente(false);
+    }
   };
 
-  const handleEmpresa = (e) => {
+  // ── Registro empresa ─────────────────────────
+  const handleEmpresa = async (e) => {
     e.preventDefault();
     setErrorEmpresa('');
-    if (!empresa.terminos) return setErrorEmpresa('Debes aceptar los términos y condiciones');
-    if (empresa.password !== empresa.confirm) return setErrorEmpresa('Las contraseñas no coinciden');
-    if (empresa.password.length < 6) return setErrorEmpresa('La contraseña debe tener al menos 6 caracteres');
-    const servicio = servicios.find(s => s.id === Number(empresa.rubro));
-    localStorage.setItem('user', JSON.stringify({
-      email: empresa.email,
-      name: empresa.empresa,
-      role: 'empresa',
-      servicioId: Number(empresa.rubro),
-    }));
-    window.dispatchEvent(new Event('userChanged'));
-    navigate('/mi-empresa');
+
+    const errorLocal = validarEmpresa(empresa);
+    if (errorLocal) return setErrorEmpresa(errorLocal);
+
+    setLoadingEmpresa(true);
+    try {
+      // POST /servicios  (ruta pública, no requiere token)
+      const servicioCreado = await api.servicios.crear({
+        nombreServicio: empresa.empresa,
+        tipoServicio:   empresa.rubro,
+        rutEmpresa:     empresa.rut,
+        correo:         empresa.email,
+        contrasena:     empresa.password,
+        direccion:      empresa.direccion,
+        comuna:         empresa.comuna,
+        telefono:       empresa.telefono,
+      });
+
+      // Guardamos datos mínimos del servicio para la UI
+      // Nota: el backend de servicios aún no tiene endpoint de login propio.
+      // Si en el futuro se agrega, aquí va el api.auth.loginEmpresa(...)
+      localStorage.setItem('user', JSON.stringify({
+        id:         servicioCreado.idServicio,
+        email:      servicioCreado.correo,
+        name:       servicioCreado.nombreServicio,
+        role:       'empresa',
+        servicioId: servicioCreado.idServicio,
+      }));
+      window.dispatchEvent(new Event('userChanged'));
+      navigate('/mi-empresa');
+
+    } catch (err) {
+      if (err instanceof ApiError) {
+        if (err.status === 409) setErrorEmpresa('Este correo ya está registrado');
+        else setErrorEmpresa(err.message || 'Error al registrar la empresa');
+      } else {
+        setErrorEmpresa('Error de conexión. Verifica que el servidor esté activo.');
+      }
+    } finally {
+      setLoadingEmpresa(false);
+    }
   };
 
   const switchTo = (t) => {
@@ -61,6 +169,9 @@ const Register = () => {
     setTipo(t);
   };
 
+  // ─────────────────────────────────────────────
+  // Render
+  // ─────────────────────────────────────────────
   return (
     <>
       <AuthNavbar />
@@ -88,28 +199,66 @@ const Register = () => {
               <Form onSubmit={handleCliente}>
                 <Form.Group className="mb-3">
                   <Form.Label>Nombre completo</Form.Label>
-                  <Form.Control placeholder="Tu nombre" value={cliente.nombre} onChange={e => campoCliente('nombre', e.target.value)} required />
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label>Correo electrónico</Form.Label>
-                  <Form.Control type="email" placeholder="ejemplo@correo.com" value={cliente.email} onChange={e => campoCliente('email', e.target.value)} required />
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label>Teléfono</Form.Label>
-                  <Form.Control type="tel" placeholder="+56 9 1234 5678" value={cliente.telefono} onChange={e => campoCliente('telefono', e.target.value)} required />
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label>Contraseña</Form.Label>
-                  <Form.Control type="password" placeholder="Mínimo 6 caracteres" value={cliente.password} onChange={e => campoCliente('password', e.target.value)} required />
-                </Form.Group>
-                <Form.Group className="mb-4">
-                  <Form.Label>Confirmar contraseña</Form.Label>
-                  <Form.Control type="password" placeholder="Repite tu contraseña" value={cliente.confirm} onChange={e => campoCliente('confirm', e.target.value)} required />
+                  <Form.Control
+                    placeholder="Tu nombre"
+                    value={cliente.nombre}
+                    onChange={e => campoCliente('nombre', e.target.value)}
+                    required
+                  />
                 </Form.Group>
 
-                <button type="submit" className="reg-btn reg-btn--cliente">
-                  Registrarme como cliente
+                <Form.Group className="mb-3">
+                  <Form.Label>Correo electrónico</Form.Label>
+                  <Form.Control
+                    type="email"
+                    placeholder="ejemplo@correo.com"
+                    value={cliente.email}
+                    onChange={e => campoCliente('email', e.target.value)}
+                    required
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Label>Teléfono</Form.Label>
+                  <Form.Control
+                    type="tel"
+                    placeholder="+56 9 1234 5678"
+                    value={cliente.telefono}
+                    onChange={e => campoCliente('telefono', e.target.value)}
+                    required
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Label>Contraseña</Form.Label>
+                  <Form.Control
+                    type="password"
+                    placeholder="Mínimo 6 caracteres"
+                    value={cliente.password}
+                    onChange={e => campoCliente('password', e.target.value)}
+                    required
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-4">
+                  <Form.Label>Confirmar contraseña</Form.Label>
+                  <Form.Control
+                    type="password"
+                    placeholder="Repite tu contraseña"
+                    value={cliente.confirm}
+                    onChange={e => campoCliente('confirm', e.target.value)}
+                    required
+                  />
+                </Form.Group>
+
+                <button
+                  type="submit"
+                  className="reg-btn reg-btn--cliente"
+                  disabled={loadingCliente}
+                >
+                  {loadingCliente ? 'Registrando...' : 'Registrarme como cliente'}
                 </button>
+
                 <div className="reg-login-link">
                   <span className="text-muted">¿Ya tienes cuenta? </span>
                   <Link to="/login">Inicia sesión aquí</Link>
@@ -144,40 +293,101 @@ const Register = () => {
               <Form onSubmit={handleEmpresa}>
                 <Form.Group className="mb-3">
                   <Form.Label>Nombre de la empresa</Form.Label>
-                  <Form.Control placeholder="Ej: Clínica VetCare" value={empresa.empresa} onChange={e => campoEmpresa('empresa', e.target.value)} required />
+                  <Form.Control
+                    placeholder="Ej: Clínica VetCare"
+                    value={empresa.empresa}
+                    onChange={e => campoEmpresa('empresa', e.target.value)}
+                    required
+                  />
                 </Form.Group>
+
                 <Form.Group className="mb-3">
                   <Form.Label>Rubro</Form.Label>
-                  <Form.Select value={empresa.rubro} onChange={e => campoEmpresa('rubro', e.target.value)}>
+                  <Form.Select
+                    value={empresa.rubro}
+                    onChange={e => campoEmpresa('rubro', e.target.value)}
+                  >
                     {RUBROS.map(r => (
-                      <option key={r.servicioId} value={r.servicioId}>{r.label}</option>
+                      <option key={r.tipoServicio} value={r.tipoServicio}>
+                        {r.label}
+                      </option>
                     ))}
                   </Form.Select>
                 </Form.Group>
+
                 <Form.Group className="mb-3">
                   <Form.Label>RUT empresa</Form.Label>
-                  <Form.Control placeholder="12.345.678-9" value={empresa.rut} onChange={e => campoEmpresa('rut', e.target.value)} required />
+                  <Form.Control
+                    placeholder="12345678-9"
+                    value={empresa.rut}
+                    onChange={e => campoEmpresa('rut', e.target.value)}
+                    required
+                  />
                 </Form.Group>
+
                 <Form.Group className="mb-3">
                   <Form.Label>Dirección</Form.Label>
-                  <Form.Control placeholder="Av. Ejemplo 1234, Santiago" value={empresa.direccion} onChange={e => campoEmpresa('direccion', e.target.value)} required />
+                  <Form.Control
+                    placeholder="Av. Ejemplo 1234"
+                    value={empresa.direccion}
+                    onChange={e => campoEmpresa('direccion', e.target.value)}
+                    required
+                  />
                 </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Label>Comuna</Form.Label>
+                  <Form.Control
+                    placeholder="Santiago"
+                    value={empresa.comuna}
+                    onChange={e => campoEmpresa('comuna', e.target.value)}
+                  />
+                </Form.Group>
+
                 <Form.Group className="mb-3">
                   <Form.Label>Teléfono</Form.Label>
-                  <Form.Control type="tel" placeholder="+56 2 1234 5678" value={empresa.telefono} onChange={e => campoEmpresa('telefono', e.target.value)} required />
+                  <Form.Control
+                    type="tel"
+                    placeholder="+56 2 1234 5678"
+                    value={empresa.telefono}
+                    onChange={e => campoEmpresa('telefono', e.target.value)}
+                    required
+                  />
                 </Form.Group>
+
                 <Form.Group className="mb-3">
                   <Form.Label>Correo electrónico</Form.Label>
-                  <Form.Control type="email" placeholder="empresa@correo.com" value={empresa.email} onChange={e => campoEmpresa('email', e.target.value)} required />
+                  <Form.Control
+                    type="email"
+                    placeholder="empresa@correo.com"
+                    value={empresa.email}
+                    onChange={e => campoEmpresa('email', e.target.value)}
+                    required
+                  />
                 </Form.Group>
+
                 <Form.Group className="mb-3">
                   <Form.Label>Contraseña</Form.Label>
-                  <Form.Control type="password" placeholder="Mínimo 6 caracteres" value={empresa.password} onChange={e => campoEmpresa('password', e.target.value)} required />
+                  <Form.Control
+                    type="password"
+                    placeholder="Mínimo 6 caracteres"
+                    value={empresa.password}
+                    onChange={e => campoEmpresa('password', e.target.value)}
+                    required
+                  />
                 </Form.Group>
+
                 <Form.Group className="mb-3">
                   <Form.Label>Confirmar contraseña</Form.Label>
-                  <Form.Control type="password" placeholder="Repite tu contraseña" value={empresa.confirm} onChange={e => campoEmpresa('confirm', e.target.value)} required />
+                  <Form.Control
+                    type="password"
+                    placeholder="Repite tu contraseña"
+                    value={empresa.confirm}
+                    onChange={e => campoEmpresa('confirm', e.target.value)}
+                    required
+                  />
                 </Form.Group>
+
                 <Form.Group className="mb-4">
                   <Form.Check
                     type="checkbox"
@@ -188,9 +398,14 @@ const Register = () => {
                   />
                 </Form.Group>
 
-                <button type="submit" className="reg-btn reg-btn--empresa">
-                  Registrar empresa
+                <button
+                  type="submit"
+                  className="reg-btn reg-btn--empresa"
+                  disabled={loadingEmpresa}
+                >
+                  {loadingEmpresa ? 'Registrando...' : 'Registrar empresa'}
                 </button>
+
                 <div className="reg-login-link">
                   <span className="text-muted">¿Ya tienes cuenta? </span>
                   <Link to="/login-empresa">Inicia sesión aquí</Link>
