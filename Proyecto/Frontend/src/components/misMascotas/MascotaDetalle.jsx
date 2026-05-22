@@ -1,119 +1,255 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Modal, Button, Form } from 'react-bootstrap';
 import Navbar from '../navbar/Navbar';
 import Footer from '../footer/Footer';
+import api, { ApiError } from '../../api/petdate-api';
 import './MascotaDetalle.css';
 
+// ─────────────────────────────────────────────
+// Constantes
+// ─────────────────────────────────────────────
 const TIPOS_EVENTO = [
   'Control veterinario', 'Vacuna', 'Desparasitación', 'Medicamento',
   'Cirugía', 'Examen', 'Corte de pelo', 'Baño', 'Otro'
 ];
 
-const ESTADOS = ['Pendiente', 'Completado', 'Vencido'];
+// El backend maneja PENDIENTE / COMPLETADO / VENCIDO (mayúsculas)
+const ESTADOS = ['PENDIENTE', 'COMPLETADO', 'VENCIDO'];
+
+const ESTADO_LABEL = {
+  PENDIENTE:  'Pendiente',
+  COMPLETADO: 'Completado',
+  VENCIDO:    'Vencido',
+};
 
 const ESTADO_COLOR = {
-  Completado: '#28a745',
-  Pendiente: '#e6a817',
-  Vencido: '#dc3545'
+  COMPLETADO: '#28a745',
+  PENDIENTE:  '#e6a817',
+  VENCIDO:    '#dc3545',
 };
 
 const ESTADO_BG = {
-  Completado: '#edf7ef',
-  Pendiente: '#fef9ec',
-  Vencido: '#fdecea'
+  COMPLETADO: '#edf7ef',
+  PENDIENTE:  '#fef9ec',
+  VENCIDO:    '#fdecea',
 };
 
 const EMOJI_TIPO = {
   Perro: '🐶', Gato: '🐱', Ave: '🐦', Conejo: '🐰',
-  Reptil: '🦎', Pez: '🐠', Otro: '🐾'
+  Reptil: '🦎', Pez: '🐠', Otro: '🐾',
 };
 
 const EMOJI_EVENTO = {
   'Control veterinario': '🩺', 'Vacuna': '💉', 'Desparasitación': '🔬',
   'Medicamento': '💊', 'Cirugía': '🏥', 'Examen': '📋',
-  'Corte de pelo': '✂️', 'Baño': '🛁', 'Otro': '📌'
+  'Corte de pelo': '✂️', 'Baño': '🛁', 'Otro': '📌',
 };
 
 const FORM_INICIAL = {
-  tipo: 'Control veterinario', fecha: '', hora: '',
-  descripcion: '', observaciones: '', estado: 'Pendiente'
+  tipo: 'Control veterinario',
+  fecha: '',
+  hora: '',
+  descripcion: '',
+  observaciones: '',
+  estado: 'PENDIENTE',
 };
 
+// ─────────────────────────────────────────────
+// Helpers de mapeo frontend ↔ backend
+// ─────────────────────────────────────────────
+
+/** Convierte el form local al body que espera POST/PUT /citas */
+function formToRequest(form, usuarioId, mascotaId) {
+  return {
+    idUsuario:  usuarioId,
+    idMascota:  mascotaId,
+    tipoEvento: form.tipo,
+    fecha:      form.fecha,                      // 'YYYY-MM-DD'
+    hora:       form.hora ? `${form.hora}:00` : '00:00:00', // 'HH:MM:SS'
+    descripcion: form.descripcion || '',
+    observacion: form.observaciones || '',
+    estado:     form.estado,
+  };
+}
+
+/** Convierte la respuesta del backend al estado local del form */
+function responseToForm(cita) {
+  return {
+    tipo:         cita.tipoEvento,
+    fecha:        cita.fecha ? String(cita.fecha).slice(0, 10) : '',
+    hora:         cita.hora  ? String(cita.hora).slice(0, 5)  : '',  // 'HH:MM'
+    descripcion:  cita.descripcion  || '',
+    observaciones: cita.observacion || '',
+    estado:       cita.estado || 'PENDIENTE',
+  };
+}
+
+// ─────────────────────────────────────────────
+// Componente
+// ─────────────────────────────────────────────
 function MascotaDetalle() {
-  const { id } = useParams();
+  const { id } = useParams();   // id de la mascota (number del backend)
   const navigate = useNavigate();
 
-  const [mascotas, setMascotas] = useState(() => {
-    const stored = localStorage.getItem('mascotas');
-    return stored ? JSON.parse(stored) : [];
-  });
+  // Usuario logueado
+  const [usuario, setUsuario] = useState(null);
 
-  const [showModal, setShowModal] = useState(false);
-  const [editandoEventoId, setEditandoEventoId] = useState(null);
-  const [formEvento, setFormEvento] = useState(FORM_INICIAL);
-  const [errFecha, setErrFecha] = useState(false);
+  // Datos de la mascota
+  const [mascota, setMascota]   = useState(null);
+  const [loadingMascota, setLoadingMascota] = useState(true);
 
+  // Citas/agenda
+  const [citas, setCitas]       = useState([]);
+  const [loadingCitas, setLoadingCitas] = useState(true);
+  const [errorCitas, setErrorCitas]     = useState('');
+
+  // Modal
+  const [showModal, setShowModal]           = useState(false);
+  const [editandoCitaId, setEditandoCitaId] = useState(null);
+  const [formEvento, setFormEvento]         = useState(FORM_INICIAL);
+  const [errFecha, setErrFecha]             = useState(false);
+  const [guardando, setGuardando]           = useState(false);
+  const [errorModal, setErrorModal]         = useState('');
+
+  // ── Verificar sesión ──
   useEffect(() => {
-    if (!localStorage.getItem('user')) navigate('/login');
+    const userData = localStorage.getItem('user');
+    if (!userData) { navigate('/login'); return; }
+    const user = JSON.parse(userData);
+    if (!user.id) { navigate('/login'); return; }
+    setUsuario(user);
   }, []);
 
-  const mascota = mascotas.find(m => m.id === id);
+  // ── Cargar datos de la mascota ──
+  useEffect(() => {
+    if (!id) return;
+    const cargarMascota = async () => {
+      try {
+        const data = await api.mascotas.porId(Number(id));
+        setMascota(data);
+      } catch {
+        navigate('/mis-mascotas');
+      } finally {
+        setLoadingMascota(false);
+      }
+    };
+    cargarMascota();
+  }, [id]);
+
+  // ── Cargar citas de la mascota ──
+  const cargarCitas = useCallback(async () => {
+    if (!id) return;
+    setLoadingCitas(true);
+    setErrorCitas('');
+    try {
+      const page = await api.citas.porMascota(Number(id), { size: 100 });
+      setCitas(page.content);
+    } catch (err) {
+      if (err instanceof ApiError && err.status === 401) {
+        navigate('/login');
+      } else {
+        setErrorCitas('No se pudieron cargar los eventos.');
+      }
+    } finally {
+      setLoadingCitas(false);
+    }
+  }, [id]);
 
   useEffect(() => {
-    if (mascotas.length > 0 && !mascota) navigate('/mis-mascotas');
-  }, [mascotas, mascota]);
+    cargarCitas();
+  }, [cargarCitas]);
 
-  const guardarMascotas = (updated) => {
-    setMascotas(updated);
-    localStorage.setItem('mascotas', JSON.stringify(updated));
-  };
-
+  // ── Abrir modal agregar ──
   const abrirAgregarEvento = () => {
-    setEditandoEventoId(null);
+    setEditandoCitaId(null);
     setFormEvento(FORM_INICIAL);
     setErrFecha(false);
+    setErrorModal('');
     setShowModal(true);
   };
 
-  const abrirEditarEvento = (evento) => {
-    setEditandoEventoId(evento.id);
-    setFormEvento({ ...evento });
+  // ── Abrir modal editar ──
+  const abrirEditarEvento = (cita) => {
+    setEditandoCitaId(cita.idEvento);
+    setFormEvento(responseToForm(cita));
     setErrFecha(false);
+    setErrorModal('');
     setShowModal(true);
   };
 
-  const eliminarEvento = (eventoId) => {
+  // ── Eliminar cita ──
+  const eliminarEvento = async (idEvento) => {
     if (!window.confirm('¿Eliminar este evento?')) return;
-    const updated = mascotas.map(m =>
-      m.id !== id ? m : { ...m, agenda: m.agenda.filter(e => e.id !== eventoId) }
-    );
-    guardarMascotas(updated);
+    try {
+      await api.citas.eliminar(idEvento);
+      setCitas(prev => prev.filter(c => c.idEvento !== idEvento));
+    } catch {
+      alert('No se pudo eliminar el evento. Intenta de nuevo.');
+    }
   };
 
-  const guardarEvento = () => {
+  // ── Cambiar estado rápido (PATCH) ──
+  const cambiarEstado = async (idEvento, nuevoEstado) => {
+    try {
+      const actualizada = await api.citas.cambiarEstado(idEvento, nuevoEstado);
+      setCitas(prev => prev.map(c => c.idEvento === idEvento ? actualizada : c));
+    } catch {
+      alert('No se pudo cambiar el estado.');
+    }
+  };
+
+  // ── Guardar (crear o actualizar) ──
+  const guardarEvento = async () => {
     if (!formEvento.fecha) { setErrFecha(true); return; }
-    const updated = mascotas.map(m => {
-      if (m.id !== id) return m;
-      if (editandoEventoId) {
-        return { ...m, agenda: m.agenda.map(e => e.id === editandoEventoId ? { ...e, ...formEvento } : e) };
+    if (!usuario || !mascota) return;
+
+    setGuardando(true);
+    setErrorModal('');
+
+    try {
+      const body = formToRequest(formEvento, usuario.id, mascota.id);
+
+      if (editandoCitaId) {
+        // PUT /citas/{id}
+        const actualizada = await api.citas.actualizar(editandoCitaId, body);
+        setCitas(prev => prev.map(c => c.idEvento === editandoCitaId ? actualizada : c));
+      } else {
+        // POST /citas
+        const nueva = await api.citas.crear(body);
+        setCitas(prev => [...prev, nueva]);
       }
-      return { ...m, agenda: [...(m.agenda || []), { ...formEvento, id: Date.now().toString() }] };
-    });
-    guardarMascotas(updated);
-    setShowModal(false);
+
+      setShowModal(false);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        if (err.status === 404) setErrorModal('Usuario o mascota no encontrado.');
+        else setErrorModal(err.message || 'Error al guardar el evento.');
+      } else {
+        setErrorModal('Error de conexión. Verifica que el servidor esté activo.');
+      }
+    } finally {
+      setGuardando(false);
+    }
   };
 
   const campo = (field, value) => setFormEvento(prev => ({ ...prev, [field]: value }));
 
+  // ── Ordenar citas por fecha descendente ──
+  const citasOrdenadas = [...citas].sort((a, b) =>
+    new Date(b.fecha) - new Date(a.fecha)
+  );
+
+  const pendientes  = citas.filter(c => c.estado === 'PENDIENTE').length;
+  const vencidos    = citas.filter(c => c.estado === 'VENCIDO').length;
+  const completados = citas.filter(c => c.estado === 'COMPLETADO').length;
+
+  if (loadingMascota) return null;
   if (!mascota) return null;
 
-  const agenda = mascota.agenda || [];
-  const agendaOrdenada = [...agenda].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-
-  const pendientes = agenda.filter(e => e.estado === 'Pendiente').length;
-  const vencidos = agenda.filter(e => e.estado === 'Vencido').length;
-
+  // ─────────────────────────────────────────────
+  // Render
+  // ─────────────────────────────────────────────
   return (
     <>
       <Navbar />
@@ -128,17 +264,14 @@ function MascotaDetalle() {
         {/* Perfil de la mascota */}
         <div className="md-perfil">
           <div className="md-perfil-img">
-            {mascota.imagen
-              ? <img src={mascota.imagen} alt={mascota.nombre} />
-              : <span className="md-emoji-big">{EMOJI_TIPO[mascota.tipo] || '🐾'}</span>
-            }
+            <span className="md-emoji-big">{EMOJI_TIPO[mascota.especie] || '🐾'}</span>
           </div>
 
           <div className="md-perfil-info">
             <div className="md-perfil-top">
               <h1 className="md-nombre">{mascota.nombre}</h1>
               <div className="md-badges">
-                <span className="md-badge md-badge-tipo">{mascota.tipo}</span>
+                <span className="md-badge md-badge-tipo">{mascota.especie}</span>
                 {mascota.sexo && <span className="md-badge md-badge-sexo">{mascota.sexo}</span>}
               </div>
             </div>
@@ -150,13 +283,13 @@ function MascotaDetalle() {
                   <span className="md-dato-val">{mascota.raza}</span>
                 </div>
               )}
-              {mascota.edad && (
+              {mascota.edad > 0 && (
                 <div className="md-dato">
                   <span className="md-dato-label">Edad</span>
-                  <span className="md-dato-val">{mascota.edad} {mascota.edad === '1' ? 'año' : 'años'}</span>
+                  <span className="md-dato-val">{mascota.edad} {mascota.edad === 1 ? 'año' : 'años'}</span>
                 </div>
               )}
-              {mascota.peso && (
+              {mascota.peso > 0 && (
                 <div className="md-dato">
                   <span className="md-dato-label">Peso</span>
                   <span className="md-dato-val">{mascota.peso} kg</span>
@@ -168,10 +301,10 @@ function MascotaDetalle() {
                   <span className="md-dato-val">{mascota.color}</span>
                 </div>
               )}
-              {mascota.fechaNacimiento && (
+              {mascota.fecha_nacimineto && (
                 <div className="md-dato">
                   <span className="md-dato-label">Nacimiento</span>
-                  <span className="md-dato-val">{mascota.fechaNacimiento}</span>
+                  <span className="md-dato-val">{String(mascota.fecha_nacimineto).slice(0, 10)}</span>
                 </div>
               )}
             </div>
@@ -183,20 +316,20 @@ function MascotaDetalle() {
               </div>
             )}
 
-            {mascota.infoMedica && (
+            {mascota.info_medica_basica && (
               <div className="md-obs-box">
                 <strong>Información médica</strong>
-                <p>{mascota.infoMedica}</p>
+                <p>{mascota.info_medica_basica}</p>
               </div>
             )}
           </div>
         </div>
 
         {/* Resumen agenda */}
-        {agenda.length > 0 && (
+        {citas.length > 0 && (
           <div className="md-resumen">
             <div className="md-resumen-item md-resumen-total">
-              <span className="md-resumen-num">{agenda.length}</span>
+              <span className="md-resumen-num">{citas.length}</span>
               <span className="md-resumen-label">Total eventos</span>
             </div>
             <div className="md-resumen-item md-resumen-pendiente">
@@ -208,7 +341,7 @@ function MascotaDetalle() {
               <span className="md-resumen-label">Vencidos</span>
             </div>
             <div className="md-resumen-item md-resumen-completado">
-              <span className="md-resumen-num">{agenda.filter(e => e.estado === 'Completado').length}</span>
+              <span className="md-resumen-num">{completados}</span>
               <span className="md-resumen-label">Completados</span>
             </div>
           </div>
@@ -221,47 +354,72 @@ function MascotaDetalle() {
             <button className="md-btn-evento" onClick={abrirAgregarEvento}>+ Agregar evento</button>
           </div>
 
-          {agendaOrdenada.length === 0 ? (
+          {loadingCitas && (
+            <div className="md-agenda-empty">
+              <span>⏳</span>
+              <p>Cargando eventos...</p>
+            </div>
+          )}
+
+          {!loadingCitas && errorCitas && (
+            <div className="md-agenda-empty">
+              <span>⚠️</span>
+              <p>{errorCitas}</p>
+              <button className="md-btn-evento" onClick={cargarCitas}>Reintentar</button>
+            </div>
+          )}
+
+          {!loadingCitas && !errorCitas && citasOrdenadas.length === 0 && (
             <div className="md-agenda-empty">
               <span>📋</span>
               <p>No hay eventos registrados para {mascota.nombre}.</p>
               <p>Agrega visitas al veterinario, vacunas, tratamientos y más.</p>
             </div>
-          ) : (
+          )}
+
+          {!loadingCitas && !errorCitas && citasOrdenadas.length > 0 && (
             <div className="md-timeline">
-              {agendaOrdenada.map(evento => (
+              {citasOrdenadas.map(cita => (
                 <div
                   className="md-evento"
-                  key={evento.id}
-                  style={{ borderLeftColor: ESTADO_COLOR[evento.estado] }}
+                  key={cita.idEvento}
+                  style={{ borderLeftColor: ESTADO_COLOR[cita.estado] }}
                 >
                   <div className="md-evento-icon">
-                    {EMOJI_EVENTO[evento.tipo] || '📌'}
+                    {EMOJI_EVENTO[cita.tipoEvento] || '📌'}
                   </div>
 
                   <div className="md-evento-body">
                     <div className="md-evento-top">
-                      <span className="md-evento-tipo">{evento.tipo}</span>
+                      <span className="md-evento-tipo">{cita.tipoEvento}</span>
                       <span
                         className="md-evento-estado"
                         style={{
-                          color: ESTADO_COLOR[evento.estado],
-                          backgroundColor: ESTADO_BG[evento.estado]
+                          color: ESTADO_COLOR[cita.estado],
+                          backgroundColor: ESTADO_BG[cita.estado],
+                          cursor: 'pointer',
+                        }}
+                        title="Clic para cambiar estado"
+                        onClick={() => {
+                          const idx = ESTADOS.indexOf(cita.estado);
+                          const siguiente = ESTADOS[(idx + 1) % ESTADOS.length];
+                          cambiarEstado(cita.idEvento, siguiente);
                         }}
                       >
-                        {evento.estado}
+                        {ESTADO_LABEL[cita.estado] || cita.estado}
                       </span>
                     </div>
                     <div className="md-evento-fecha">
-                      📅 {evento.fecha}{evento.hora ? ` · ⏰ ${evento.hora}` : ''}
+                      📅 {String(cita.fecha).slice(0, 10)}
+                      {cita.hora ? ` · ⏰ ${String(cita.hora).slice(0, 5)}` : ''}
                     </div>
-                    {evento.descripcion && <p className="md-evento-desc">{evento.descripcion}</p>}
-                    {evento.observaciones && <p className="md-evento-obs">{evento.observaciones}</p>}
+                    {cita.descripcion  && <p className="md-evento-desc">{cita.descripcion}</p>}
+                    {cita.observacion  && <p className="md-evento-obs">{cita.observacion}</p>}
                   </div>
 
                   <div className="md-evento-actions">
-                    <button title="Editar" onClick={() => abrirEditarEvento(evento)}>✏️</button>
-                    <button title="Eliminar" onClick={() => eliminarEvento(evento.id)}>🗑️</button>
+                    <button title="Editar"   onClick={() => abrirEditarEvento(cita)}>✏️</button>
+                    <button title="Eliminar" onClick={() => eliminarEvento(cita.idEvento)}>🗑️</button>
                   </div>
                 </div>
               ))}
@@ -273,9 +431,12 @@ function MascotaDetalle() {
       {/* Modal evento */}
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
-          <Modal.Title>{editandoEventoId ? 'Editar evento' : 'Agregar evento'}</Modal.Title>
+          <Modal.Title>{editandoCitaId ? 'Editar evento' : 'Agregar evento'}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          {errorModal && (
+            <div className="alert alert-danger">{errorModal}</div>
+          )}
           <Form>
             <Form.Group className="mb-3">
               <Form.Label>Tipo de evento</Form.Label>
@@ -336,11 +497,11 @@ function MascotaDetalle() {
                     style={{
                       backgroundColor: formEvento.estado === s ? ESTADO_COLOR[s] : '#f5f5f5',
                       color: formEvento.estado === s ? '#fff' : '#555',
-                      borderColor: ESTADO_COLOR[s]
+                      borderColor: ESTADO_COLOR[s],
                     }}
                     onClick={() => campo('estado', s)}
                   >
-                    {s}
+                    {ESTADO_LABEL[s]}
                   </button>
                 ))}
               </div>
@@ -348,9 +509,18 @@ function MascotaDetalle() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>Cancelar</Button>
-          <Button style={{ backgroundColor: '#7e6492', border: 'none' }} onClick={guardarEvento}>
-            {editandoEventoId ? 'Guardar cambios' : 'Agregar evento'}
+          <Button variant="secondary" onClick={() => setShowModal(false)} disabled={guardando}>
+            Cancelar
+          </Button>
+          <Button
+            style={{ backgroundColor: '#7e6492', border: 'none' }}
+            onClick={guardarEvento}
+            disabled={guardando}
+          >
+            {guardando
+              ? (editandoCitaId ? 'Guardando...' : 'Agregando...')
+              : (editandoCitaId ? 'Guardar cambios' : 'Agregar evento')
+            }
           </Button>
         </Modal.Footer>
       </Modal>
