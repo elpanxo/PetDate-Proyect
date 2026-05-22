@@ -1,0 +1,16 @@
+C:\Users\Usuario\Desktop\PetDate\PetDate-Proyect\Proyecto\Backend\ms-citas-medicas\src\main\java\cl\PetDate\ms_citas_medicas\clients\MascotaClient.java
+C:\Users\Usuario\Desktop\PetDate\PetDate-Proyect\Proyecto\Backend\ms-citas-medicas\src\main\java\cl\PetDate\ms_citas_medicas\clients\UsuarioClient.java
+C:\Users\Usuario\Desktop\PetDate\PetDate-Proyect\Proyecto\Backend\ms-citas-medicas\src\main\java\cl\PetDate\ms_citas_medicas\controllers\CitaMedicaController.java
+C:\Users\Usuario\Desktop\PetDate\PetDate-Proyect\Proyecto\Backend\ms-citas-medicas\src\main\java\cl\PetDate\ms_citas_medicas\dto\CitaMedicaRequest.java
+C:\Users\Usuario\Desktop\PetDate\PetDate-Proyect\Proyecto\Backend\ms-citas-medicas\src\main\java\cl\PetDate\ms_citas_medicas\dto\CitaMedicaResponse.java
+C:\Users\Usuario\Desktop\PetDate\PetDate-Proyect\Proyecto\Backend\ms-citas-medicas\src\main\java\cl\PetDate\ms_citas_medicas\exceptions\CitaMedicaNotFoundException.java
+C:\Users\Usuario\Desktop\PetDate\PetDate-Proyect\Proyecto\Backend\ms-citas-medicas\src\main\java\cl\PetDate\ms_citas_medicas\exceptions\GlobalExceptionHandler.java
+C:\Users\Usuario\Desktop\PetDate\PetDate-Proyect\Proyecto\Backend\ms-citas-medicas\src\main\java\cl\PetDate\ms_citas_medicas\exceptions\MascotaNotFoundException.java
+C:\Users\Usuario\Desktop\PetDate\PetDate-Proyect\Proyecto\Backend\ms-citas-medicas\src\main\java\cl\PetDate\ms_citas_medicas\exceptions\UsuarioNotFoundException.java
+C:\Users\Usuario\Desktop\PetDate\PetDate-Proyect\Proyecto\Backend\ms-citas-medicas\src\main\java\cl\PetDate\ms_citas_medicas\models\CitaMedica.java
+C:\Users\Usuario\Desktop\PetDate\PetDate-Proyect\Proyecto\Backend\ms-citas-medicas\src\main\java\cl\PetDate\ms_citas_medicas\models\DatabaseSequence.java
+C:\Users\Usuario\Desktop\PetDate\PetDate-Proyect\Proyecto\Backend\ms-citas-medicas\src\main\java\cl\PetDate\ms_citas_medicas\models\EstadoEvento.java
+C:\Users\Usuario\Desktop\PetDate\PetDate-Proyect\Proyecto\Backend\ms-citas-medicas\src\main\java\cl\PetDate\ms_citas_medicas\MsCitasMedicasApplication.java
+C:\Users\Usuario\Desktop\PetDate\PetDate-Proyect\Proyecto\Backend\ms-citas-medicas\src\main\java\cl\PetDate\ms_citas_medicas\repositories\CitaMedicaRepository.java
+C:\Users\Usuario\Desktop\PetDate\PetDate-Proyect\Proyecto\Backend\ms-citas-medicas\src\main\java\cl\PetDate\ms_citas_medicas\services\CitaMedicaService.java
+C:\Users\Usuario\Desktop\PetDate\PetDate-Proyect\Proyecto\Backend\ms-citas-medicas\src\main\java\cl\PetDate\ms_citas_medicas\services\SequenceGeneratorService.java
