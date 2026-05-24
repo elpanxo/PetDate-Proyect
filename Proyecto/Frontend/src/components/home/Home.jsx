@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import AppNavbar from '../navbar/Navbar'
 import Footer from '../footer/Footer'
+import { Siren, PawPrint } from 'lucide-react'
 import './Home.css'
 
 const promotions = [
@@ -47,10 +48,10 @@ function Home() {
       </section>
 
       {/* Botón flotante urgencias */}
-      <div className="fab">
-        <span className="fab__icon">🚨</span>
+      <Link to="/servicios?tipo=Urgencia+24%2F7" className="fab">
+        <Siren className="fab__icon" size={22} />
         <span className="fab__label">Urgencia 24/7</span>
-      </div>
+      </Link>
 
       {/* Promociones */}
       <section className="home-promos">
@@ -67,7 +68,7 @@ function Home() {
             </div>
           ))}
           <div className="promo-card promo-card--all">
-            <span className="promo-card__all-icon">🐾</span>
+            <PawPrint className= "fab_icon" size={35}/>
             <h3 className="promo-card__name">¿Quieres ver más?</h3>
             <p className="promo-card__desc">Explora todas las promociones disponibles para tu mascota.</p>
             <button className="promo-card__btn promo-card__btn--all">Ver todos los servicios</button>

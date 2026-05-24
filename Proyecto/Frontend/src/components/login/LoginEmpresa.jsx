@@ -3,6 +3,7 @@ import { Container, Row, Col, Form, Button, Card } from 'react-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
 import AuthNavbar from '../navbar/AuthNavbar';
 import { servicios } from '../servicios/serviciosData';
+import { Building2 } from 'lucide-react';
 
 // Muestra solo un representante por tipo de servicio
 const TIPOS_EMPRESA = [
@@ -41,7 +42,7 @@ const LoginEmpresa = () => {
             <Card className="shadow">
               <Card.Body className="p-5">
                 <div className="text-center mb-4">
-                  <span style={{ fontSize: '2rem' }}>🏢</span>
+                  <Building2 size={40} />
                   <h2 className="mt-2 mb-0">Iniciar Sesión</h2>
                   <p className="text-muted" style={{ fontSize: '0.9rem' }}>Cuenta empresa / servicio</p>
                 </div>

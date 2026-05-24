@@ -1,5 +1,6 @@
 import AppNavbar from '../navbar/Navbar'
 import Footer from '../footer/Footer'
+import { Heart, PawPrint, Telescope, HeartHandshake, Lightbulb } from 'lucide-react'
 import './Nosotros.css'
 
 function Nosotros() {
@@ -21,7 +22,7 @@ function Nosotros() {
 
           {/* Visión */}
           <div className="mv-card mv-card--vision">
-            <div className="mv-card__icon">🔭</div>
+            <Telescope className="fab__icon" size={50} color='#5E438B' />
             <h2 className="mv-card__title">Visión</h2>
             <p className="mv-card__text">
               Convertirse en la plataforma digital de referencia para la gestión y conexión de
@@ -32,7 +33,7 @@ function Nosotros() {
 
           {/* Misión */}
           <div className="mv-card mv-card--mision">
-            <div className="mv-card__icon">🐾</div>
+            <PawPrint className="fab__icon" size={50} color='#5E438B' />
             <h2 className="mv-card__title">Misión</h2>
             <p className="mv-card__text">
               Centralizar en una sola plataforma las necesidades de cuidado y gestión de mascotas,
@@ -50,17 +51,17 @@ function Nosotros() {
         <h2 className="nosotros-valores__title">Nuestros valores</h2>
         <div className="nosotros-valores__grid">
           <div className="valor-card">
-            <span className="valor-card__icon">❤️</span>
+            <Heart className="fab__icon" size={40} color='#5E438B'/>
             <h3 className="valor-card__name">Bienestar animal</h3>
             <p className="valor-card__desc">El cuidado y la salud de las mascotas es nuestra prioridad número uno.</p>
           </div>
           <div className="valor-card">
-            <span className="valor-card__icon">🤝</span>
+            <HeartHandshake className="fab__icon" size={40} color='#5E438B'/>
             <h3 className="valor-card__name">Confianza</h3>
             <p className="valor-card__desc">Conectamos dueños con proveedores verificados para una experiencia segura.</p>
           </div>
           <div className="valor-card">
-            <span className="valor-card__icon">💡</span>
+            <Lightbulb className="fab__icon" size={40} color='#5E438B' />
             <h3 className="valor-card__name">Innovación</h3>
             <p className="valor-card__desc">Desarrollamos herramientas digitales modernas que simplifican la gestión.</p>
           </div>

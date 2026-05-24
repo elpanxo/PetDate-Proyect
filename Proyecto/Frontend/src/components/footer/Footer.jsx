@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import logo from '../../assets/logo/petdate-logo.png'
+import { Heart } from 'lucide-react'
 import './Footer.css'
 
 function Footer() {
@@ -79,7 +80,7 @@ function Footer() {
       </div>
 
       <div className="footer__bottom">
-        <span>Hecho con ❤︎ para las mascotas de Chile</span>
+        <span>Hecho con <Heart size={14} /> para las mascotas de Chile</span>
       </div>
     </footer>
   )

@@ -1,3 +1,5 @@
+import { Hospital, Siren, Scissors, ShoppingCart } from 'lucide-react'
+
 export const TIPOS = [
   { valor: 'todos', label: 'Todos' },
   { valor: 'Veterinaria', label: 'Veterinaria' },
@@ -13,11 +15,11 @@ export const TIPO_COLOR = {
   Tienda: '#4a90a4',
 }
 
-export const TIPO_EMOJI = {
-  Veterinaria: '🏥',
-  'Urgencia 24/7': '🚨',
-  Peluquería: '✂️',
-  Tienda: '🛒',
+export const TIPO_ICON = {
+  Veterinaria: Hospital,
+  'Urgencia 24/7': Siren,
+  Peluquería: Scissors,
+  Tienda: ShoppingCart,
 }
 
 export const COMUNAS = [

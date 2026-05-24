@@ -1,5 +1,6 @@
 import AppNavbar from '../navbar/Navbar'
 import Footer from '../footer/Footer'
+import { Stethoscope, Beef, Bath, Dog, Cat, Home as HomeIcon } from 'lucide-react'
 import './Blogs.css'
 
 const posts = [
@@ -10,7 +11,7 @@ const posts = [
     titulo: '¿Cómo saber si tu mascota necesita ir al veterinario?',
     extracto: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation...',
     bg: 'linear-gradient(135deg, #f5f0fa 0%, #d8c9ed 100%)',
-    emoji: '🩺',
+    Icon: Stethoscope,
   },
   {
     id: 2,
@@ -19,7 +20,7 @@ const posts = [
     titulo: 'Alimentación saludable para tu perro según su edad',
     extracto: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate...',
     bg: 'linear-gradient(135deg, #eaf4f8 0%, #b8dce8 100%)',
-    emoji: '🥩',
+    Icon: Beef,
   },
   {
     id: 3,
@@ -28,7 +29,7 @@ const posts = [
     titulo: 'Guía completa para el baño y aseo de tu gato',
     extracto: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident...',
     bg: 'linear-gradient(135deg, #fff3ee 0%, #f5c9b0 100%)',
-    emoji: '🛁',
+    Icon: Bath,
   },
   {
     id: 4,
@@ -37,7 +38,7 @@ const posts = [
     titulo: '5 técnicas de adiestramiento positivo para cachorros',
     extracto: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing...',
     bg: 'linear-gradient(135deg, #f0ecfa 0%, #c9b8e8 100%)',
-    emoji: '🐕',
+    Icon: Dog,
   },
   {
     id: 5,
@@ -46,7 +47,7 @@ const posts = [
     titulo: 'Señales de estrés en mascotas y cómo ayudarlas',
     extracto: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa quae ab illo inventore veritatis...',
     bg: 'linear-gradient(135deg, #e6f5f9 0%, #a8d5e5 100%)',
-    emoji: '😿',
+    Icon: Cat,
   },
   {
     id: 6,
@@ -55,7 +56,7 @@ const posts = [
     titulo: 'Todo lo que necesitas saber sobre la guardería para mascotas',
     extracto: 'Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt...',
     bg: 'linear-gradient(135deg, #fff0ea 0%, #f0b896 100%)',
-    emoji: '🏠',
+    Icon: HomeIcon,
   },
 ]
 
@@ -78,7 +79,7 @@ function Blogs() {
           {posts.map((post) => (
             <article key={post.id} className="blog-card">
               <div className="blog-card__image" style={{ background: post.bg }}>
-                <span className="blog-card__emoji">{post.emoji}</span>
+                <post.Icon className="blog-card__emoji" size={48} />
               </div>
               <div className="blog-card__body">
                 <span
