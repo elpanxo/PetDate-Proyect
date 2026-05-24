@@ -10,6 +10,14 @@ import cl.PetDate.ms_mascotas.repositories.MascotaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 @Service
 public class MascotaService {
@@ -111,6 +119,38 @@ public class MascotaService {
         r.setFecha_nacimineto(m.getFecha_nacimineto());
         r.setObservaciones(m.getObservaciones());
         r.setInfo_medica_basica(m.getInfo_medica_basica());
+        r.setImagenUrl(m.getImagenUrl());
         return r;
+    }
+
+    public MascotaResponse subirImagen(Long id, MultipartFile imagen) throws IOException {
+        Mascota mascota = mascotaRepository.findById(id)
+                .orElseThrow(() -> new MascotaNotFoundException(id));
+
+        // Crea el directorio si no existe
+        String uploadDir = "/app/uploads/mascotas/";
+        Path dirPath = Paths.get(uploadDir);
+        if (!Files.exists(dirPath)) {
+            Files.createDirectories(dirPath);
+        }
+
+        // Nombre único para evitar colisiones
+        String extension = StringUtils.getFilenameExtension(imagen.getOriginalFilename());
+        String nombreArchivo = "mascota_" + id + "_" + System.currentTimeMillis() + "." + extension;
+        Path rutaArchivo = dirPath.resolve(nombreArchivo);
+
+        // Eliminar imagen anterior si existe
+        if (mascota.getImagenUrl() != null) {
+            Path anterior = Paths.get("/app/uploads/mascotas/",
+                    mascota.getImagenUrl().replace("/uploads/mascotas/", ""));
+            Files.deleteIfExists(anterior);
+        }
+
+        // Guardar el archivo
+        Files.copy(imagen.getInputStream(), rutaArchivo, StandardCopyOption.REPLACE_EXISTING);
+
+        // Guardar solo la URL relativa en MongoDB
+        mascota.setImagenUrl("/uploads/mascotas/" + nombreArchivo);
+        return toResponse(mascotaRepository.save(mascota));
     }
 }

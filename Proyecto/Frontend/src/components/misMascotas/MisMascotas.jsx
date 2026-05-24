@@ -68,7 +68,6 @@ function responseToForm(mascota) {
     color:           mascota.color || '',
     observaciones:   mascota.observaciones || '',
     infoMedica:      mascota.info_medica_basica || '',
-    imagen:          '',   // el backend no almacena imágenes, se mantiene solo en local
   };
 }
 
@@ -156,9 +155,15 @@ function MisMascotas() {
   };
 
   // ── Preview imagen (solo local, el backend no almacena imágenes) ──
-  const handleImagen = (e) => {
+  const handleImagen = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
+    // Si es una mascota nueva, guardamos el archivo temporalmente
+    // y lo subimos después de crearla
+    setForm(prev => ({ ...prev, _imagenFile: file }));
+
+    // Preview local
     const reader = new FileReader();
     reader.onload = (ev) => setForm(prev => ({ ...prev, imagen: ev.target.result }));
     reader.readAsDataURL(file);
@@ -167,31 +172,43 @@ function MisMascotas() {
   // ── Guardar (crear o actualizar) ──
   const guardar = async () => {
     if (!form.nombre.trim()) { setErrNombre(true); return; }
-
     setGuardando(true);
     setErrorModal('');
 
     try {
       const body = formToRequest(form, usuario.id);
+      let mascotaGuardada;
 
       if (editandoId) {
-        // PUT /mascotas/{id}
-        const actualizada = await api.mascotas.actualizar(editandoId, body);
-        setMascotas(prev => prev.map(m => m.id === editandoId ? actualizada : m));
+        mascotaGuardada = await api.mascotas.actualizar(editandoId, body);
+        setMascotas(prev => prev.map(m => m.id === editandoId ? mascotaGuardada : m));
       } else {
-        // POST /mascotas
-        const nueva = await api.mascotas.crear(body);
-        setMascotas(prev => [...prev, nueva]);
+        mascotaGuardada = await api.mascotas.crear(body);
+        setMascotas(prev => [...prev, mascotaGuardada]);
+      }
+
+      // Subir imagen si el usuario seleccionó una
+      if (form._imagenFile) {
+        const formData = new FormData();
+        formData.append('imagen', form._imagenFile);
+
+        const response = await fetch(
+          `http://localhost:8080/mascotas/${mascotaGuardada.id}/imagen`,
+          {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${localStorage.getItem('petdate_token')}` },
+            body: formData,  // NO pongas Content-Type — el browser lo setea solo con el boundary
+          }
+        );
+        const mascotaConImagen = await response.json();
+        setMascotas(prev => prev.map(m =>
+          m.id === mascotaGuardada.id ? mascotaConImagen : m
+        ));
       }
 
       setShowModal(false);
     } catch (err) {
-      if (err instanceof ApiError) {
-        if (err.status === 404) setErrorModal('Usuario no encontrado. Vuelve a iniciar sesión.');
-        else setErrorModal(err.message || 'Error al guardar la mascota.');
-      } else {
-        setErrorModal('Error de conexión. Verifica que el servidor esté activo.');
-      }
+      setErrorModal('Error al guardar la mascota.');
     } finally {
       setGuardando(false);
     }
@@ -254,7 +271,10 @@ function MisMascotas() {
                 onClick={() => navigate(`/mis-mascotas/${m.id}`)}
               >
                 <div className="mm-card-img">
-                  <span className="mm-card-emoji">{EMOJI_TIPO[m.especie] || '🐾'}</span>
+                  {m.imagenUrl
+                    ? <img src={`http://localhost:8080${m.imagenUrl}`} alt={m.nombre} className="mm-card-foto" />
+                    : <span className="mm-card-emoji">{EMOJI_TIPO[m.especie] || '🐾'}</span>
+                  }
                 </div>
                 <div className="mm-card-body">
                   <h3 className="mm-card-nombre">{m.nombre}</h3>

@@ -264,7 +264,10 @@ function MascotaDetalle() {
         {/* Perfil de la mascota */}
         <div className="md-perfil">
           <div className="md-perfil-img">
-            <span className="md-emoji-big">{EMOJI_TIPO[mascota.especie] || '🐾'}</span>
+            {mascota.imagenUrl
+              ? <img src={`http://localhost:8080${mascota.imagenUrl}`} alt={mascota.nombre} className="md-foto-perfil" />
+              : <span className="md-emoji-big">{EMOJI_TIPO[mascota.especie] || '🐾'}</span>
+            }
           </div>
 
           <div className="md-perfil-info">

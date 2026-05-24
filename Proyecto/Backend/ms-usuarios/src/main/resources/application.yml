@@ -9,5 +9,17 @@ spring:
     mongodb:
       uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/db-PetDate}
 
+  mongodb:
+    uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/db-PetDate}
+
 jwt:
   secret: ${JWT_SECRET:hfgkiuefhnbcgdsakjhrecduirnfhyeroifrnhsdfgc}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never

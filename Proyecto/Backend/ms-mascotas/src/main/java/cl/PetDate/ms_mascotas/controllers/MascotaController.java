@@ -13,6 +13,9 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Tag(name = "Mascotas", description = "CRUD de mascotas")
 @RestController
@@ -74,5 +77,12 @@ public class MascotaController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminarMascota(@PathVariable Long id) {
         mascotaService.eliminarMascota(id);
+    }
+
+    @PostMapping("/{id}/imagen")
+    public ResponseEntity<MascotaResponse> subirImagen(
+            @PathVariable Long id,
+            @RequestParam("imagen") MultipartFile imagen) throws IOException {
+        return ResponseEntity.ok(mascotaService.subirImagen(id, imagen));
     }
 }

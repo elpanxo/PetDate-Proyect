@@ -11,6 +11,7 @@
       <change afterPath="$PROJECT_DIR$/Proyecto/Backend/api-gateway/src/main/java/cl/PetDate/api_gateway/security/JwtAuthFilter.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/Proyecto/Backend/api-gateway/src/main/resources/application.yml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-citas-medicas/src/main/resources/application.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-mascotas/src/main/java/cl/PetDate/ms_mascotas/config/WebConfig.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-mascotas/src/main/resources/application.yml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-servicios/src/main/java/cl/PetDate/ms_servicios/controllers/AuthController.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-servicios/src/main/java/cl/PetDate/ms_servicios/dto/AuthRequest.java" afterDir="false" />
@@ -22,8 +23,12 @@
       <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/java/cl/PetDate/ms_usuarios/dto/AuthResponse.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/java/cl/PetDate/ms_usuarios/security/JwtService.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Proyecto/Frontend/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Proyecto/Frontend/nginx.conf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Proyecto/Frontend/src/components/misMascotas/MascotaDetalle.css" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Frontend/src/components/misMascotas/MascotaDetalle.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Proyecto/Frontend/src/components/misMascotas/MascotaDetalle.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Frontend/src/components/misMascotas/MascotaDetalle.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Proyecto/Frontend/src/components/misMascotas/MisMascotas.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Frontend/src/components/misMascotas/MisMascotas.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,6 +68,11 @@
     "last_opened_file_path": "C:/Users/eliec/OneDrive/Desktop/Eliecer/Duoc/Semestre V/Taller de programacion/PetDate-Proyect"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\eliec\OneDrive\Desktop\Eliecer\Duoc\Semestre V\Taller de programacion\PetDate-Proyect\Proyecto\Frontend" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
