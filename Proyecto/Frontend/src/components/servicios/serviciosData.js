@@ -24,14 +24,15 @@ export const TIPO_ICON = {
 
 export const COMUNAS = [
   'Todas',
-  'Las Condes',
-  'La Florida',
-  'Maipú',
-  'Ñuñoa',
-  'Providencia',
-  'San Miguel',
-  'Santiago Centro',
-  'Vitacura',
+  'Ancud',
+  'Castro',
+  'Puerto Montt',
+  'Maullin',
+  'Llanquihue',
+  'Los Muermos',
+  'Calbuco',
+  'Frutillar',
+  'Puerto Varas'
 ]
 
 export const servicios = [

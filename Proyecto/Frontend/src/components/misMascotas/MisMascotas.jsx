@@ -69,7 +69,7 @@ function responseToForm(mascota) {
     color:           mascota.color || '',
     observaciones:   mascota.observaciones || '',
     infoMedica:      mascota.info_medica_basica || '',
-    imagen:          '',   // el backend no almacena imágenes, se mantiene solo en local
+    imagen:          localStorage.getItem(`mascota_img_${mascota.id}`) || '',
   };
 }
 
@@ -150,6 +150,7 @@ function MisMascotas() {
     if (!window.confirm('¿Seguro que quieres eliminar esta mascota?')) return;
     try {
       await api.mascotas.eliminar(id);
+      localStorage.removeItem(`mascota_img_${id}`);
       setMascotas(prev => prev.filter(m => m.id !== id));
     } catch (err) {
       alert('No se pudo eliminar la mascota. Intenta de nuevo.');
@@ -161,7 +162,11 @@ function MisMascotas() {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (ev) => setForm(prev => ({ ...prev, imagen: ev.target.result }));
+    reader.onload = (ev) => {
+      const data = ev.target.result;
+      if (editandoId) localStorage.setItem(`mascota_img_${editandoId}`, data);
+      setForm(prev => ({ ...prev, imagen: data }));
+    };
     reader.readAsDataURL(file);
   };
 
@@ -178,10 +183,12 @@ function MisMascotas() {
       if (editandoId) {
         // PUT /mascotas/{id}
         const actualizada = await api.mascotas.actualizar(editandoId, body);
+        if (form.imagen) localStorage.setItem(`mascota_img_${editandoId}`, form.imagen);
         setMascotas(prev => prev.map(m => m.id === editandoId ? actualizada : m));
       } else {
         // POST /mascotas
         const nueva = await api.mascotas.crear(body);
+        if (form.imagen) localStorage.setItem(`mascota_img_${nueva.id}`, form.imagen);
         setMascotas(prev => [...prev, nueva]);
       }
 
@@ -255,7 +262,10 @@ function MisMascotas() {
                 onClick={() => navigate(`/mis-mascotas/${m.id}`)}
               >
                 <div className="mm-card-img">
-                  {(() => { const EspecieIcon = ICON_TIPO[m.especie] || PawPrint; return <EspecieIcon size={40} className="mm-card-emoji" />; })()}
+                  {localStorage.getItem(`mascota_img_${m.id}`)
+                    ? <img src={localStorage.getItem(`mascota_img_${m.id}`)} alt={m.nombre} className="mm-card-photo" />
+                    : (() => { const EspecieIcon = ICON_TIPO[m.especie] || PawPrint; return <EspecieIcon size={40} className="mm-card-emoji" />; })()
+                  }
                 </div>
                 <div className="mm-card-body">
                   <h3 className="mm-card-nombre">{m.nombre}</h3>
