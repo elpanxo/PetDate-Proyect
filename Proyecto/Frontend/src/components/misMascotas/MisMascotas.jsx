@@ -4,6 +4,7 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import Navbar from '../navbar/Navbar';
 import Footer from '../footer/Footer';
 import api, { ApiError } from '../../api/petdate-api';
+import { Dog, Cat, Bird, Rabbit, Turtle, Fish, PawPrint, Hourglass, TriangleAlert, Pencil, Trash2 } from 'lucide-react';
 import './MisMascotas.css';
 
 // ─────────────────────────────────────────────
@@ -12,9 +13,9 @@ import './MisMascotas.css';
 const TIPOS_MASCOTA = ['Perro', 'Gato', 'Ave', 'Conejo', 'Reptil', 'Pez', 'Otro'];
 
 // El backend usa "especie" — mapeamos el tipo del formulario a ese campo
-const EMOJI_TIPO = {
-  Perro: '🐶', Gato: '🐱', Ave: '🐦', Conejo: '🐰',
-  Reptil: '🦎', Pez: '🐠', Otro: '🐾',
+const ICON_TIPO = {
+  Perro: Dog, Gato: Cat, Ave: Bird, Conejo: Rabbit,
+  Reptil: Turtle, Pez: Fish, Otro: PawPrint,
 };
 
 const FORM_INICIAL = {
@@ -209,7 +210,7 @@ function MisMascotas() {
 
         <div className="mm-header">
           <div>
-            <h1 className="mm-titulo">🐾 Mis Mascotas</h1>
+            <h1 className="mm-titulo"><PawPrint size={22} /> Mis Mascotas</h1>
             <p className="mm-subtitulo">Gestiona el perfil y la agenda de tus compañeros</p>
           </div>
           <button className="mm-btn-agregar" onClick={abrirAgregar}>+ Agregar Mascota</button>
@@ -218,7 +219,7 @@ function MisMascotas() {
         {/* Estado de carga */}
         {loading && (
           <div className="mm-empty">
-            <div className="mm-empty-icon">⏳</div>
+            <div className="mm-empty-icon"><Hourglass size={32} /></div>
             <h3>Cargando mascotas...</h3>
           </div>
         )}
@@ -226,7 +227,7 @@ function MisMascotas() {
         {/* Error de carga */}
         {!loading && error && (
           <div className="mm-empty">
-            <div className="mm-empty-icon">⚠️</div>
+            <div className="mm-empty-icon"><TriangleAlert size={32} /></div>
             <h3>{error}</h3>
             <button className="mm-btn-agregar" onClick={() => cargarMascotas(usuario?.id)}>
               Reintentar
@@ -237,7 +238,7 @@ function MisMascotas() {
         {/* Sin mascotas */}
         {!loading && !error && mascotas.length === 0 && (
           <div className="mm-empty">
-            <div className="mm-empty-icon">🐾</div>
+            <div className="mm-empty-icon"><PawPrint size={32} /></div>
             <h3>Aún no tienes mascotas registradas</h3>
             <p>Agrega tu primera mascota para empezar a gestionar su perfil y agenda</p>
             <button className="mm-btn-agregar" onClick={abrirAgregar}>+ Agregar mi primera mascota</button>
@@ -254,7 +255,7 @@ function MisMascotas() {
                 onClick={() => navigate(`/mis-mascotas/${m.id}`)}
               >
                 <div className="mm-card-img">
-                  <span className="mm-card-emoji">{EMOJI_TIPO[m.especie] || '🐾'}</span>
+                  {(() => { const EspecieIcon = ICON_TIPO[m.especie] || PawPrint; return <EspecieIcon size={40} className="mm-card-emoji" />; })()}
                 </div>
                 <div className="mm-card-body">
                   <h3 className="mm-card-nombre">{m.nombre}</h3>
@@ -264,8 +265,8 @@ function MisMascotas() {
                   )}
                 </div>
                 <div className="mm-card-actions">
-                  <button className="mm-btn-edit"   onClick={(e) => abrirEditar(m, e)}>✏️ Editar</button>
-                  <button className="mm-btn-delete" onClick={(e) => eliminar(m.id, e)}>🗑️ Eliminar</button>
+                  <button className="mm-btn-edit"   onClick={(e) => abrirEditar(m, e)}><Pencil size={14} /> Editar</button>
+                  <button className="mm-btn-delete" onClick={(e) => eliminar(m.id, e)}><Trash2 size={14} /> Eliminar</button>
                 </div>
               </div>
             ))}

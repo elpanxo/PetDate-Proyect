@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo/petdate-logo.png';
+import { PawPrint, User, ClipboardList } from 'lucide-react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Navbar.css';
 
@@ -75,7 +76,7 @@ function Navbar() {
         <div className="d-none d-md-flex align-items-center gap-2 flex-shrink-0">
           {user ? (
             <>
-              <span className="navbar-greeting">Hola, {user.name} 🐾</span>
+              <span className="navbar-greeting">Hola, {user.name} <PawPrint size={16} /></span>
               <button className="btn btn-logout" onClick={handleLogout}>
                 Cerrar Sesión
               </button>
@@ -83,10 +84,10 @@ function Navbar() {
           ) : (
             <>
               <Link to="/login" className="btn btn-login">
-                <span>👤</span> Inicia Sesión
+                <User size={16} /> Inicia Sesión
               </Link>
               <Link to="/register" className="btn btn-register">
-                <span>📋</span> Registrate
+                <ClipboardList size={16} /> Registrate
               </Link>
             </>
           )}

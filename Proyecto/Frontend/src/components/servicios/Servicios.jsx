@@ -3,7 +3,8 @@ import { Link, useSearchParams } from 'react-router-dom'
 import AppNavbar from '../navbar/Navbar'
 import Footer from '../footer/Footer'
 import api, { ApiError } from '../../api/petdate-api'
-import { TIPOS, TIPO_COLOR, TIPO_EMOJI } from './serviciosData'
+import { TIPOS, TIPO_COLOR, TIPO_ICON } from './serviciosData'
+import { Search, Hospital, Siren, Scissors, ShoppingCart, PawPrint, TriangleAlert, Hourglass, Store, MapPin, Clock } from 'lucide-react'
 import './Servicios.css'
 
 function normalizarTipo(tipoServicio) {
@@ -99,7 +100,7 @@ function Servicios() {
 
       <section className="servicios-filtros">
         <div className="filtros-busqueda">
-          <span className="filtros-busqueda__icon">🔍</span>
+          <Search className="fab__icon" size={22} />
           <input
             type="text"
             className="filtros-busqueda__input"
@@ -119,9 +120,10 @@ function Servicios() {
                   className={`filtro-pill ${tipoActivo === t.valor ? 'filtro-pill--activo' : ''}`}
                   onClick={() => cambiarTipo(t.valor)}
                 >
-                  {t.valor !== 'todos' && (
-                    <span style={{ color: TIPO_COLOR[t.valor] }}>{TIPO_EMOJI[t.valor]}</span>
-                  )}
+                  {t.valor !== 'todos' && TIPO_ICON[t.valor] && (() => {
+                    const FiltroIcon = TIPO_ICON[t.valor]
+                    return <FiltroIcon size={15} style={{ color: TIPO_COLOR[t.valor] }} />
+                  })()}
                   {t.label}
                 </button>
               ))}
@@ -146,14 +148,14 @@ function Servicios() {
       <section className="servicios-section">
         {loading && (
           <div className="servicios-empty">
-            <span className="servicios-empty__icon">⏳</span>
+            <Hourglass className="fab__icon" size={30} />
             <p>Cargando servicios...</p>
           </div>
         )}
 
         {!loading && error && (
           <div className="servicios-empty">
-            <span className="servicios-empty__icon">⚠️</span>
+            <TriangleAlert className="fab__icon" size={30} />
             <p>{error}</p>
             <button className="filtro-pill filtro-pill--activo" onClick={cargarServicios}>
               Reintentar
@@ -163,7 +165,7 @@ function Servicios() {
 
         {!loading && !error && filtrados.length === 0 && (
           <div className="servicios-empty">
-            <span className="servicios-empty__icon">🐾</span>
+            <PawPrint className="fab__icon" size={30} />
             <p>No se encontraron servicios con los filtros aplicados.</p>
           </div>
         )}
@@ -177,6 +179,7 @@ function Servicios() {
             <div className="servicios-grid">
               {filtrados.map(s => {
                 const tipo = normalizarTipo(s.tipoServicio)
+                const TipoIcon = TIPO_ICON[tipo] || Store
                 return (
                   <Link
                     key={s.idServicio}
@@ -188,7 +191,7 @@ function Servicios() {
                       style={{ borderLeftColor: TIPO_COLOR[tipo] || '#999' }}
                     >
                       <div className="servicio-card__icon">
-                        {TIPO_EMOJI[tipo] || '🏪'}
+                        <TipoIcon size={24} />
                       </div>
                       <div>
                         <span
@@ -204,10 +207,10 @@ function Servicios() {
                     <p className="servicio-card__desc">{s.descripcion}</p>
 
                     <div className="servicio-card__footer">
-                      {s.comuna  && <span className="servicio-card__dir">📍 {s.comuna}</span>}
+                      {s.comuna  && <span className="servicio-card__dir"><MapPin size={13} /> {s.comuna}</span>}
                       {s.horario && (
                         <span className="servicio-card__horario">
-                          🕐 {s.horario.split('·')[0].trim()}
+                          <Clock size={13} /> {s.horario.split('·')[0].trim()}
                         </span>
                       )}
                     </div>

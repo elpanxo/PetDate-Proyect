@@ -4,6 +4,7 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import Navbar from '../navbar/Navbar';
 import Footer from '../footer/Footer';
 import { servicios as serviciosEstaticos, TIPOS, TIPO_COLOR, COMUNAS } from '../servicios/serviciosData';
+import { Building2, ClipboardList, CheckCircle2, Tag, Pencil, Trash2 } from 'lucide-react';
 import './MiEmpresa.css';
 
 const TIPOS_SERVICIO = TIPOS.filter(t => t.valor !== 'todos');
@@ -94,7 +95,7 @@ function MiEmpresa() {
 
         <div className="me-header">
           <div>
-            <h1 className="me-titulo">🏢 Mi Empresa</h1>
+            <h1 className="me-titulo"><Building2 size={22} /> Mi Empresa</h1>
             <p className="me-subtitulo">Gestiona la información y promociones de tu servicio</p>
           </div>
         </div>
@@ -102,9 +103,9 @@ function MiEmpresa() {
         {/* Sección: información del servicio */}
         <div className="me-seccion">
           <div className="me-seccion-header">
-            <h2>📋 Información del servicio</h2>
+            <h2><ClipboardList size={18} /> Información del servicio</h2>
             <div className="me-acciones">
-              {guardado && <span className="me-guardado-msg">✅ Guardado</span>}
+              {guardado && <span className="me-guardado-msg"><CheckCircle2 size={16} /> Guardado</span>}
               <button className="me-btn-primary" onClick={guardarServicio}>Guardar cambios</button>
             </div>
           </div>
@@ -180,13 +181,13 @@ function MiEmpresa() {
         {/* Sección: promociones */}
         <div className="me-seccion">
           <div className="me-seccion-header">
-            <h2>🏷️ Promociones</h2>
+            <h2><Tag size={18} /> Promociones</h2>
             <button className="me-btn-primary" onClick={abrirAgregarPromo}>+ Agregar promoción</button>
           </div>
 
           {(formServicio.promociones || []).length === 0 ? (
             <div className="me-promos-empty">
-              <span>🏷️</span>
+              <Tag size={24} />
               <p>No tienes promociones activas.</p>
               <p>¡Agrega una para atraer más clientes!</p>
             </div>
@@ -199,8 +200,8 @@ function MiEmpresa() {
                     {promo.descripcion && <p>{promo.descripcion}</p>}
                   </div>
                   <div className="me-promo-actions">
-                    <button className="me-promo-btn-edit" onClick={() => abrirEditarPromo(promo)}>✏️ Editar</button>
-                    <button className="me-promo-btn-delete" onClick={() => eliminarPromo(promo.id)}>🗑️ Eliminar</button>
+                    <button className="me-promo-btn-edit" onClick={() => abrirEditarPromo(promo)}><Pencil size={14} /> Editar</button>
+                    <button className="me-promo-btn-delete" onClick={() => eliminarPromo(promo.id)}><Trash2 size={14} /> Eliminar</button>
                   </div>
                 </div>
               ))}
