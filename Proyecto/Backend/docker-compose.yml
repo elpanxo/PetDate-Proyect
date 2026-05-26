@@ -1,23 +1,8 @@
 services:
 
-  petdate-db:
-    image: mongo:7.0
-    container_name: db-PetDate
-    ports:
-      - "27017:27017"
-    volumes:
-      - petdate-data:/data/db
-    networks:
-      - petdate-network
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 20s
-
   gateway:
     build: ./api-gateway
+    container_name: petdate-api-gateway
     ports:
       - "8080:8080"
     environment:
@@ -48,9 +33,7 @@ services:
       SPRING_DATA_MONGODB_URI: mongodb://petdate-db:27017/db-PetDate
       spring.data.mongodb.uri: mongodb://petdate-db:27017/db-PetDate
       JWT_SECRET: hfgkiuefhnbcgdsakjhrecduirnfhyeroifrnhsdfgc
-    depends_on:
-      petdate-db:
-        condition: service_healthy
+    restart: on-failure
     networks:
       - petdate-network
 
@@ -66,11 +49,7 @@ services:
       SPRING_DATA_MONGODB_URI: mongodb://petdate-db:27017/db-PetDate
       spring.data.mongodb.uri: mongodb://petdate-db:27017/db-PetDate
       MS_USUARIOS_URL: http://ms-usuarios:8081
-    depends_on:
-      petdate-db:
-        condition: service_healthy
-      ms-usuarios:
-        condition: service_started
+    restart: on-failure
     networks:
       - petdate-network
     volumes:
@@ -88,9 +67,7 @@ services:
       SPRING_DATA_MONGODB_URI: mongodb://petdate-db:27017/db-PetDate
       spring.data.mongodb.uri: mongodb://petdate-db:27017/db-PetDate
       JWT_SECRET: hfgkiuefhnbcgdsakjhrecduirnfhyeroifrnhsdfgc
-    depends_on:
-      petdate-db:
-        condition: service_healthy
+    restart: on-failure
     networks:
       - petdate-network
 
@@ -107,20 +84,13 @@ services:
       spring.data.mongodb.uri: mongodb://petdate-db:27017/db-PetDate
       MS_MASCOTAS_URL: http://ms-mascotas:8082
       MS_USUARIOS_URL: http://ms-usuarios:8081
-    depends_on:
-      petdate-db:
-        condition: service_healthy
-      ms-usuarios:
-        condition: service_started
-      ms-mascotas:
-        condition: service_started
+    restart: on-failure
     networks:
       - petdate-network
 
 volumes:
-  petdate-data:
   mascotas-uploads:
 
 networks:
   petdate-network:
-    driver: bridge
+    external: true

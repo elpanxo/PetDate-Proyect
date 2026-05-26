@@ -1,0 +1,47 @@
+services:
+
+  petdate-db:
+    image: mongo:7.0
+    container_name: db-PetDate
+    ports:
+      - "27017:27017"
+    volumes:
+      - petdate-data:/data/db
+    networks:
+      - petdate-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  mongo-backup:
+    image: mongo:7.0
+    container_name: petdate-backup
+    volumes:
+      - ./backups:/backups
+    depends_on:
+      petdate-db:
+        condition: service_healthy
+    networks:
+      - petdate-network
+    entrypoint: >
+      /bin/sh -c "
+        while true; do
+          FECHA=$$(date +%Y-%m-%d_%H-%M-%S);
+          mongodump --host petdate-db --port 27017 --db db-PetDate --archive=/backups/backup_$$FECHA.gz --gzip;
+          echo \"Backup creado: backup_$$FECHA.gz\";
+          find /backups -name '*.gz' -mtime +7 -delete;
+          sleep 86400;
+        done
+      "
+    restart: unless-stopped
+
+volumes:
+  petdate-data:
+
+networks:
+  petdate-network:
+    name: petdate-network
+    driver: bridge

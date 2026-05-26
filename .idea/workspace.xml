@@ -23,12 +23,8 @@
       <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/java/cl/PetDate/ms_usuarios/dto/AuthResponse.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/java/cl/PetDate/ms_usuarios/security/JwtService.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/resources/application.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Frontend/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Frontend/nginx.conf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Proyecto/Data/docker-compose.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Proyecto/Frontend/src/components/misMascotas/MascotaDetalle.css" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Frontend/src/components/misMascotas/MascotaDetalle.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Proyecto/Frontend/src/components/misMascotas/MascotaDetalle.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Frontend/src/components/misMascotas/MascotaDetalle.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Proyecto/Frontend/src/components/misMascotas/MisMascotas.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Frontend/src/components/misMascotas/MisMascotas.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,13 +34,13 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Dockerfile" />
         <option value="Class" />
+        <option value="Dockerfile" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/Proyecto/Backend" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
@@ -63,7 +59,7 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "release/PetDate__01",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/eliec/OneDrive/Desktop/Eliecer/Duoc/Semestre V/Taller de programacion/PetDate-Proyect"
   }
