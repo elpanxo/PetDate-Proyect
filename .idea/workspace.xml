@@ -5,28 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a9547596-2e53-426a-aab2-85d8af57b67c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/api-gateway/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/api-gateway/src/main/java/cl/PetDate/api_gateway/configs/InterceptorConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/api-gateway/src/main/java/cl/PetDate/api_gateway/configs/SecurityConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/api-gateway/src/main/java/cl/PetDate/api_gateway/security/JwtAuthFilter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/api-gateway/src/main/resources/application.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-citas-medicas/src/main/resources/application.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-citas-medicas/src/test/java/cl/PetDate/ms_citas_medicas/services/CitaMedicaServiceTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-mascotas/src/main/java/cl/PetDate/ms_mascotas/config/WebConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-mascotas/src/main/resources/application.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-servicios/src/main/java/cl/PetDate/ms_servicios/controllers/AuthController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-servicios/src/main/java/cl/PetDate/ms_servicios/dto/AuthRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-servicios/src/main/java/cl/PetDate/ms_servicios/dto/AuthResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-servicios/src/main/java/cl/PetDate/ms_servicios/services/JwtService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-servicios/src/main/resources/application.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-servicios/src/test/java/cl/PetDate/ms_servicios/services/PromocionServiceTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-servicios/src/test/java/cl/PetDate/ms_servicios/services/ServicioServiceTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/java/cl/PetDate/ms_usuarios/controllers/AuthController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/java/cl/PetDate/ms_usuarios/dto/AuthRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/java/cl/PetDate/ms_usuarios/dto/AuthResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/java/cl/PetDate/ms_usuarios/security/JwtService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-usuarios/src/main/resources/application.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Proyecto/Frontend/src/components/misMascotas/MascotaDetalle.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Frontend/src/components/misMascotas/MascotaDetalle.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,7 +22,7 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/Proyecto/Backend" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
@@ -66,9 +46,11 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "git-widget-placeholder": "master",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/eliec/OneDrive/Desktop/Eliecer/Duoc/Semestre V/Taller de programacion/PetDate-Proyect"
+    "last_opened_file_path": "C:/Users/eliec/OneDrive/Desktop/PetDate-Proyect"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -80,7 +62,7 @@
       <recent name="cl.PetDate.ms_usuarios.services" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.PromocionServiceTest">
+  <component name="RunManager">
     <configuration name="CitaMedicaServiceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="ms-citas-medicas" />
       <extension name="coverage">

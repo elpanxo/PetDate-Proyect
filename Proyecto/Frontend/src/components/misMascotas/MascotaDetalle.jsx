@@ -264,13 +264,6 @@ function MascotaDetalle() {
 
         {/* Perfil de la mascota */}
         <div className="md-perfil">
-          <div className="md-perfil-img">
-            {mascota.imagenUrl
-              ? <img src={`http://localhost:8080${mascota.imagenUrl}`} alt={mascota.nombre} className="md-foto-perfil" />
-              : <span className="md-emoji-big">{EMOJI_TIPO[mascota.especie] || '🐾'}</span>
-            }
-          </div>
-
           {/* Foto + nombre */}
           <div className="md-ficha-header">
             <div className="md-perfil-img">
@@ -441,7 +434,6 @@ function MascotaDetalle() {
           )}
         </div>
         </div>{/* /md-col-right */}
-        </div>{/* /md-layout */}
       </div>{/* /md-page */}
 
       {/* Modal evento */}
