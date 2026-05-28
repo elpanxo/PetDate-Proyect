@@ -9,8 +9,20 @@ spring:
     mongodb:
       uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/db-PetDate}
 
+  mongodb:
+    uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/db-PetDate}
+
 ms-usuarios:
   url: ${MS_USUARIOS_URL:http://localhost:8081}
 
 ms-mascotas:
   url: ${MS_MASCOTAS_URL:http://localhost:8082}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
