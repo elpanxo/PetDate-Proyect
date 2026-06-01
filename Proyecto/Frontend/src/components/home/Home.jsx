@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import AppNavbar from '../navbar/Navbar'
 import Footer from '../footer/Footer'
+import heroPhoto from '../../assets/roots/hero-photo.jpg'
 import './Home.css'
 
 const promotions = [
@@ -30,20 +31,30 @@ function Home() {
     <>
       <AppNavbar />
 
+      {/* ── HERO: panel texto izquierda + foto derecha ── */}
       <section className="home-hero">
-        <div className="home-hero__inner">
-          <div className="home-hero__text">
+
+        {/* Izquierda: panel dorado con texto */}
+        <div className="home-hero__panel">
+          <div className="home-hero__panel-inner">
             <h1 className="home-hero__title">
               Todo lo que tu mascota<br />
               <span className="home-hero__title--highlight">necesita, en un solo lugar</span>
             </h1>
+            <p className="home-hero__subtitle">
+              Explora una amplia variedad de servicios veterinarios, peluquería y tiendas especializadas para ofrecer a tu mascota el mejor cuidado en cada etapa de su vida.
+            </p>
+            <Link to="/servicios" className="home-hero__btn">
+              Ver servicios
+            </Link>
           </div>
         </div>
-        <div className="home-hero__wave">
-          <svg viewBox="0 0 1440 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0,50 C400,100 1040,0 1440,50 L1440,100 L0,100 Z" fill="#f5f0f0" />
-          </svg>
+
+        {/* Derecha: espacio para tu foto */}
+        <div className="home-hero__photo">
+          <img src={heroPhoto} alt="Mascota feliz" />
         </div>
+
       </section>
 
       {/* Botón flotante urgencias */}
@@ -90,7 +101,7 @@ function Home() {
             Nuestra misión es centralizar toda la información relacionada con el cuidado de las mascotas en un solo lugar. Porque sabemos lo frustrante que es buscar el carnet de vacunas en una gaveta, olvidar la fecha del próximo control o perder el historial médico de tu mejor amigo. PetDate existe para que eso no vuelva a pasar.
           </p>
           <p className="home-about__text">
-            Creemos que cada mascota merece el mejor cuidado posible, y que cada dueño merece las herramientas para dárselo. Nuestra visión es convertirnos en el asistente digital de cabecera de cada hogar con mascotas en Chile, expandiéndonos desde la web hacia dispositivos móviles y construyendo una comunidad donde el bienestar animal sea la prioridad.
+            Creemos que cada mascota merece el mejor cuidado posible, y que cada dueño merece las herramientas para dárselo. Nuestra visión es convertirnos en el asistente digital de cabecera de cada hogar con mascotas en Chile.
           </p>
         </div>
         <div className="home-about__wave-bottom">
