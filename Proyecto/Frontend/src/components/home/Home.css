@@ -1,54 +1,158 @@
-/* Hero */
+/* ══════════════════════════════════════════════════════
+   HERO — layout 2 columnas: texto izquierda / foto derecha
+   Réplica del diseño de referencia (colores invertidos)
+   ══════════════════════════════════════════════════════ */
+
 .home-hero {
-  padding-top: 100px;
-  background-color: #8b6f5e;
   position: relative;
+  display: grid;
+  grid-template-columns: 45% 55%;
+  min-height: 720px;
   overflow: hidden;
 }
 
-.home-hero__wave {
-  line-height: 0;
-  margin-bottom: -1px;
-}
-
-.home-hero__wave svg {
-  display: block;
-  width: 100%;
-  height: 100px;
-}
-
-.home-hero__wave path {
-  stroke: none;
-}
-
-.home-hero__inner {
+.home-hero__panel {
+  background-color: #8b6f5e;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 48px 40px 0;
-  gap: 32px;
+  justify-content: center;
+  padding: 0;
 }
 
-.home-hero__text {
-  flex: 1;
-  max-width: 480px;
+.home-hero__panel-inner {
+  padding: 0 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 540px;
 }
 
-.home-hero__title {
-  font-size: 2.4rem;
+/* ── Título ── */
+.home-hero__title {  font-family: 'Goodtime Grotesk', Arial, Helvetica, sans-serif;  font-size: 1.8rem;
   font-weight: 800;
   color: #ffffff;
-  line-height: 1.25;
-  margin: 0 0 28px;
+  line-height: 1.2;
+  margin: 0;
+  text-align: center;
 }
 
 .home-hero__title--highlight {
-  color: #f5c842;
+  display: block;
+  color: #ffeb68;
 }
 
-/* Promociones */
+/* ── Subtítulo ── */
+.home-hero__subtitle {
+  font-family: 'Touvlo', Arial, Helvetica, sans-serif;
+  font-size: 0.8rem;
+  color: #ffffff;
+  line-height: 1.7;
+  margin: 0 0 1.25rem 0;
+  opacity: 1;
+  text-align: center;
+  max-width: 380px;
+  align-self: center;
+}
+
+.home-hero__btn {
+  display: inline-block;
+  padding: 12px 25px;
+  background-color: #a85bd4;
+  color: #ffffff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+  align-self: center;
+  margin: 0 auto;
+  white-space: nowrap;
+}
+
+.home-hero__btn:hover {
+  background-color: #a44abf;
+  transform: translateY(-1px);
+}
+
+/* ── Derecha: espacio para la foto ── */
+.home-hero__photo {
+  position: relative;
+  overflow: hidden;
+  background-color: #c8bdb0;        
+  height: 100%;
+}
+
+/* Guía visual mientras no haya imagen */
+.home-hero__photo::before {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #8a7060;
+  letter-spacing: 0.06em;
+  border: 2px dashed #aa9080;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Oculta el placeholder en cuanto haya una imagen adentro */
+.home-hero__photo:has(img)::before {
+  display: none;
+}
+
+.home-hero__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  display: block;
+}
+
+/* ── Flechas ← → esquina inferior derecha ── */
+.home-hero__arrow {
+  position: absolute;
+  bottom: 0;
+  background-color: #2a2a2a;
+  color: #ffffff;
+  border: none;
+  width: 46px;
+  height: 46px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border-radius: 0;
+  transition: background-color 0.2s;
+}
+
+.home-hero__arrow:hover {
+  background-color: #444;
+}
+
+.home-hero__arrow--prev {
+  right: 92px;
+}
+
+.home-hero__arrow--next {
+  right: 46px;
+}
+
+/* ══════════════════════════════
+   Resto de secciones (sin cambios)
+   ══════════════════════════════ */
+
 .home-promos {
   background: #f5f0f0;
   padding: 56px 40px;
@@ -69,7 +173,6 @@
   gap: 24px;
 }
 
-/* Quiénes somos */
 .home-about {
   background: #b09cbf;
   position: relative;
@@ -113,7 +216,6 @@
   margin-bottom: 0;
 }
 
-/* Consejos y Cuidados */
 .home-tips {
   padding: 56px 40px;
   background: #f5f0f0;
@@ -155,10 +257,8 @@
 .tip-card__media::before {
   content: '';
   position: absolute;
-  top: 18px;
-  left: 20px;
-  width: 50px;
-  height: 22px;
+  top: 18px; left: 20px;
+  width: 50px; height: 22px;
   background: rgba(255,255,255,0.85);
   border-radius: 30px;
   box-shadow: 28px -6px 0 rgba(255,255,255,0.7), 14px -4px 0 rgba(255,255,255,0.9);
@@ -167,10 +267,8 @@
 .tip-card__media::after {
   content: '';
   position: absolute;
-  top: 14px;
-  right: 20px;
-  width: 40px;
-  height: 18px;
+  top: 14px; right: 20px;
+  width: 40px; height: 18px;
   background: rgba(255,255,255,0.8);
   border-radius: 30px;
   box-shadow: 20px -5px 0 rgba(255,255,255,0.65);
@@ -213,15 +311,12 @@
   text-decoration: underline;
 }
 
-.tip-card__btn:hover {
-  color: #5f4c72;
-}
+.tip-card__btn:hover { color: #5f4c72; }
 
-/* Tarjeta de promoción */
 .promo-card {
   background: #fff;
   border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
   padding: 24px;
   display: flex;
   flex-direction: column;
@@ -237,13 +332,9 @@
   justify-content: center;
 }
 
-.promo-card__all-icon {
-  font-size: 2.5rem;
-}
+.promo-card__all-icon { font-size: 2.5rem; }
 
-.promo-card:hover {
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.13);
-}
+.promo-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.13); }
 
 .promo-card__badge {
   align-self: flex-start;
@@ -255,19 +346,8 @@
   letter-spacing: 0.04rem;
 }
 
-.promo-card__name {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #333;
-  margin: 0;
-}
-
-.promo-card__desc {
-  font-size: 0.9rem;
-  color: #666;
-  margin: 0;
-  flex-grow: 1;
-}
+.promo-card__name { font-size: 1.05rem; font-weight: 700; color: #333; margin: 0; }
+.promo-card__desc { font-size: 0.9rem; color: #666; margin: 0; flex-grow: 1; }
 
 .promo-card__btn {
   align-self: flex-start;
@@ -281,10 +361,7 @@
   transition: background 0.2s, color 0.2s;
 }
 
-.promo-card__btn:hover {
-  background: #7e6492;
-  color: #fff;
-}
+.promo-card__btn:hover { background: #7e6492; color: #fff; }
 
 .promo-card__btn--all {
   align-self: center;
@@ -292,16 +369,12 @@
   color: #fff;
 }
 
-.promo-card__btn--all:hover {
-  background: #5f4c72;
-}
+.promo-card__btn--all:hover { background: #5f4c72; }
 
-/* Botón flotante urgencias */
 .fab {
   text-decoration: none;
   position: fixed;
-  bottom: 32px;
-  right: 32px;
+  bottom: 32px; right: 32px;
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -310,7 +383,7 @@
   color: #fff;
   border-radius: 50px;
   padding: 14px;
-  box-shadow: 0 4px 16px rgba(192, 57, 43, 0.45);
+  box-shadow: 0 4px 16px rgba(192,57,43,0.45);
   cursor: pointer;
   width: 52px;
   overflow: hidden;
@@ -318,16 +391,8 @@
   white-space: nowrap;
 }
 
-.fab:hover {
-  width: 240px;
-  padding: 14px 20px;
-  box-shadow: 0 6px 24px rgba(192, 57, 43, 0.55);
-}
-
-.fab__icon {
-  font-size: 1.35rem;
-  flex-shrink: 0;
-}
+.fab:hover { width: 240px; padding: 14px 20px; box-shadow: 0 6px 24px rgba(192,57,43,0.55); }
+.fab__icon { font-size: 1.35rem; flex-shrink: 0; }
 
 .fab__label {
   font-size: 0.9rem;
@@ -339,7 +404,35 @@
   letter-spacing: 0.02rem;
 }
 
-.fab:hover .fab__label {
-  opacity: 1;
-  max-width: 200px;
+.fab:hover .fab__label { opacity: 1; max-width: 200px; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .home-hero {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 280px;
+    height: auto;
+  }
+
+  .home-hero__panel { order: 1; }
+  .home-hero__photo { order: 2; height: 280px; }
+
+  .home-hero__panel-inner {
+    padding: 40px 28px 48px;
+    align-items: center;
+  }
+
+  .home-hero__title { text-align: center; font-size: 1.6rem; }
+
+  .home-promos__grid,
+  .home-tips__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-promos__grid,
+  .home-tips__grid {
+    grid-template-columns: 1fr;
+  }
 }
