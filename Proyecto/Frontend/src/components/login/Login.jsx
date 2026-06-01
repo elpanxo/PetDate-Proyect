@@ -3,6 +3,7 @@ import { Container, Row, Col, Form, Button, Card, Alert } from 'react-bootstrap'
 import { useNavigate, Link } from 'react-router-dom';
 import AuthNavbar from '../navbar/AuthNavbar';
 import api, { ApiError } from '../../api/petdate-api';
+import { Building2 } from 'lucide-react';
 
 const Login = () => {
   const [email, setEmail]       = useState('');
@@ -111,7 +112,7 @@ const Login = () => {
                       className="text-decoration-none"
                       style={{ color: '#7e6492', fontSize: '0.9rem', fontWeight: 600 }}
                     >
-                      🏢 ¿Eres empresa? Inicia sesión aquí
+                      <Building2 size={16} /> ¿Eres empresa? Inicia sesión aquí
                     </Link>
                   </div>
                 </Form>

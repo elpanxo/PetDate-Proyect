@@ -1,7 +1,8 @@
 import { useParams, Link } from 'react-router-dom'
 import AppNavbar from '../navbar/Navbar'
 import Footer from '../footer/Footer'
-import { servicios, TIPO_COLOR, TIPO_EMOJI } from './serviciosData'
+import { servicios, TIPO_COLOR, TIPO_ICON } from './serviciosData'
+import { Hospital, Siren, Scissors, ShoppingCart, PawPrint, Store, MapPin, Clock, Phone, MessageCircle, Globe, Camera, User, Tag } from 'lucide-react'
 import './ServicioDetalle.css'
 
 function ServicioDetalle() {
@@ -15,7 +16,7 @@ function ServicioDetalle() {
       <>
         <AppNavbar />
         <div className="detalle-notfound">
-          <span>🐾</span>
+          <PawPrint className="fab__icon" size={22} />
           <p>Servicio no encontrado.</p>
           <Link to="/servicios" className="detalle-back">← Volver a Servicios</Link>
         </div>
@@ -24,6 +25,7 @@ function ServicioDetalle() {
   }
 
   const color = TIPO_COLOR[servicio.tipo]
+  const TipoIcon = TIPO_ICON[servicio.tipo] || Store
 
   return (
     <>
@@ -40,7 +42,7 @@ function ServicioDetalle() {
           {/* ── Panel izquierdo: información ── */}
           <aside className="detalle-info">
             <div className="detalle-info__top" style={{ borderTopColor: color }}>
-              <div className="detalle-info__icono">{TIPO_EMOJI[servicio.tipo]}</div>
+              <div className="detalle-info__icono"><TipoIcon size={28} /></div>
               <div>
                 <span className="detalle-info__badge" style={{ backgroundColor: color }}>
                   {servicio.tipo}
@@ -53,21 +55,21 @@ function ServicioDetalle() {
 
             <ul className="detalle-info__lista">
               <li>
-                <span className="detalle-info__lista-icon">📍</span>
+                <span className="detalle-info__lista-icon"><MapPin size={16} /></span>
                 <div>
                   <span className="detalle-info__lista-label">Dirección</span>
                   <span className="detalle-info__lista-valor">{servicio.direccion}</span>
                 </div>
               </li>
               <li>
-                <span className="detalle-info__lista-icon">🕐</span>
+                <span className="detalle-info__lista-icon"><Clock size={16} /></span>
                 <div>
                   <span className="detalle-info__lista-label">Horario</span>
                   <span className="detalle-info__lista-valor">{servicio.horario}</span>
                 </div>
               </li>
               <li>
-                <span className="detalle-info__lista-icon">📞</span>
+                <span className="detalle-info__lista-icon"><Phone size={16} /></span>
                 <div>
                   <span className="detalle-info__lista-label">Teléfono</span>
                   <a className="detalle-info__lista-link" href={`tel:${servicio.telefono}`}>
@@ -76,7 +78,7 @@ function ServicioDetalle() {
                 </div>
               </li>
               <li>
-                <span className="detalle-info__lista-icon">💬</span>
+                <span className="detalle-info__lista-icon"><MessageCircle size={16} /></span>
                 <div>
                   <span className="detalle-info__lista-label">WhatsApp</span>
                   <a
@@ -90,7 +92,7 @@ function ServicioDetalle() {
                 </div>
               </li>
               <li>
-                <span className="detalle-info__lista-icon">🌐</span>
+                <span className="detalle-info__lista-icon"><Globe size={16} /></span>
                 <div>
                   <span className="detalle-info__lista-label">Sitio web</span>
                   <a
@@ -104,7 +106,7 @@ function ServicioDetalle() {
                 </div>
               </li>
               <li>
-                <span className="detalle-info__lista-icon">📸</span>
+                <span className="detalle-info__lista-icon"><Camera size={16} /></span>
                 <div>
                   <span className="detalle-info__lista-label">Instagram</span>
                   <a
@@ -118,7 +120,7 @@ function ServicioDetalle() {
                 </div>
               </li>
               <li>
-                <span className="detalle-info__lista-icon">👤</span>
+                <span className="detalle-info__lista-icon"><User size={16} /></span>
                 <div>
                   <span className="detalle-info__lista-label">Facebook</span>
                   <a
@@ -137,7 +139,7 @@ function ServicioDetalle() {
           {/* ── Panel derecho: promociones ── */}
           <section className="detalle-promos">
             <h2 className="detalle-promos__title">
-              🏷️ Promociones
+              <Tag size={18} /> Promociones
               {servicio.promociones.length > 0 && (
                 <span className="detalle-promos__count">{servicio.promociones.length}</span>
               )}
@@ -145,7 +147,7 @@ function ServicioDetalle() {
 
             {servicio.promociones.length === 0 ? (
               <div className="detalle-promos__empty">
-                <span className="detalle-promos__empty-icon">🐾</span>
+                <PawPrint className="fab__icon" size={22} />
                 <p>Este servicio no tiene promociones activas por el momento.</p>
               </div>
             ) : (

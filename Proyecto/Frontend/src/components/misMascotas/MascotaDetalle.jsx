@@ -4,6 +4,7 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import Navbar from '../navbar/Navbar';
 import Footer from '../footer/Footer';
 import api, { ApiError } from '../../api/petdate-api';
+import { Dog, Cat, Bird, Rabbit, Turtle, Fish, PawPrint, Stethoscope, Syringe, Microscope, Pill, Hospital, ClipboardList, Scissors, Bath, Pin, Hourglass, TriangleAlert, Calendar, Clock, Pencil, Trash2 } from 'lucide-react';
 import './MascotaDetalle.css';
 
 // ─────────────────────────────────────────────
@@ -35,15 +36,15 @@ const ESTADO_BG = {
   VENCIDO:    '#fdecea',
 };
 
-const EMOJI_TIPO = {
-  Perro: '🐶', Gato: '🐱', Ave: '🐦', Conejo: '🐰',
-  Reptil: '🦎', Pez: '🐠', Otro: '🐾',
+const ICON_TIPO = {
+  Perro: Dog, Gato: Cat, Ave: Bird, Conejo: Rabbit,
+  Reptil: Turtle, Pez: Fish, Otro: PawPrint,
 };
 
-const EMOJI_EVENTO = {
-  'Control veterinario': '🩺', 'Vacuna': '💉', 'Desparasitación': '🔬',
-  'Medicamento': '💊', 'Cirugía': '🏥', 'Examen': '📋',
-  'Corte de pelo': '✂️', 'Baño': '🛁', 'Otro': '📌',
+const ICON_EVENTO = {
+  'Control veterinario': Stethoscope, 'Vacuna': Syringe, 'Desparasitación': Microscope,
+  'Medicamento': Pill, 'Cirugía': Hospital, 'Examen': ClipboardList,
+  'Corte de pelo': Scissors, 'Baño': Bath, 'Otro': Pin,
 };
 
 const FORM_INICIAL = {
@@ -263,67 +264,73 @@ function MascotaDetalle() {
 
         {/* Perfil de la mascota */}
         <div className="md-perfil">
-          <div className="md-perfil-img">
-            <span className="md-emoji-big">{EMOJI_TIPO[mascota.especie] || '🐾'}</span>
-          </div>
-
-          <div className="md-perfil-info">
-            <div className="md-perfil-top">
+          {/* Foto + nombre */}
+          <div className="md-ficha-header">
+            <div className="md-perfil-img">
+              {localStorage.getItem(`mascota_img_${mascota.id}`)
+                ? <img src={localStorage.getItem(`mascota_img_${mascota.id}`)} alt={mascota.nombre} className="md-photo-big" />
+                : (() => { const EspecieIcon = ICON_TIPO[mascota.especie] || PawPrint; return <EspecieIcon size={52} className="md-emoji-big" />; })()
+              }
+            </div>
+            <div className="md-ficha-header-info">
               <h1 className="md-nombre">{mascota.nombre}</h1>
               <div className="md-badges">
                 <span className="md-badge md-badge-tipo">{mascota.especie}</span>
                 {mascota.sexo && <span className="md-badge md-badge-sexo">{mascota.sexo}</span>}
               </div>
             </div>
+          </div>
 
-            <div className="md-datos-grid">
-              {mascota.raza && (
-                <div className="md-dato">
-                  <span className="md-dato-label">Raza</span>
-                  <span className="md-dato-val">{mascota.raza}</span>
-                </div>
-              )}
-              {mascota.edad > 0 && (
-                <div className="md-dato">
-                  <span className="md-dato-label">Edad</span>
-                  <span className="md-dato-val">{mascota.edad} {mascota.edad === 1 ? 'año' : 'años'}</span>
-                </div>
-              )}
-              {mascota.peso > 0 && (
-                <div className="md-dato">
-                  <span className="md-dato-label">Peso</span>
-                  <span className="md-dato-val">{mascota.peso} kg</span>
-                </div>
-              )}
-              {mascota.color && (
-                <div className="md-dato">
-                  <span className="md-dato-label">Color</span>
-                  <span className="md-dato-val">{mascota.color}</span>
-                </div>
-              )}
-              {mascota.fecha_nacimineto && (
-                <div className="md-dato">
-                  <span className="md-dato-label">Nacimiento</span>
-                  <span className="md-dato-val">{String(mascota.fecha_nacimineto).slice(0, 10)}</span>
-                </div>
-              )}
-            </div>
-
-            {mascota.observaciones && (
-              <div className="md-obs-box">
-                <strong>Observaciones</strong>
-                <p>{mascota.observaciones}</p>
+          {/* Tarjeta de datos */}
+          <div className="md-ficha-datos">
+            {mascota.raza && (
+              <div className="md-dato-row">
+                <span className="md-dato-label">Raza</span>
+                <span className="md-dato-val">{mascota.raza}</span>
               </div>
             )}
-
+            {mascota.edad > 0 && (
+              <div className="md-dato-row">
+                <span className="md-dato-label">Edad</span>
+                <span className="md-dato-val">{mascota.edad} {mascota.edad === 1 ? 'año' : 'años'}</span>
+              </div>
+            )}
+            {mascota.peso > 0 && (
+              <div className="md-dato-row">
+                <span className="md-dato-label">Peso</span>
+                <span className="md-dato-val">{mascota.peso} kg</span>
+              </div>
+            )}
+            {mascota.color && (
+              <div className="md-dato-row">
+                <span className="md-dato-label">Color</span>
+                <span className="md-dato-val">{mascota.color}</span>
+              </div>
+            )}
+            {mascota.fecha_nacimineto && (
+              <div className="md-dato-row">
+                <span className="md-dato-label">Nacimiento</span>
+                <span className="md-dato-val">{String(mascota.fecha_nacimineto).slice(0, 10)}</span>
+              </div>
+            )}
+            {mascota.observaciones && (
+              <div className="md-dato-row md-dato-row--block">
+                <span className="md-dato-label">Observaciones</span>
+                <span className="md-dato-val">{mascota.observaciones}</span>
+              </div>
+            )}
             {mascota.info_medica_basica && (
-              <div className="md-obs-box">
-                <strong>Información médica</strong>
-                <p>{mascota.info_medica_basica}</p>
+              <div className="md-dato-row md-dato-row--block">
+                <span className="md-dato-label">Info. Médica</span>
+                <span className="md-dato-val">{mascota.info_medica_basica}</span>
               </div>
             )}
           </div>
-        </div>
+
+        </div>{/* /md-col-left */}
+
+        {/* ── Columna derecha: agenda ── */}
+        <div className="md-col-right">
 
         {/* Resumen agenda */}
         {citas.length > 0 && (
@@ -350,20 +357,20 @@ function MascotaDetalle() {
         {/* Agenda */}
         <div className="md-agenda">
           <div className="md-agenda-header">
-            <h2>📅 Agenda veterinaria</h2>
+            <h2><Calendar size={20} /> Agenda veterinaria</h2>
             <button className="md-btn-evento" onClick={abrirAgregarEvento}>+ Agregar evento</button>
           </div>
 
           {loadingCitas && (
             <div className="md-agenda-empty">
-              <span>⏳</span>
+              <Hourglass size={24} />
               <p>Cargando eventos...</p>
             </div>
           )}
 
           {!loadingCitas && errorCitas && (
             <div className="md-agenda-empty">
-              <span>⚠️</span>
+              <TriangleAlert size={24} />
               <p>{errorCitas}</p>
               <button className="md-btn-evento" onClick={cargarCitas}>Reintentar</button>
             </div>
@@ -371,7 +378,7 @@ function MascotaDetalle() {
 
           {!loadingCitas && !errorCitas && citasOrdenadas.length === 0 && (
             <div className="md-agenda-empty">
-              <span>📋</span>
+              <ClipboardList size={24} />
               <p>No hay eventos registrados para {mascota.nombre}.</p>
               <p>Agrega visitas al veterinario, vacunas, tratamientos y más.</p>
             </div>
@@ -386,7 +393,7 @@ function MascotaDetalle() {
                   style={{ borderLeftColor: ESTADO_COLOR[cita.estado] }}
                 >
                   <div className="md-evento-icon">
-                    {EMOJI_EVENTO[cita.tipoEvento] || '📌'}
+                    {(() => { const EventIcon = ICON_EVENTO[cita.tipoEvento] || Pin; return <EventIcon size={20} />; })()}
                   </div>
 
                   <div className="md-evento-body">
@@ -410,23 +417,24 @@ function MascotaDetalle() {
                       </span>
                     </div>
                     <div className="md-evento-fecha">
-                      📅 {String(cita.fecha).slice(0, 10)}
-                      {cita.hora ? ` · ⏰ ${String(cita.hora).slice(0, 5)}` : ''}
+                      <Calendar size={13} /> {String(cita.fecha).slice(0, 10)}
+                      {cita.hora ? <> · <Clock size={13} /> {String(cita.hora).slice(0, 5)}</> : ''}
                     </div>
                     {cita.descripcion  && <p className="md-evento-desc">{cita.descripcion}</p>}
                     {cita.observacion  && <p className="md-evento-obs">{cita.observacion}</p>}
                   </div>
 
                   <div className="md-evento-actions">
-                    <button title="Editar"   onClick={() => abrirEditarEvento(cita)}>✏️</button>
-                    <button title="Eliminar" onClick={() => eliminarEvento(cita.idEvento)}>🗑️</button>
+                    <button title="Editar"   onClick={() => abrirEditarEvento(cita)}><Pencil size={14} /></button>
+                    <button title="Eliminar" onClick={() => eliminarEvento(cita.idEvento)}><Trash2 size={14} /></button>
                   </div>
                 </div>
               ))}
             </div>
           )}
         </div>
-      </div>
+        </div>{/* /md-col-right */}
+      </div>{/* /md-page */}
 
       {/* Modal evento */}
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>

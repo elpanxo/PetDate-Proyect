@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import AppNavbar from '../navbar/Navbar'
 import Footer from '../footer/Footer'
+import { CheckCircle2 } from 'lucide-react'
 import './Contacto.css'
 
 const MAX_CHARS = 500
@@ -63,7 +64,7 @@ function Contacto() {
 
           {enviado ? (
             <div className="contacto-success">
-              <span className="contacto-success__icon">✅</span>
+              <CheckCircle2 size={48} className="contacto-success__icon" />
               <h2 className="contacto-success__title">¡Mensaje enviado!</h2>
               <p className="contacto-success__text">Gracias por contactarnos. Te responderemos a la brevedad.</p>
               <button className="contacto-btn" onClick={() => setEnviado(false)}>

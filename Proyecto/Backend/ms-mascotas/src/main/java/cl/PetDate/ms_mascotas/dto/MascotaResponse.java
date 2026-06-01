@@ -19,11 +19,13 @@ public class MascotaResponse {
     private String color;
     private String observaciones;
     private  String info_medica_basica;
+    private String imagenUrl;
+
 
     public MascotaResponse() {
     }
 
-    public MascotaResponse(Long id, String nombre, String especie, String raza, int edad, String tamano, Long usuarioId, Float peso, String sexo,Date fecha_nacimineto , String color, String observaciones, String info_medica_basica) {
+    public MascotaResponse(Long id, String nombre, String especie, String raza, int edad, String tamano, Long usuarioId, Float peso, String sexo,Date fecha_nacimineto , String color, String observaciones, String info_medica_basica, String imagenUrl) {
         this.id = id;
         this.nombre = nombre;
         this.especie = especie;
@@ -37,7 +39,11 @@ public class MascotaResponse {
         this.color = color;
         this.observaciones = observaciones;
         this.info_medica_basica = info_medica_basica;
+        this.imagenUrl = imagenUrl;
     }
+
+    public String getImagenUrl() { return imagenUrl; }
+    public void setImagenUrl(String imagenUrl) { this.imagenUrl = imagenUrl; }
 
     public Long getId() {
         return id;

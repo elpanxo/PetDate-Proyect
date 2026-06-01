@@ -12,37 +12,42 @@ spring:
           routes:
 
               - id: auth-servicios
-                uri: http://localhost:8083
+                uri: http://ms-servicios:8083
                 predicates:
                   - Path=/auth/servicios/**
 
               - id: auth
-                uri: http://localhost:8081
+                uri: http://ms-usuarios:8081
                 predicates:
                   - Path=/auth/**
 
               - id: ms-usuarios
-                uri: http://localhost:8081
+                uri: http://ms-usuarios:8081
                 predicates:
                   - Path=/usuarios/**
 
+              - id: uploads-mascotas
+                uri: http://ms-mascotas:8082
+                predicates:
+                  - Path=/uploads/**
+
               - id: ms-mascotas
-                uri: http://localhost:8082
+                uri: http://ms-mascotas:8082
                 predicates:
                   - Path=/mascotas/**
 
               - id: ms-servicios
-                uri: http://localhost:8083
+                uri: http://ms-servicios:8083
                 predicates:
                   - Path=/servicios/**
 
               - id: ms-promociones
-                uri: http://localhost:8083
+                uri: http://ms-servicios:8083
                 predicates:
                   - Path=/promociones/**
 
               - id: ms-citas-medicas
-                uri: http://localhost:8084
+                uri: http://ms-citas-medicas:8084
                 predicates:
                   - Path=/citas/**
 

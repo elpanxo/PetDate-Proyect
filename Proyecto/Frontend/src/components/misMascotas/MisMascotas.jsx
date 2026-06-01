@@ -4,6 +4,7 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import Navbar from '../navbar/Navbar';
 import Footer from '../footer/Footer';
 import api, { ApiError } from '../../api/petdate-api';
+import { Dog, Cat, Bird, Rabbit, Turtle, Fish, PawPrint, Hourglass, TriangleAlert, Pencil, Trash2 } from 'lucide-react';
 import './MisMascotas.css';
 
 // ─────────────────────────────────────────────
@@ -12,9 +13,9 @@ import './MisMascotas.css';
 const TIPOS_MASCOTA = ['Perro', 'Gato', 'Ave', 'Conejo', 'Reptil', 'Pez', 'Otro'];
 
 // El backend usa "especie" — mapeamos el tipo del formulario a ese campo
-const EMOJI_TIPO = {
-  Perro: '🐶', Gato: '🐱', Ave: '🐦', Conejo: '🐰',
-  Reptil: '🦎', Pez: '🐠', Otro: '🐾',
+const ICON_TIPO = {
+  Perro: Dog, Gato: Cat, Ave: Bird, Conejo: Rabbit,
+  Reptil: Turtle, Pez: Fish, Otro: PawPrint,
 };
 
 const FORM_INICIAL = {
@@ -68,7 +69,6 @@ function responseToForm(mascota) {
     color:           mascota.color || '',
     observaciones:   mascota.observaciones || '',
     infoMedica:      mascota.info_medica_basica || '',
-    imagen:          '',   // el backend no almacena imágenes, se mantiene solo en local
   };
 }
 
@@ -149,6 +149,7 @@ function MisMascotas() {
     if (!window.confirm('¿Seguro que quieres eliminar esta mascota?')) return;
     try {
       await api.mascotas.eliminar(id);
+      localStorage.removeItem(`mascota_img_${id}`);
       setMascotas(prev => prev.filter(m => m.id !== id));
     } catch (err) {
       alert('No se pudo eliminar la mascota. Intenta de nuevo.');
@@ -156,42 +157,64 @@ function MisMascotas() {
   };
 
   // ── Preview imagen (solo local, el backend no almacena imágenes) ──
-  const handleImagen = (e) => {
+  const handleImagen = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
+    // Si es una mascota nueva, guardamos el archivo temporalmente
+    // y lo subimos después de crearla
+    setForm(prev => ({ ...prev, _imagenFile: file }));
+
+    // Preview local
     const reader = new FileReader();
-    reader.onload = (ev) => setForm(prev => ({ ...prev, imagen: ev.target.result }));
+    reader.onload = (ev) => {
+      const data = ev.target.result;
+      if (editandoId) localStorage.setItem(`mascota_img_${editandoId}`, data);
+      setForm(prev => ({ ...prev, imagen: data }));
+    };
     reader.readAsDataURL(file);
   };
 
   // ── Guardar (crear o actualizar) ──
   const guardar = async () => {
     if (!form.nombre.trim()) { setErrNombre(true); return; }
-
     setGuardando(true);
     setErrorModal('');
 
     try {
       const body = formToRequest(form, usuario.id);
+      let mascotaGuardada;
 
       if (editandoId) {
-        // PUT /mascotas/{id}
-        const actualizada = await api.mascotas.actualizar(editandoId, body);
-        setMascotas(prev => prev.map(m => m.id === editandoId ? actualizada : m));
+        mascotaGuardada = await api.mascotas.actualizar(editandoId, body);
+        setMascotas(prev => prev.map(m => m.id === editandoId ? mascotaGuardada : m));
       } else {
-        // POST /mascotas
-        const nueva = await api.mascotas.crear(body);
-        setMascotas(prev => [...prev, nueva]);
+        mascotaGuardada = await api.mascotas.crear(body);
+        setMascotas(prev => [...prev, mascotaGuardada]);
+      }
+
+      // Subir imagen si el usuario seleccionó una
+      if (form._imagenFile) {
+        const formData = new FormData();
+        formData.append('imagen', form._imagenFile);
+
+        const response = await fetch(
+          `http://localhost:8080/mascotas/${mascotaGuardada.id}/imagen`,
+          {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${localStorage.getItem('petdate_token')}` },
+            body: formData,  // NO pongas Content-Type — el browser lo setea solo con el boundary
+          }
+        );
+        const mascotaConImagen = await response.json();
+        setMascotas(prev => prev.map(m =>
+          m.id === mascotaGuardada.id ? mascotaConImagen : m
+        ));
       }
 
       setShowModal(false);
     } catch (err) {
-      if (err instanceof ApiError) {
-        if (err.status === 404) setErrorModal('Usuario no encontrado. Vuelve a iniciar sesión.');
-        else setErrorModal(err.message || 'Error al guardar la mascota.');
-      } else {
-        setErrorModal('Error de conexión. Verifica que el servidor esté activo.');
-      }
+      setErrorModal('Error al guardar la mascota.');
     } finally {
       setGuardando(false);
     }
@@ -209,7 +232,7 @@ function MisMascotas() {
 
         <div className="mm-header">
           <div>
-            <h1 className="mm-titulo">🐾 Mis Mascotas</h1>
+            <h1 className="mm-titulo"><PawPrint size={22} /> Mis Mascotas</h1>
             <p className="mm-subtitulo">Gestiona el perfil y la agenda de tus compañeros</p>
           </div>
           <button className="mm-btn-agregar" onClick={abrirAgregar}>+ Agregar Mascota</button>
@@ -218,7 +241,7 @@ function MisMascotas() {
         {/* Estado de carga */}
         {loading && (
           <div className="mm-empty">
-            <div className="mm-empty-icon">⏳</div>
+            <div className="mm-empty-icon"><Hourglass size={32} /></div>
             <h3>Cargando mascotas...</h3>
           </div>
         )}
@@ -226,7 +249,7 @@ function MisMascotas() {
         {/* Error de carga */}
         {!loading && error && (
           <div className="mm-empty">
-            <div className="mm-empty-icon">⚠️</div>
+            <div className="mm-empty-icon"><TriangleAlert size={32} /></div>
             <h3>{error}</h3>
             <button className="mm-btn-agregar" onClick={() => cargarMascotas(usuario?.id)}>
               Reintentar
@@ -237,7 +260,7 @@ function MisMascotas() {
         {/* Sin mascotas */}
         {!loading && !error && mascotas.length === 0 && (
           <div className="mm-empty">
-            <div className="mm-empty-icon">🐾</div>
+            <div className="mm-empty-icon"><PawPrint size={32} /></div>
             <h3>Aún no tienes mascotas registradas</h3>
             <p>Agrega tu primera mascota para empezar a gestionar su perfil y agenda</p>
             <button className="mm-btn-agregar" onClick={abrirAgregar}>+ Agregar mi primera mascota</button>
@@ -254,7 +277,10 @@ function MisMascotas() {
                 onClick={() => navigate(`/mis-mascotas/${m.id}`)}
               >
                 <div className="mm-card-img">
-                  <span className="mm-card-emoji">{EMOJI_TIPO[m.especie] || '🐾'}</span>
+                  {m.imagenUrl
+                    ? <img src={`http://localhost:8080${m.imagenUrl}`} alt={m.nombre} className="mm-card-foto" />
+                    : <span className="mm-card-emoji">{EMOJI_TIPO[m.especie] || '🐾'}</span>
+                  }
                 </div>
                 <div className="mm-card-body">
                   <h3 className="mm-card-nombre">{m.nombre}</h3>
@@ -264,8 +290,8 @@ function MisMascotas() {
                   )}
                 </div>
                 <div className="mm-card-actions">
-                  <button className="mm-btn-edit"   onClick={(e) => abrirEditar(m, e)}>✏️ Editar</button>
-                  <button className="mm-btn-delete" onClick={(e) => eliminar(m.id, e)}>🗑️ Eliminar</button>
+                  <button className="mm-btn-edit"   onClick={(e) => abrirEditar(m, e)}><Pencil size={14} /> Editar</button>
+                  <button className="mm-btn-delete" onClick={(e) => eliminar(m.id, e)}><Trash2 size={14} /> Eliminar</button>
                 </div>
               </div>
             ))}

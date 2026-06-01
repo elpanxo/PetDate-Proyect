@@ -4,6 +4,7 @@ import { Form } from 'react-bootstrap';
 import AuthNavbar from '../navbar/AuthNavbar';
 import { ApiError } from '../../api/petdate-api';
 import api from '../../api/petdate-api';
+import { PawPrint, Building2 } from 'lucide-react';
 import './Register.css';
 
 // ─────────────────────────────────────────────
@@ -184,14 +185,14 @@ const Register = () => {
         >
           {tipo !== 'cliente' ? (
             <div className="reg-teaser">
-              <span className="reg-teaser-icon">🐾</span>
+              <PawPrint size={40} className="reg-teaser-icon" />
               <h2>Dueño de mascota</h2>
               <p>Crea tu cuenta como cliente</p>
               <span className="reg-teaser-cta">Regístrate aquí →</span>
             </div>
           ) : (
             <div className="reg-form-wrap">
-              <h2 className="reg-form-title">🐾 Crear cuenta</h2>
+              <h2 className="reg-form-title"><PawPrint size={20} /> Crear cuenta</h2>
               <p className="reg-form-sub">Registro de dueño de mascota</p>
 
               {errorCliente && <div className="reg-error">{errorCliente}</div>}
@@ -278,14 +279,14 @@ const Register = () => {
         >
           {tipo !== 'empresa' ? (
             <div className="reg-teaser">
-              <span className="reg-teaser-icon">🏢</span>
+              <Building2 size={40} className="reg-teaser-icon" />
               <h2>Empresa / Servicio</h2>
               <p>Crea tu cuenta como proveedor</p>
               <span className="reg-teaser-cta">Regístrate aquí →</span>
             </div>
           ) : (
             <div className="reg-form-wrap">
-              <h2 className="reg-form-title">🏢 Crear cuenta empresa</h2>
+              <h2 className="reg-form-title"><Building2 size={20} /> Crear cuenta empresa</h2>
               <p className="reg-form-sub">Registro de servicio / proveedor</p>
 
               {errorEmpresa && <div className="reg-error">{errorEmpresa}</div>}

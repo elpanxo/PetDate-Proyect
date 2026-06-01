@@ -53,7 +53,6 @@ public class JwtAuthFilter implements HandlerInterceptor {
     }
 
     private boolean esRutaPublica(String path, String method) {
-        // Dejar pasar siempre el preflight CORS
         if (method.equals("OPTIONS"))
             return true;
 
@@ -64,6 +63,8 @@ public class JwtAuthFilter implements HandlerInterceptor {
         if (path.equals("/usuarios") && method.equals("POST"))
             return true;
         if (path.startsWith("/servicios") && method.equals("POST"))
+            return true;
+        if (path.startsWith("/uploads/"))
             return true;
         return false;
     }

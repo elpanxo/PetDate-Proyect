@@ -7,9 +7,7 @@ RUN mvn clean package -DskipTests
 
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
+RUN mkdir -p /app/uploads/mascotas
 COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8082
-ENTRYPOINT ["java", \
-  "-Dspring.data.mongodb.uri=mongodb://mongodb:27017/db-PetDate", \
-  "-Dms-usuarios.url=http://ms-usuarios:8081", \
-  "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
