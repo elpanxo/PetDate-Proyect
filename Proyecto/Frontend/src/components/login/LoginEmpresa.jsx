@@ -2,35 +2,53 @@ import { useState } from 'react';
 import { Container, Row, Col, Form, Button, Card } from 'react-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
 import AuthNavbar from '../navbar/AuthNavbar';
-import { servicios } from '../servicios/serviciosData';
 import { Building2 } from 'lucide-react';
+import api, { ApiError } from '../../api/petdate-api';
 
-// Muestra solo un representante por tipo de servicio
-const TIPOS_EMPRESA = [
-  { label: 'Veterinaria', servicioId: 1 },
-  { label: 'Urgencia 24/7', servicioId: 2 },
-  { label: 'Peluquería / Estética', servicioId: 3 },
-  { label: 'Tienda de mascotas', servicioId: 4 },
-];
+function decodeJwtPayload(jwtToken) {
+  const payload = jwtToken.split('.')[1];
+  return JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
+}
 
 const LoginEmpresa = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [servicioId, setServicioId] = useState(TIPOS_EMPRESA[0].servicioId);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const tipo = TIPOS_EMPRESA.find(t => t.servicioId === Number(servicioId));
-    const servicio = servicios.find(s => s.id === Number(servicioId));
-    localStorage.setItem('user', JSON.stringify({
-      email,
-      name: servicio.nombre,
-      role: 'empresa',
-      servicioId: Number(servicioId),
-    }));
-    window.dispatchEvent(new Event('userChanged'));
-    navigate('/');
+    setError('');
+    setLoading(true);
+    try {
+      const { token } = await api.auth.loginEmpresa(email, password);
+      const payload = decodeJwtPayload(token);
+      const servicioId = payload.id;
+
+      const servicio = await api.servicios.porId(servicioId);
+
+      localStorage.setItem('user', JSON.stringify({
+        id:         servicioId,
+        email:      servicio.correo,
+        name:       servicio.nombreServicio,
+        role:       'empresa',
+        servicioId: servicioId,
+        rut:        servicio.rutEmpresa,
+        contrasena: password,
+      }));
+      window.dispatchEvent(new Event('userChanged'));
+      navigate('/');
+    } catch (err) {
+      if (err instanceof ApiError) {
+        if (err.status === 401) setError('Correo o contraseña incorrectos');
+        else setError(err.message || 'Error al iniciar sesión');
+      } else {
+        setError('Error de conexión. Verifica que el servidor esté activo.');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -47,19 +65,13 @@ const LoginEmpresa = () => {
                   <p className="text-muted" style={{ fontSize: '0.9rem' }}>Cuenta empresa / servicio</p>
                 </div>
 
-                <Form onSubmit={handleSubmit}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Tipo de servicio</Form.Label>
-                    <Form.Select
-                      value={servicioId}
-                      onChange={e => setServicioId(Number(e.target.value))}
-                    >
-                      {TIPOS_EMPRESA.map(t => (
-                        <option key={t.servicioId} value={t.servicioId}>{t.label}</option>
-                      ))}
-                    </Form.Select>
-                  </Form.Group>
+                {error && (
+                  <div className="alert alert-danger py-2" style={{ fontSize: '0.9rem' }}>
+                    {error}
+                  </div>
+                )}
 
+                <Form onSubmit={handleSubmit}>
                   <Form.Group className="mb-3">
                     <Form.Label>Correo Electrónico</Form.Label>
                     <Form.Control
@@ -86,8 +98,9 @@ const LoginEmpresa = () => {
                     type="submit"
                     className="w-100 mb-3"
                     style={{ backgroundColor: '#7e6492', border: 'none', fontWeight: 600 }}
+                    disabled={loading}
                   >
-                    Ingresar como empresa
+                    {loading ? 'Ingresando...' : 'Ingresar como empresa'}
                   </Button>
 
                   <div className="text-center">

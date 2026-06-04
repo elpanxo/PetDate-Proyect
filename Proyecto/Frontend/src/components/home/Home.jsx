@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import AppNavbar from '../navbar/Navbar'
 import Footer from '../footer/Footer'
+import api from '../../api/petdate-api'
+import { TIPO_COLOR } from '../servicios/serviciosData'
 import './Home.css'
 
 // ── Collage de fondo: 6 celdas (3 columnas × 2 filas)
@@ -12,19 +14,11 @@ const bgPhotos = [
   { src: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800&q=80', pos: 'center center' }, // perro feliz
   { src: 'https://images.unsplash.com/photo-1478098711619-5ab0b478d6e6?w=800&q=80', pos: 'center center' }, // gato durmiendo
   { src: 'https://blog.mascotaysalud.com/wp-content/uploads/2025/08/seguro-veterinario-perros-gatos.jpg', pos: 'center 40%'    }, // perro con veterinario
-  { src: 'https://images.unsplash.com/photo-1596492784531-6e6eb5ea9993?w=800&q=80', pos: 'center center' }, // gato con collar
+  { src: 'https://i.pinimg.com/736x/3e/df/9d/3edf9dc3954c83ae2bf6e2ba8b082a7e.jpg', pos: 'center center' }, // Kida
 ]
 
 const zoomDuration = ['22s', '27s', '19s', '24s', '29s', '21s']
 const zoomDir      = ['normal', 'alternate', 'alternate', 'normal', 'normal', 'alternate']
-
-const promotions = [
-  { id: 1, type: 'Veterinaria', name: 'Clínica VetCare',    description: '20% de descuento en consultas este mes.',    badge: 'Veterinaria' },
-  { id: 2, type: 'Tienda',      name: 'PetShop Central',    description: 'Alimento premium 2x1 en todas las marcas.', badge: 'Tienda'      },
-  { id: 3, type: 'Servicio',    name: 'Grooming Express',   description: 'Baño y corte de pelo desde $5.000.',         badge: 'Servicio'    },
-]
-
-const badgeColor = { Veterinaria: '#7e6492', Tienda: '#4a90a4', Servicio: '#c49a4a' }
 
 const tips = [
   { id: 1, title: 'CUÁL ES LA FORMA CORRECTA DE LLEVAR A TU MASCOTA',     desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed...' },
@@ -34,7 +28,9 @@ const tips = [
 ]
 
 function Home() {
-  const [user, setUser] = useState(null)
+  const [user, setUser]           = useState(null)
+  const [promos, setPromos]       = useState([])
+  const [cargandoPromos, setCargandoPromos] = useState(true)
 
   useEffect(() => {
     const stored = localStorage.getItem('user')
@@ -47,6 +43,35 @@ function Home() {
 
     window.addEventListener('userChanged', handleUserChange)
     return () => window.removeEventListener('userChanged', handleUserChange)
+  }, [])
+
+  useEffect(() => {
+    const cargarPromos = async () => {
+      try {
+        const resultado = await api.promociones.listar({ size: 6 })
+        const lista = resultado.content || []
+
+        const idsUnicos = [...new Set(lista.map(p => p.idServicio))]
+        const servicios = await Promise.all(idsUnicos.map(id => api.servicios.porId(id).catch(() => null)))
+        const mapaServicios = Object.fromEntries(
+          servicios.filter(Boolean).map(s => [s.idServicio, s])
+        )
+
+        const promosEnriquecidas = lista.map(p => ({
+          id:          p.idPromocion,
+          titulo:      p.titulo,
+          descripcion: p.descripcion,
+          servicio:    mapaServicios[p.idServicio] || null,
+        })).filter(p => p.servicio)
+
+        setPromos(promosEnriquecidas.slice(0, 3))
+      } catch {
+        setPromos([])
+      } finally {
+        setCargandoPromos(false)
+      }
+    }
+    cargarPromos()
   }, [])
 
   return (
@@ -117,30 +142,45 @@ function Home() {
       </section>
 
       {/* FAB urgencias */}
-      <div className="fab">
+      <Link to="/servicios?tipo=Veterinaria+24%2F7" className="fab">
         <span className="fab__icon">🚨</span>
         <span className="fab__label">Urgencia 24/7</span>
-      </div>
+      </Link>
 
       {/* ══════ PROMOCIONES ══════ */}
       <section className="home-promos">
         <h2 className="home-promos__title">Promociones destacadas</h2>
         <div className="home-promos__grid">
-          {promotions.map((promo) => (
-            <div key={promo.id} className="promo-card">
-              <span className="promo-card__badge" style={{ backgroundColor: badgeColor[promo.type] }}>
-                {promo.badge}
-              </span>
-              <h3 className="promo-card__name">{promo.name}</h3>
-              <p className="promo-card__desc">{promo.description}</p>
-              <button className="promo-card__btn">Ver más</button>
-            </div>
-          ))}
+          {cargandoPromos ? (
+            <p className="text-muted" style={{ gridColumn: '1/-1', textAlign: 'center', padding: '2rem' }}>
+              Cargando promociones...
+            </p>
+          ) : promos.length === 0 ? (
+            <p className="text-muted" style={{ gridColumn: '1/-1', textAlign: 'center', padding: '2rem' }}>
+              Aún no hay promociones activas.
+            </p>
+          ) : (
+            promos.map((promo) => {
+              const tipo  = promo.servicio.tipoServicio || ''
+              const color = TIPO_COLOR[tipo] || '#7e6492'
+              return (
+                <div key={promo.id} className="promo-card">
+                  <span className="promo-card__badge" style={{ backgroundColor: color }}>
+                    {tipo}
+                  </span>
+                  <h3 className="promo-card__name">{promo.servicio.nombreServicio}</h3>
+                  <p className="promo-card__desc" style={{ fontWeight: 600 }}>{promo.titulo}</p>
+                  {promo.descripcion && <p className="promo-card__desc">{promo.descripcion}</p>}
+                  <Link to="/servicios" className="promo-card__btn" style={{ display: 'inline-block', textDecoration: 'none' }}>Ver más</Link>
+                </div>
+              )
+            })
+          )}
           <div className="promo-card promo-card--all">
             <span className="promo-card__all-icon">🐾</span>
             <h3 className="promo-card__name">¿Quieres ver más?</h3>
             <p className="promo-card__desc">Explora todas las promociones disponibles.</p>
-            <button className="promo-card__btn promo-card__btn--all">Ver todos</button>
+            <Link to="/servicios" className="promo-card__btn promo-card__btn--all" style={{ display: 'inline-block', textDecoration: 'none' }}>Ver todos</Link>
           </div>
         </div>
       </section>

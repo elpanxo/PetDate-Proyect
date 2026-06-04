@@ -5,7 +5,10 @@ import AuthNavbar from '../navbar/AuthNavbar';
 import { ApiError } from '../../api/petdate-api';
 import api from '../../api/petdate-api';
 import { PawPrint, Building2 } from 'lucide-react';
+import { COMUNAS } from '../servicios/serviciosData';
 import './Register.css';
+
+const COMUNAS_LISTA = COMUNAS.filter(c => c !== 'Todas');
 
 // ─────────────────────────────────────────────
 // Rubros disponibles — tipoServicio que recibe el backend
@@ -139,15 +142,14 @@ const Register = () => {
         telefono:       empresa.telefono,
       });
 
-      // Guardamos datos mínimos del servicio para la UI
-      // Nota: el backend de servicios aún no tiene endpoint de login propio.
-      // Si en el futuro se agrega, aquí va el api.auth.loginEmpresa(...)
       localStorage.setItem('user', JSON.stringify({
         id:         servicioCreado.idServicio,
         email:      servicioCreado.correo,
         name:       servicioCreado.nombreServicio,
         role:       'empresa',
         servicioId: servicioCreado.idServicio,
+        rut:        empresa.rut,
+        contrasena: empresa.password,
       }));
       window.dispatchEvent(new Event('userChanged'));
       navigate('/mi-empresa');
@@ -338,11 +340,13 @@ const Register = () => {
 
                 <Form.Group className="mb-3">
                   <Form.Label>Comuna</Form.Label>
-                  <Form.Control
-                    placeholder="Santiago"
+                  <Form.Select
                     value={empresa.comuna}
                     onChange={e => campoEmpresa('comuna', e.target.value)}
-                  />
+                  >
+                    <option value="">Selecciona una comuna</option>
+                    {COMUNAS_LISTA.map(c => <option key={c} value={c}>{c}</option>)}
+                  </Form.Select>
                 </Form.Group>
 
                 <Form.Group className="mb-3">

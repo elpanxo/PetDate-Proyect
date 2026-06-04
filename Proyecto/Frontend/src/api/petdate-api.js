@@ -160,6 +160,18 @@ export const auth = {
     return data
   },
 
+  /**
+   * Inicia sesión como empresa/servicio y guarda el token.
+   * @param {string} correo
+   * @param {string} contrasena
+   * @returns {Promise<AuthResponse>}
+   */
+  async loginEmpresa(correo, contrasena) {
+    const data = await http.post('/auth/servicios/login', { correo, contrasena }, false)
+    token.set(data.token)
+    return data
+  },
+
   /** Elimina el token guardado (logout local). */
   logout() {
     token.remove()

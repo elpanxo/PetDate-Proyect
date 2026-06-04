@@ -1,25 +1,25 @@
 import { Hospital, Siren, Scissors, ShoppingCart } from 'lucide-react'
 
 export const TIPOS = [
-  { valor: 'todos', label: 'Todos' },
-  { valor: 'Veterinaria', label: 'Veterinaria' },
-  { valor: 'Urgencia 24/7', label: 'Urgencia 24/7' },
-  { valor: 'Peluquería', label: 'Peluquería' },
-  { valor: 'Tienda', label: 'Tienda de mascotas' },
+  { valor: 'todos',              label: 'Todos' },
+  { valor: 'Veterinaria',        label: 'Veterinaria' },
+  { valor: 'Veterinaria 24/7',   label: 'Urgencia 24/7' },
+  { valor: 'Peluquería / Spa',   label: 'Peluquería' },
+  { valor: 'Tienda de mascotas', label: 'Tienda de mascotas' },
 ]
 
 export const TIPO_COLOR = {
-  Veterinaria: '#7e6492',
-  'Urgencia 24/7': '#c0392b',
-  Peluquería: '#e07b54',
-  Tienda: '#4a90a4',
+  'Veterinaria':        '#7e6492',
+  'Veterinaria 24/7':   '#c0392b',
+  'Peluquería / Spa':   '#e07b54',
+  'Tienda de mascotas': '#4a90a4',
 }
 
 export const TIPO_ICON = {
-  Veterinaria: Hospital,
-  'Urgencia 24/7': Siren,
-  Peluquería: Scissors,
-  Tienda: ShoppingCart,
+  'Veterinaria':        Hospital,
+  'Veterinaria 24/7':   Siren,
+  'Peluquería / Spa':   Scissors,
+  'Tienda de mascotas': ShoppingCart,
 }
 
 export const COMUNAS = [
