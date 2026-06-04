@@ -62,10 +62,18 @@ public class JwtAuthFilter implements HandlerInterceptor {
             return true;
         if (path.equals("/usuarios") && method.equals("POST"))
             return true;
-        if (path.startsWith("/servicios") && method.equals("POST"))
-            return true;
         if (path.startsWith("/uploads/"))
             return true;
+
+--------------------------------------------------------------------------------------------------
+        // Servicios: registro público (POST) y consulta pública (GET)
+        if (path.startsWith("/servicios") && (method.equals("POST") || method.equals("GET")))
+            return true;
+
+        // Promociones: consulta pública (GET), modificación requiere auth
+        if (path.startsWith("/promociones") && method.equals("GET"))
+            return true;
+----------------------------------------------------------------------------------------------------
         return false;
     }
 

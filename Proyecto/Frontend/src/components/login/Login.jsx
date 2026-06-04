@@ -35,7 +35,7 @@ const Login = () => {
       window.dispatchEvent(new Event('userChanged'));
 
       // 4. Redirigir a mis mascotas
-      navigate('/mis-mascotas');
+      navigate('/');
 
     } catch (err) {
       if (err instanceof ApiError) {
