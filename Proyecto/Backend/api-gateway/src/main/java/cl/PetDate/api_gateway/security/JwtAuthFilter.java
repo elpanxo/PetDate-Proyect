@@ -65,7 +65,7 @@ public class JwtAuthFilter implements HandlerInterceptor {
         if (path.startsWith("/uploads/"))
             return true;
 
---------------------------------------------------------------------------------------------------
+
         // Servicios: registro público (POST) y consulta pública (GET)
         if (path.startsWith("/servicios") && (method.equals("POST") || method.equals("GET")))
             return true;
@@ -73,10 +73,10 @@ public class JwtAuthFilter implements HandlerInterceptor {
         // Promociones: consulta pública (GET), modificación requiere auth
         if (path.startsWith("/promociones") && method.equals("GET"))
             return true;
-----------------------------------------------------------------------------------------------------
+
         return false;
     }
-
+    
     private void escribirError(HttpServletResponse response,
             HttpStatus status, String mensaje) throws Exception {
         response.setStatus(status.value());
