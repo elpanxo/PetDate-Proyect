@@ -5,7 +5,7 @@ import './Navbar.css';
 
 function AuthNavbar() {
   return (
-    <nav className="navbar fixed-top bg-custom">
+    <nav className="navbar fixed-top petdate-nav petdate-nav--solid">
       <div className="container-fluid px-4 d-flex align-items-center justify-content-center">
         <Link to="/" className="d-flex align-items-center gap-3 text-decoration-none">
           <img
