@@ -20,16 +20,13 @@ public class CorsConfig implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
 
----------------------------------------------------------------------------------------
-        //Se puede eliminar -> permite correr frontend en localhost
-
         String origin = request.getHeader("Origin");
         if (origin != null && origin.startsWith("http://localhost")) {
             response.setHeader("Access-Control-Allow-Origin", origin);
         } else {
             response.setHeader("Access-Control-Allow-Origin", "http://localhost");
         }
----------------------------------------------------------------------------------------    
+
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
         response.setHeader("Access-Control-Allow-Headers", "*");
         response.setHeader("Access-Control-Allow-Credentials", "true");
