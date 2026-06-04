@@ -1,73 +1,132 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import AppNavbar from '../navbar/Navbar'
 import Footer from '../footer/Footer'
-import heroPhoto from '../../assets/roots/hero-photo.jpg'
 import './Home.css'
 
-const promotions = [
-  { id: 1, type: 'Veterinaria', name: 'Clínica VetCare', description: '20% de descuento en consultas este mes.', badge: 'Veterinaria' },
-  { id: 2, type: 'Tienda', name: 'PetShop Central', description: 'Alimento premium 2x1 en todas las marcas.', badge: 'Tienda' },
-  { id: 3, type: 'Servicio', name: 'Grooming Express', description: 'Baño y corte de pelo desde $5.000.', badge: 'Servicio' },
-  { id: 4, type: 'Veterinaria', name: 'Hospital Animal Sur', description: 'Vacunación anual con 30% off.', badge: 'Veterinaria' },
-  { id: 5, type: 'Tienda', name: 'Mundo Mascota', description: 'Accesorios y juguetes con envío gratis.', badge: 'Tienda' },
-  { id: 6, type: 'Servicio', name: 'PetHotel & Spa', description: 'Guardería nocturna para tu mascota.', badge: 'Servicio' },
+// ── Collage de fondo: 6 celdas (3 columnas × 2 filas)
+// Reemplaza los src con tus fotos reales de mascotas
+const bgPhotos = [
+  { src: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&q=80', pos: 'center top'    }, // gato ojos verdes
+  { src: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&q=80', pos: 'center 55%'    }, // golden retriever
+  { src: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800&q=80', pos: 'center center' }, // perro feliz
+  { src: 'https://images.unsplash.com/photo-1478098711619-5ab0b478d6e6?w=800&q=80', pos: 'center center' }, // gato durmiendo
+  { src: 'https://blog.mascotaysalud.com/wp-content/uploads/2025/08/seguro-veterinario-perros-gatos.jpg', pos: 'center 40%'    }, // perro con veterinario
+  { src: 'https://images.unsplash.com/photo-1596492784531-6e6eb5ea9993?w=800&q=80', pos: 'center center' }, // gato con collar
 ]
 
-const badgeColor = {
-  Veterinaria: '#7e6492',
-  Tienda: '#4a90a4',
-  Servicio: '#e07b54',
-}
+const zoomDuration = ['22s', '27s', '19s', '24s', '29s', '21s']
+const zoomDir      = ['normal', 'alternate', 'alternate', 'normal', 'normal', 'alternate']
+
+const promotions = [
+  { id: 1, type: 'Veterinaria', name: 'Clínica VetCare',    description: '20% de descuento en consultas este mes.',    badge: 'Veterinaria' },
+  { id: 2, type: 'Tienda',      name: 'PetShop Central',    description: 'Alimento premium 2x1 en todas las marcas.', badge: 'Tienda'      },
+  { id: 3, type: 'Servicio',    name: 'Grooming Express',   description: 'Baño y corte de pelo desde $5.000.',         badge: 'Servicio'    },
+]
+
+const badgeColor = { Veterinaria: '#7e6492', Tienda: '#4a90a4', Servicio: '#c49a4a' }
 
 const tips = [
-  { id: 1, title: 'CUÁL ES LA FORMA CORRECTA DE LLEVAR A TU MASCOTA', desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed...' },
-  { id: 2, title: 'CÓMO PRESENTAR UNA NUEVA MASCOTA EN CASA', desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed...' },
-  { id: 3, title: 'QUÉ HACER SI TU GATO VOMITA', desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed...' },
-  { id: 4, title: 'INFORMATIVO SOBRE EL EXAMEN SOMA DE IDEXX...A', desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed...' },
+  { id: 1, title: 'CUÁL ES LA FORMA CORRECTA DE LLEVAR A TU MASCOTA',     desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed...' },
+  { id: 2, title: 'CÓMO PRESENTAR UNA NUEVA MASCOTA EN CASA',              desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed...' },
+  { id: 3, title: 'QUÉ HACER SI TU GATO VOMITA',                           desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed...' },
+  { id: 4, title: 'INFORMATIVO SOBRE EL EXAMEN SOMA DE IDEXX',             desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed...' },
 ]
 
 function Home() {
+  const [user, setUser] = useState(null)
+
+  useEffect(() => {
+    const stored = localStorage.getItem('user')
+    setUser(stored ? JSON.parse(stored) : null)
+
+    const handleUserChange = () => {
+      const updated = localStorage.getItem('user')
+      setUser(updated ? JSON.parse(updated) : null)
+    }
+
+    window.addEventListener('userChanged', handleUserChange)
+    return () => window.removeEventListener('userChanged', handleUserChange)
+  }, [])
+
   return (
     <>
       <AppNavbar />
 
-      {/* ── HERO: panel texto izquierda + foto derecha ── */}
-      <section className="home-hero">
+      {/* ══════════════════════════════════════════
+          HERO — collage de fondo + texto centrado
+          ══════════════════════════════════════════ */}
+      <section className="hero" aria-label="Sección principal">
 
-        {/* Izquierda: panel dorado con texto */}
-        <div className="home-hero__panel">
-          <div className="home-hero__panel-inner">
-            <h1 className="home-hero__title">
-              Todo lo que tu mascota<br />
-              <span className="home-hero__title--highlight">necesita, en un solo lugar</span>
-            </h1>
-            <p className="home-hero__subtitle">
-              Explora una amplia variedad de servicios veterinarios, peluquería y tiendas especializadas para ofrecer a tu mascota el mejor cuidado en cada etapa de su vida.
-            </p>
-            <Link to="/servicios" className="home-hero__btn">
+        {/* Collage 3×2 desaturado */}
+        <div className="hero__collage" aria-hidden="true">
+          {bgPhotos.map((photo, i) => (
+            <div key={i} className="hero__cell">
+              {photo.src ? (
+                <img
+                  src={photo.src}
+                  alt=""
+                  className="hero__cell-img"
+                  style={{
+                    objectPosition: photo.pos,
+                    animationDuration: zoomDuration[i],
+                    animationDirection: zoomDir[i],
+                  }}
+                />
+              ) : (
+                /* Placeholder hasta que agregues la foto */
+                <div className="hero__cell-placeholder">
+                  <span>🐾</span>
+                  <p>Foto {i + 1}</p>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Viñeta radial que aclara el centro */}
+        <div className="hero__vignette" aria-hidden="true" />
+
+        {/* Texto central */}
+        <div className="hero__content">
+          <p className="hero__eyebrow">Tu plataforma de mascotas en Chile</p>
+
+          <h1 className="hero__title">PetDate</h1>
+
+          <div className="hero__divider" aria-hidden="true" />
+
+          <p className="hero__subtitle">
+            Todo el cuidado que tu mascota merece,<br />en un solo lugar
+          </p>
+
+          <div className="hero__actions">
+            <Link to="/servicios" className="hero__btn hero__btn--primary">
               Ver servicios
             </Link>
+            {user && user.role === 'empresa' ? (
+              <Link to="/mi-empresa" className="hero__btn hero__btn--outline">
+                Mi Empresa
+              </Link>
+            ) : user ? (
+              <Link to="/mis-mascotas" className="hero__btn hero__btn--outline">
+                Mis Mascotas
+              </Link>
+            ) : null}
           </div>
         </div>
-
-        {/* Derecha: espacio para tu foto */}
-        <div className="home-hero__photo">
-          <img src={heroPhoto} alt="Mascota feliz" />
-        </div>
-
       </section>
 
-      {/* Botón flotante urgencias */}
+      {/* FAB urgencias */}
       <div className="fab">
         <span className="fab__icon">🚨</span>
         <span className="fab__label">Urgencia 24/7</span>
       </div>
 
-      {/* Promociones */}
+      {/* ══════ PROMOCIONES ══════ */}
       <section className="home-promos">
         <h2 className="home-promos__title">Promociones destacadas</h2>
         <div className="home-promos__grid">
-          {promotions.slice(0, 3).map((promo) => (
+          {promotions.map((promo) => (
             <div key={promo.id} className="promo-card">
               <span className="promo-card__badge" style={{ backgroundColor: badgeColor[promo.type] }}>
                 {promo.badge}
@@ -80,37 +139,33 @@ function Home() {
           <div className="promo-card promo-card--all">
             <span className="promo-card__all-icon">🐾</span>
             <h3 className="promo-card__name">¿Quieres ver más?</h3>
-            <p className="promo-card__desc">Explora todas las promociones disponibles para tu mascota.</p>
-            <button className="promo-card__btn promo-card__btn--all">Ver todos los servicios</button>
+            <p className="promo-card__desc">Explora todas las promociones disponibles.</p>
+            <button className="promo-card__btn promo-card__btn--all">Ver todos</button>
           </div>
         </div>
       </section>
 
+      {/* ══════ QUIÉNES SOMOS ══════ */}
       <section className="home-about">
         <div className="home-about__wave-top">
           <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0,40 C360,80 1080,0 1440,40 L1440,0 L0,0 Z" fill="#f5f0f0" />
+            <path d="M0,40 C360,80 1080,0 1440,40 L1440,0 L0,0 Z" fill="#f5f0f0"/>
           </svg>
         </div>
         <div className="home-about__content">
           <h2 className="home-about__title">¿Quiénes somos?</h2>
-          <p className="home-about__text">
-            PetDate nace de una necesidad real: los dueños de mascotas merecen una forma simple, organizada y confiable de gestionar el bienestar de sus compañeros. Somos un equipo de tres estudiantes de Ingeniería apasionados por los animales y la tecnología, que decidimos crear la plataforma que siempre quisimos tener como dueños de mascotas.
-          </p>
-          <p className="home-about__text">
-            Nuestra misión es centralizar toda la información relacionada con el cuidado de las mascotas en un solo lugar. Porque sabemos lo frustrante que es buscar el carnet de vacunas en una gaveta, olvidar la fecha del próximo control o perder el historial médico de tu mejor amigo. PetDate existe para que eso no vuelva a pasar.
-          </p>
-          <p className="home-about__text">
-            Creemos que cada mascota merece el mejor cuidado posible, y que cada dueño merece las herramientas para dárselo. Nuestra visión es convertirnos en el asistente digital de cabecera de cada hogar con mascotas en Chile.
-          </p>
+          <p className="home-about__text">PetDate nace de una necesidad real: los dueños de mascotas merecen una forma simple, organizada y confiable de gestionar el bienestar de sus compañeros. Somos un equipo de tres estudiantes de Ingeniería apasionados por los animales y la tecnología.</p>
+          <p className="home-about__text">Nuestra misión es centralizar toda la información relacionada con el cuidado de las mascotas en un solo lugar. Porque sabemos lo frustrante que es buscar el carnet de vacunas en una gaveta, olvidar la fecha del próximo control o perder el historial médico de tu mejor amigo.</p>
+          <p className="home-about__text">Creemos que cada mascota merece el mejor cuidado posible, y que cada dueño merece las herramientas para dárselo.</p>
         </div>
         <div className="home-about__wave-bottom">
           <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0,40 C360,0 1080,80 1440,40 L1440,80 L0,80 Z" fill="#f5f0f0" />
+            <path d="M0,40 C360,0 1080,80 1440,40 L1440,80 L0,80 Z" fill="#f5f0f0"/>
           </svg>
         </div>
       </section>
 
+      {/* ══════ CONSEJOS ══════ */}
       <section className="home-tips">
         <div className="home-tips__header">
           <h2 className="home-tips__title">Consejos y cuidados</h2>
@@ -118,7 +173,7 @@ function Home() {
         <div className="home-tips__grid">
           {tips.map((tip) => (
             <article key={tip.id} className="tip-card">
-              <div className="tip-card__media" />
+              <div className="tip-card__media"/>
               <div className="tip-card__body">
                 <h3 className="tip-card__title">{tip.title}</h3>
                 <p className="tip-card__desc">{tip.desc}</p>
@@ -129,7 +184,7 @@ function Home() {
         </div>
       </section>
 
-      <Footer />
+      <Footer/>
     </>
   )
 }
