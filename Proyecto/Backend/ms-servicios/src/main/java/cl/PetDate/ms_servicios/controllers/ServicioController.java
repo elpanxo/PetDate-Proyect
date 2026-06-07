@@ -67,18 +67,34 @@ public class ServicioController {
     @Operation(summary = "Actualizar servicio")
     @ApiResponse(responseCode = "404", description = "Servicio no encontrado")
     @PutMapping("/{id}")
-    public ServicioResponse actualizarServicio(
+    public ResponseEntity<ServicioResponse> actualizarServicio(
             @PathVariable Long id,
-            @Valid @RequestBody ServicioRequest request) {
-        return servicioService.actualizarServicio(id, request);
+            @Valid @RequestBody ServicioRequest request,
+            @RequestHeader(value = "X-Usuario-Id", required = false) Long tokenId,
+            @RequestHeader(value = "X-Usuario-Rol", required = false) String tokenRol) {
+        if (!esPropioServicio(tokenId, tokenRol, id)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.ok(servicioService.actualizarServicio(id, request));
     }
 
     @Operation(summary = "Eliminar servicio")
     @ApiResponse(responseCode = "204", description = "Servicio eliminado")
     @ApiResponse(responseCode = "404", description = "Servicio no encontrado")
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminarServicio(@PathVariable Long id) {
+    public ResponseEntity<Void> eliminarServicio(
+            @PathVariable Long id,
+            @RequestHeader(value = "X-Usuario-Id", required = false) Long tokenId,
+            @RequestHeader(value = "X-Usuario-Rol", required = false) String tokenRol) {
+        if (!esPropioServicio(tokenId, tokenRol, id)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         servicioService.eliminarServicio(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // Solo el propio servicio (token de tipo SERVICIO cuyo id coincide) puede modificarse/eliminarse
+    private boolean esPropioServicio(Long tokenId, String tokenRol, Long idServicio) {
+        return "SERVICIO".equals(tokenRol) && tokenId != null && tokenId.equals(idServicio);
     }
 }

@@ -45,16 +45,28 @@ public class CitaMedicaController {
     @Operation(summary = "Buscar cita por ID")
     @ApiResponse(responseCode = "404", description = "Cita no encontrada")
     @GetMapping("/{id}")
-    public ResponseEntity<CitaMedicaResponse> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(citaMedicaService.buscarPorId(id));
+    public ResponseEntity<CitaMedicaResponse> buscarPorId(
+            @PathVariable Long id,
+            @RequestHeader(value = "X-Usuario-Id", required = false) Long tokenId,
+            @RequestHeader(value = "X-Usuario-Rol", required = false) String tokenRol) {
+        CitaMedicaResponse cita = citaMedicaService.buscarPorId(id);
+        if (!esPropietarioOAdmin(tokenId, tokenRol, cita.getIdUsuario())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.ok(cita);
     }
 
     @Operation(summary = "Buscar citas de un usuario")
     @GetMapping("/usuario/{idUsuario}")
-    public Page<CitaMedicaResponse> buscarPorUsuario(
+    public ResponseEntity<Page<CitaMedicaResponse>> buscarPorUsuario(
             @PathVariable Long idUsuario,
-            @PageableDefault(size = 10, sort = "fecha") Pageable pageable) {
-        return citaMedicaService.buscarPorUsuario(idUsuario, pageable);
+            @PageableDefault(size = 10, sort = "fecha") Pageable pageable,
+            @RequestHeader(value = "X-Usuario-Id", required = false) Long tokenId,
+            @RequestHeader(value = "X-Usuario-Rol", required = false) String tokenRol) {
+        if (!esPropietarioOAdmin(tokenId, tokenRol, idUsuario)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.ok(citaMedicaService.buscarPorUsuario(idUsuario, pageable));
     }
 
     @Operation(summary = "Buscar citas de una mascota")
@@ -62,6 +74,7 @@ public class CitaMedicaController {
     public Page<CitaMedicaResponse> buscarPorMascota(
             @PathVariable Long idMascota,
             @PageableDefault(size = 10, sort = "fecha") Pageable pageable) {
+        // Solo ADMIN — protegido en el gateway
         return citaMedicaService.buscarPorMascota(idMascota, pageable);
     }
 
@@ -70,42 +83,87 @@ public class CitaMedicaController {
     public Page<CitaMedicaResponse> buscarPorEstado(
             @PathVariable EstadoEvento estado,
             @PageableDefault(size = 10) Pageable pageable) {
+        // Solo ADMIN — protegido en el gateway
         return citaMedicaService.buscarPorEstado(estado, pageable);
     }
 
     @Operation(summary = "Buscar citas de un usuario por estado")
     @GetMapping("/usuario/{idUsuario}/estado/{estado}")
-    public Page<CitaMedicaResponse> buscarPorUsuarioYEstado(
+    public ResponseEntity<Page<CitaMedicaResponse>> buscarPorUsuarioYEstado(
             @PathVariable Long idUsuario,
             @PathVariable EstadoEvento estado,
-            @PageableDefault(size = 10) Pageable pageable) {
-        return citaMedicaService.buscarPorUsuarioYEstado(idUsuario, estado, pageable);
+            @PageableDefault(size = 10) Pageable pageable,
+            @RequestHeader(value = "X-Usuario-Id", required = false) Long tokenId,
+            @RequestHeader(value = "X-Usuario-Rol", required = false) String tokenRol) {
+        if (!esPropietarioOAdmin(tokenId, tokenRol, idUsuario)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.ok(citaMedicaService.buscarPorUsuarioYEstado(idUsuario, estado, pageable));
     }
 
     @Operation(summary = "Actualizar una cita")
     @ApiResponse(responseCode = "404", description = "Cita no encontrada")
     @PutMapping("/{id}")
-    public CitaMedicaResponse actualizarCita(
+    public ResponseEntity<CitaMedicaResponse> actualizarCita(
             @PathVariable Long id,
-            @Valid @RequestBody CitaMedicaRequest request) {
-        return citaMedicaService.actualizarCita(id, request);
+            @Valid @RequestBody CitaMedicaRequest request,
+            @RequestHeader(value = "X-Usuario-Id", required = false) Long tokenId,
+            @RequestHeader(value = "X-Usuario-Rol", required = false) String tokenRol) {
+        CitaMedicaResponse cita = citaMedicaService.buscarPorId(id);
+        if (!esPropietarioOAdmin(tokenId, tokenRol, cita.getIdUsuario())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.ok(citaMedicaService.actualizarCita(id, request));
     }
 
     @Operation(summary = "Cambiar estado de una cita")
     @ApiResponse(responseCode = "404", description = "Cita no encontrada")
     @PatchMapping("/{id}/estado/{estado}")
-    public CitaMedicaResponse cambiarEstado(
+    public ResponseEntity<CitaMedicaResponse> cambiarEstado(
             @PathVariable Long id,
-            @PathVariable EstadoEvento estado) {
-        return citaMedicaService.cambiarEstado(id, estado);
+            @PathVariable EstadoEvento estado,
+            @RequestHeader(value = "X-Usuario-Id", required = false) Long tokenId,
+            @RequestHeader(value = "X-Usuario-Rol", required = false) String tokenRol) {
+        CitaMedicaResponse cita = citaMedicaService.buscarPorId(id);
+        if (!esPropietarioOAdmin(tokenId, tokenRol, cita.getIdUsuario())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.ok(citaMedicaService.cambiarEstado(id, estado));
     }
 
     @Operation(summary = "Eliminar una cita")
     @ApiResponse(responseCode = "204", description = "Cita eliminada")
     @ApiResponse(responseCode = "404", description = "Cita no encontrada")
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminarCita(@PathVariable Long id) {
+    public ResponseEntity<Void> eliminarCita(
+            @PathVariable Long id,
+            @RequestHeader(value = "X-Usuario-Id", required = false) Long tokenId,
+            @RequestHeader(value = "X-Usuario-Rol", required = false) String tokenRol) {
+        CitaMedicaResponse cita = citaMedicaService.buscarPorId(id);
+        if (!esPropietarioOAdmin(tokenId, tokenRol, cita.getIdUsuario())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         citaMedicaService.eliminarCita(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // El dueño de la cita (su idUsuario coincide con el id del token) o un ADMIN
+    private boolean esPropietarioOAdmin(Long tokenId, String tokenRol, Long idUsuarioDueno) {
+        return "ADMIN".equals(tokenRol) || (tokenId != null && tokenId.equals(idUsuarioDueno));
+    }
+
+    // ── Endpoints internos (solo accesibles dentro de la red Docker) ──────────
+    // Usados para el borrado en cascada al eliminar un usuario o una mascota.
+
+    @DeleteMapping("/interno/usuario/{idUsuario}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminarPorUsuarioInterno(@PathVariable Long idUsuario) {
+        citaMedicaService.eliminarPorUsuario(idUsuario);
+    }
+
+    @DeleteMapping("/interno/mascota/{idMascota}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminarPorMascotaInterno(@PathVariable Long idMascota) {
+        citaMedicaService.eliminarPorMascota(idMascota);
     }
 }

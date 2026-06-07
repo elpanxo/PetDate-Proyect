@@ -5,6 +5,7 @@ import cl.PetDate.ms_servicios.dto.ServicioResponse;
 import cl.PetDate.ms_servicios.exceptions.CorreoDuplicadoException;
 import cl.PetDate.ms_servicios.exceptions.ServicioNotFoundException;
 import cl.PetDate.ms_servicios.models.Servicio;
+import cl.PetDate.ms_servicios.repositories.PromocionRepository;
 import cl.PetDate.ms_servicios.repositories.ServicioRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,14 +23,17 @@ public class ServicioService {
     private final ServicioRepository servicioRepository;
     private final SequenceGeneratorService sequenceGeneratorService;
     private final PasswordEncoder passwordEncoder;
+    private final PromocionRepository promocionRepository;
 
     public ServicioService(
             ServicioRepository servicioRepository,
             SequenceGeneratorService sequenceGeneratorService,
-            PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder,
+            PromocionRepository promocionRepository) {
         this.servicioRepository = servicioRepository;
         this.sequenceGeneratorService = sequenceGeneratorService;
         this.passwordEncoder = passwordEncoder;
+        this.promocionRepository = promocionRepository;
     }
 
     public ServicioResponse crearServicio(ServicioRequest request) {
@@ -89,6 +93,11 @@ public class ServicioService {
                 .orElseThrow(() -> new ServicioNotFoundException(id));
         servicioRepository.delete(servicio);
         log.info("Servicio id={} eliminado", id);
+
+        // Borrado en cascada (política de retención y eliminación de datos):
+        // las promociones viven en la misma base de datos, por lo que se eliminan directamente (sin Feign)
+        promocionRepository.deleteByIdServicio(id);
+        log.info("Promociones del servicio id={} eliminadas en cascada", id);
     }
 
     private Servicio toEntity(ServicioRequest r) {

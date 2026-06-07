@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 )
 public interface UsuarioClient {
 
-    @GetMapping("/usuarios/{id}")
+    // Endpoint interno — sin validación de headers, solo accesible dentro de la red Docker
+    @GetMapping("/usuarios/interno/{id}")
     UsuarioDTO buscarUsuarioPorId(@PathVariable Long id);
 }

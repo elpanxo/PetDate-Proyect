@@ -1,5 +1,6 @@
 package cl.PetDate.ms_mascotas.services;
 
+import cl.PetDate.ms_mascotas.clients.CitaMedicaClient;
 import cl.PetDate.ms_mascotas.clients.UsuarioClient;
 import cl.PetDate.ms_mascotas.dto.MascotaRequest;
 import cl.PetDate.ms_mascotas.dto.MascotaResponse;
@@ -7,6 +8,8 @@ import cl.PetDate.ms_mascotas.exceptions.MascotaNotFoundException;
 import cl.PetDate.ms_mascotas.exceptions.UsuarioNotFoundException;
 import cl.PetDate.ms_mascotas.models.Mascota;
 import cl.PetDate.ms_mascotas.repositories.MascotaRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,19 +25,23 @@ import java.nio.file.StandardCopyOption;
 @Service
 public class MascotaService {
 
+    private static final Logger log = LoggerFactory.getLogger(MascotaService.class);
     private static final String SEQUENCE_NAME = "mascotas_sequence";
 
     private final MascotaRepository mascotaRepository;
     private final SequenceGeneratorService sequenceGeneratorService;
     private final UsuarioClient usuarioClient;
+    private final CitaMedicaClient citaMedicaClient;
 
     public MascotaService(
             MascotaRepository mascotaRepository,
             SequenceGeneratorService sequenceGeneratorService,
-            UsuarioClient usuarioClient) {
+            UsuarioClient usuarioClient,
+            CitaMedicaClient citaMedicaClient) {
         this.mascotaRepository = mascotaRepository;
         this.sequenceGeneratorService = sequenceGeneratorService;
         this.usuarioClient = usuarioClient;
+        this.citaMedicaClient = citaMedicaClient;
     }
 
     public MascotaResponse crearMascota(MascotaRequest request) {
@@ -85,6 +92,18 @@ public class MascotaService {
         Mascota mascota = mascotaRepository.findById(id)
                 .orElseThrow(() -> new MascotaNotFoundException(id));
         mascotaRepository.delete(mascota);
+        try {
+            citaMedicaClient.eliminarCitasPorMascota(id);
+            log.info("Citas de la mascota id={} eliminadas en cascada", id);
+        } catch (Exception e) {
+            log.warn("No se pudieron eliminar en cascada las citas de la mascota id={}: {}", id, e.getMessage());
+        }
+    }
+
+    // Usado para el borrado en cascada al eliminar un usuario (política de retención de datos)
+    public void eliminarPorUsuario(Long usuarioId) {
+        mascotaRepository.deleteByUsuarioId(usuarioId);
+        log.info("Mascotas del usuario id={} eliminadas en cascada", usuarioId);
     }
 
     private Mascota toEntity(MascotaRequest request) {

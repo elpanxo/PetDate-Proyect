@@ -31,9 +31,12 @@ public class Usuario {
 
     private String direccion;
 
+    private Rol rol;
+
     // Constructor vacío
     public Usuario() {
         this.fechaRegistro = LocalDateTime.now();
+        this.rol = Rol.USER; // rol por defecto
     }
 
     // Getters y Setters
@@ -57,4 +60,7 @@ public class Usuario {
 
     public String getDireccion() { return direccion; }
     public void setDireccion(String direccion) { this.direccion = direccion; }
+
+    public Rol getRol() { return rol; }
+    public void setRol(Rol rol) { this.rol = rol; }
 }

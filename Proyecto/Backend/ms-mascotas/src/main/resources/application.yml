@@ -20,6 +20,9 @@ spring:
 ms-usuarios:
   url: ${MS_USUARIOS_URL:http://localhost:8081}
 
+ms-citas-medicas:
+  url: ${MS_CITAS_MEDICAS_URL:http://localhost:8084}
+
 management:
   endpoints:
     web:

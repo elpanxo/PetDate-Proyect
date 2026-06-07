@@ -47,42 +47,91 @@ public class MascotaController {
     @Operation(summary = "Buscar por ID")
     @ApiResponse(responseCode = "404", description = "Mascota no existe")
     @GetMapping("/{id}")
-    public ResponseEntity<MascotaResponse> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(mascotaService.buscarPorId(id));
+    public ResponseEntity<MascotaResponse> buscarPorId(
+            @PathVariable Long id,
+            @RequestHeader(value = "X-Usuario-Id", required = false) Long tokenId,
+            @RequestHeader(value = "X-Usuario-Rol", required = false) String tokenRol) {
+        MascotaResponse mascota = mascotaService.buscarPorId(id);
+        if (!esPropietarioOAdmin(tokenId, tokenRol, mascota.getUsuarioId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.ok(mascota);
     }
 
     @Operation(summary = "Buscar mascotas por usuario")
     @ApiResponse(responseCode = "404", description = "Usuario no existe")
     @GetMapping("/usuario/{usuarioId}")
-    public Page<MascotaResponse> buscarPorUsuario(
+    public ResponseEntity<Page<MascotaResponse>> buscarPorUsuario(
             @PathVariable Long usuarioId,
-            @PageableDefault(size = 10) Pageable pageable) {
-        return mascotaService.buscarPorUsuario(usuarioId, pageable);
+            @PageableDefault(size = 10) Pageable pageable,
+            @RequestHeader(value = "X-Usuario-Id", required = false) Long tokenId,
+            @RequestHeader(value = "X-Usuario-Rol", required = false) String tokenRol) {
+        if (!esPropietarioOAdmin(tokenId, tokenRol, usuarioId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.ok(mascotaService.buscarPorUsuario(usuarioId, pageable));
     }
 
     @Operation(summary = "Actualizar mascota")
     @ApiResponse(responseCode = "200", description = "Mascota actualizada")
     @ApiResponse(responseCode = "404", description = "Mascota no existe")
     @PutMapping("/{id}")
-    public MascotaResponse actualizarMascota(
+    public ResponseEntity<MascotaResponse> actualizarMascota(
             @PathVariable Long id,
-            @Valid @RequestBody MascotaRequest request) {
-        return mascotaService.actualizarMascota(id, request);
+            @Valid @RequestBody MascotaRequest request,
+            @RequestHeader(value = "X-Usuario-Id", required = false) Long tokenId,
+            @RequestHeader(value = "X-Usuario-Rol", required = false) String tokenRol) {
+        MascotaResponse mascota = mascotaService.buscarPorId(id);
+        if (!esPropietarioOAdmin(tokenId, tokenRol, mascota.getUsuarioId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.ok(mascotaService.actualizarMascota(id, request));
     }
 
     @Operation(summary = "Eliminar mascota")
     @ApiResponse(responseCode = "204", description = "Mascota eliminada")
     @ApiResponse(responseCode = "404", description = "Mascota no existe")
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminarMascota(@PathVariable Long id) {
+    public ResponseEntity<Void> eliminarMascota(
+            @PathVariable Long id,
+            @RequestHeader(value = "X-Usuario-Id", required = false) Long tokenId,
+            @RequestHeader(value = "X-Usuario-Rol", required = false) String tokenRol) {
+        MascotaResponse mascota = mascotaService.buscarPorId(id);
+        if (!esPropietarioOAdmin(tokenId, tokenRol, mascota.getUsuarioId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         mascotaService.eliminarMascota(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/imagen")
     public ResponseEntity<MascotaResponse> subirImagen(
             @PathVariable Long id,
-            @RequestParam("imagen") MultipartFile imagen) throws IOException {
+            @RequestParam("imagen") MultipartFile imagen,
+            @RequestHeader(value = "X-Usuario-Id", required = false) Long tokenId,
+            @RequestHeader(value = "X-Usuario-Rol", required = false) String tokenRol) throws IOException {
+        MascotaResponse mascota = mascotaService.buscarPorId(id);
+        if (!esPropietarioOAdmin(tokenId, tokenRol, mascota.getUsuarioId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         return ResponseEntity.ok(mascotaService.subirImagen(id, imagen));
+    }
+
+    // El dueño de la mascota (su usuarioId coincide con el id del token) o un ADMIN
+    private boolean esPropietarioOAdmin(Long tokenId, String tokenRol, Long usuarioIdDueno) {
+        return "ADMIN".equals(tokenRol) || (tokenId != null && tokenId.equals(usuarioIdDueno));
+    }
+
+    // ── Endpoints internos (solo accesibles dentro de la red Docker) ──────────
+    @GetMapping("/interno/{id}")
+    public ResponseEntity<MascotaResponse> buscarPorIdInterno(@PathVariable Long id) {
+        return ResponseEntity.ok(mascotaService.buscarPorId(id));
+    }
+
+    // Usado para el borrado en cascada al eliminar un usuario (política de retención de datos)
+    @DeleteMapping("/interno/usuario/{usuarioId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminarPorUsuarioInterno(@PathVariable Long usuarioId) {
+        mascotaService.eliminarPorUsuario(usuarioId);
     }
 }

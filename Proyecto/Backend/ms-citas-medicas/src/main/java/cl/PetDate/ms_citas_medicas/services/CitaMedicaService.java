@@ -117,6 +117,19 @@ public class CitaMedicaService {
         log.info("Cita id={} eliminada", id);
     }
 
+    // ── Borrado en cascada (política de retención de datos) ───────────────────
+    // Invocados internamente cuando se elimina el usuario o la mascota dueños.
+
+    public void eliminarPorUsuario(Long idUsuario) {
+        citaMedicaRepository.deleteByIdUsuario(idUsuario);
+        log.info("Citas del usuario id={} eliminadas en cascada", idUsuario);
+    }
+
+    public void eliminarPorMascota(Long idMascota) {
+        citaMedicaRepository.deleteByIdMascota(idMascota);
+        log.info("Citas de la mascota id={} eliminadas en cascada", idMascota);
+    }
+
     private CitaMedica toEntity(CitaMedicaRequest r) {
         CitaMedica c = new CitaMedica();
         c.setIdUsuario(r.getIdUsuario());

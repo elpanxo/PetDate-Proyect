@@ -1,11 +1,16 @@
 package cl.PetDate.ms_usuarios.services;
 
+import cl.PetDate.ms_usuarios.clients.CitaMedicaClient;
+import cl.PetDate.ms_usuarios.clients.MascotaClient;
 import cl.PetDate.ms_usuarios.dto.UsuarioRequest;
 import cl.PetDate.ms_usuarios.dto.UsuarioResponse;
 import cl.PetDate.ms_usuarios.exceptions.CorreoDuplicadoException;
 import cl.PetDate.ms_usuarios.exceptions.UsuarioNotFoundException;
+import cl.PetDate.ms_usuarios.models.Rol;
 import cl.PetDate.ms_usuarios.models.Usuario;
 import cl.PetDate.ms_usuarios.repositories.UsuarioRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,19 +19,26 @@ import java.util.List;
 @Service
 public class UsuarioService {
 
+    private static final Logger log = LoggerFactory.getLogger(UsuarioService.class);
     private static final String SEQUENCE_NAME = "usuarios_sequence";
 
     private final UsuarioRepository usuarioRepository;
     private final SequenceGeneratorService sequenceGeneratorService;
     private final PasswordEncoder passwordEncoder;
+    private final MascotaClient mascotaClient;
+    private final CitaMedicaClient citaMedicaClient;
 
     public UsuarioService(
             UsuarioRepository usuarioRepository,
             SequenceGeneratorService sequenceGeneratorService,
-            PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder,
+            MascotaClient mascotaClient,
+            CitaMedicaClient citaMedicaClient) {
         this.usuarioRepository = usuarioRepository;
         this.sequenceGeneratorService = sequenceGeneratorService;
         this.passwordEncoder = passwordEncoder;
+        this.mascotaClient = mascotaClient;
+        this.citaMedicaClient = citaMedicaClient;
     }
 
     public UsuarioResponse crearUsuario(UsuarioRequest request) {
@@ -36,6 +48,7 @@ public class UsuarioService {
         Usuario usuario = toEntity(request);
         usuario.setId(sequenceGeneratorService.generateSequence(SEQUENCE_NAME));
         usuario.setContrasena(passwordEncoder.encode(request.getContrasena()));
+        usuario.setRol(Rol.USER); // siempre USER al registrarse
         return toResponse(usuarioRepository.save(usuario));
     }
 
@@ -50,6 +63,7 @@ public class UsuarioService {
                 .orElseThrow(() -> new UsuarioNotFoundException(id));
     }
 
+    // Solo para uso interno entre microservicios — no exponer en controller público
     public UsuarioResponse buscarPorCorreo(String correo) {
         return usuarioRepository.findByCorreo(correo)
                 .map(this::toResponse)
@@ -71,6 +85,22 @@ public class UsuarioService {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new UsuarioNotFoundException(id));
         usuarioRepository.delete(usuario);
+
+        // Borrado en cascada (política de retención y eliminación de datos):
+        // se notifica a ms-mascotas y ms-citas-medicas en paralelo (sin encadenar llamadas)
+        // para que eliminen toda la información asociada a este usuario.
+        try {
+            mascotaClient.eliminarMascotasPorUsuario(id);
+            log.info("Mascotas del usuario id={} eliminadas en cascada", id);
+        } catch (Exception e) {
+            log.warn("No se pudieron eliminar en cascada las mascotas del usuario id={}: {}", id, e.getMessage());
+        }
+        try {
+            citaMedicaClient.eliminarCitasPorUsuario(id);
+            log.info("Citas del usuario id={} eliminadas en cascada", id);
+        } catch (Exception e) {
+            log.warn("No se pudieron eliminar en cascada las citas del usuario id={}: {}", id, e.getMessage());
+        }
     }
 
     private Usuario toEntity(UsuarioRequest r) {
@@ -91,6 +121,7 @@ public class UsuarioService {
         r.setTelefono(u.getTelefono());
         r.setDireccion(u.getDireccion());
         r.setFechaRegistro(u.getFechaRegistro());
+        r.setRol(u.getRol());
         return r;
     }
 }
