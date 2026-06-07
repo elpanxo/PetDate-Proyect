@@ -7,4 +7,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface PromocionRepository extends MongoRepository<Promocion, Long> {
     Page<Promocion> findByIdServicio(Long idServicio, Pageable pageable);
+
+    // Usado para la eliminación en cascada (política de retención de datos)
+    void deleteByIdServicio(Long idServicio);
 }

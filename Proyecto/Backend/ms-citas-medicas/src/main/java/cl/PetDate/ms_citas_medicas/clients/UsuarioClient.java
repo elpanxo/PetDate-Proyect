@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(name = "ms-usuarios", url = "${ms-usuarios.url}")
 public interface UsuarioClient {
-    @GetMapping("/usuarios/{id}")
+
+    // Endpoint interno — sin validación de headers, solo accesible dentro de la red Docker
+    @GetMapping("/usuarios/interno/{id}")
     Object buscarUsuarioPorId(@PathVariable Long id);
 }

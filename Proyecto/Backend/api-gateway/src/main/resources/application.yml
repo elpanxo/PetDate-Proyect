@@ -52,4 +52,4 @@ spring:
                   - Path=/citas/**
 
 jwt:
-  secret: ${JWT_SECRET:hfgkiuefhnbcgdsakjhrecduirnfhyeroifrnhsdfgc}
+  secret: ${JWT_SECRET}

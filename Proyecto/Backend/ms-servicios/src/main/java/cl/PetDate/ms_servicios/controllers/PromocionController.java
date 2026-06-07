@@ -29,9 +29,16 @@ public class PromocionController {
     @ApiResponse(responseCode = "201", description = "Promocion creada")
     @ApiResponse(responseCode = "404", description = "Servicio no encontrado")
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public PromocionResponse crearPromocion(@Valid @RequestBody PromocionRequest request) {
-        return promocionService.crearPromocion(request);
+    public ResponseEntity<PromocionResponse> crearPromocion(
+            @Valid @RequestBody PromocionRequest request,
+            @RequestHeader(value = "X-Usuario-Id", required = false) Long tokenId,
+            @RequestHeader(value = "X-Usuario-Rol", required = false) String tokenRol) {
+        // El gateway ya exige token de tipo SERVICIO; aquí validamos que la promoción
+        // se cree para el propio servicio autenticado
+        if (!esPropioServicio(tokenId, tokenRol, request.getIdServicio())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(promocionService.crearPromocion(request));
     }
 
     @Operation(summary = "Listar promociones paginado")
@@ -59,18 +66,36 @@ public class PromocionController {
     @Operation(summary = "Actualizar promocion")
     @ApiResponse(responseCode = "404", description = "Promocion no encontrada")
     @PutMapping("/{id}")
-    public PromocionResponse actualizarPromocion(
+    public ResponseEntity<PromocionResponse> actualizarPromocion(
             @PathVariable Long id,
-            @Valid @RequestBody PromocionRequest request) {
-        return promocionService.actualizarPromocion(id, request);
+            @Valid @RequestBody PromocionRequest request,
+            @RequestHeader(value = "X-Usuario-Id", required = false) Long tokenId,
+            @RequestHeader(value = "X-Usuario-Rol", required = false) String tokenRol) {
+        PromocionResponse promocion = promocionService.buscarPorId(id);
+        if (!esPropioServicio(tokenId, tokenRol, promocion.getIdServicio())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.ok(promocionService.actualizarPromocion(id, request));
     }
 
     @Operation(summary = "Eliminar promocion")
     @ApiResponse(responseCode = "204", description = "Promocion eliminada")
     @ApiResponse(responseCode = "404", description = "Promocion no encontrada")
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminarPromocion(@PathVariable Long id) {
+    public ResponseEntity<Void> eliminarPromocion(
+            @PathVariable Long id,
+            @RequestHeader(value = "X-Usuario-Id", required = false) Long tokenId,
+            @RequestHeader(value = "X-Usuario-Rol", required = false) String tokenRol) {
+        PromocionResponse promocion = promocionService.buscarPorId(id);
+        if (!esPropioServicio(tokenId, tokenRol, promocion.getIdServicio())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         promocionService.eliminarPromocion(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // Solo el propio servicio (token de tipo SERVICIO cuyo id coincide con idServicio de la promo)
+    private boolean esPropioServicio(Long tokenId, String tokenRol, Long idServicio) {
+        return "SERVICIO".equals(tokenRol) && tokenId != null && tokenId.equals(idServicio);
     }
 }

@@ -12,4 +12,7 @@ public interface MascotaRepository extends MongoRepository<Mascota, Long> {
     List<Mascota> findByUsuarioId(Long usuarioId);
 
     Page<Mascota> findByUsuarioId(Long usuarioId, Pageable pageable);
+
+    // Usado para la eliminación en cascada (política de retención de datos)
+    void deleteByUsuarioId(Long usuarioId);
 }
