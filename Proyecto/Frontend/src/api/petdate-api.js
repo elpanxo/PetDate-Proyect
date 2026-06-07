@@ -30,6 +30,26 @@ export const token = {
   set: (t) => localStorage.setItem(TOKEN_KEY, t),
   remove: () => localStorage.removeItem(TOKEN_KEY),
   exists: () => !!localStorage.getItem(TOKEN_KEY),
+
+  /**
+   * Decodifica el payload del JWT guardado (sin validar la firma — solo lectura
+   * local). Útil para obtener `id`/`rol` tras el login sin llamar a endpoints
+   * protegidos para ADMIN como /usuarios/correo/{correo}.
+   * @returns {{ id?: number, rol?: string, sub?: string } | null}
+   */
+  payload() {
+    const t = this.get()
+    if (!t) return null
+    try {
+      const base64 = t.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')
+      const json = decodeURIComponent(
+        atob(base64).split('').map(c => '%' + c.charCodeAt(0).toString(16).padStart(2, '0')).join('')
+      )
+      return JSON.parse(json)
+    } catch {
+      return null
+    }
+  },
 }
 
 // ─────────────────────────────────────────────
@@ -189,6 +209,8 @@ export const auth = {
  * @property {string} contrasena    - 6-100 caracteres (obligatorio)
  * @property {string} [telefono]
  * @property {string} [direccion]
+ * @property {boolean} consentimientoInformado - debe ser `true`; el backend rechaza
+ *           el registro (400) si no se acepta la Política de Privacidad (Ley 19.628)
  */
 
 /**
@@ -405,13 +427,26 @@ export const citas = {
     http.get(`/citas/usuario/${idUsuario}${pageParams(pagination)}`),
 
   /**
-   * Lista las citas de una mascota.
+   * Lista las citas de una mascota. SOLO ADMIN — el gateway devuelve 403 a usuarios
+   * normales. Para que un dueño consulte las citas de su propia mascota, usar
+   * `porUsuarioYMascota`.
    * @param {number} idMascota
    * @param {{ page?, size? }} [pagination]
    * @returns {Promise<SpringPage<CitaMedicaResponse>>}
    */
   porMascota: (idMascota, pagination) =>
     http.get(`/citas/mascota/${idMascota}${pageParams(pagination)}`),
+
+  /**
+   * Lista las citas de una mascota puntual, vistas por su dueño (o por un ADMIN).
+   * Ruta accesible para el propio usuario — valida propiedad en el backend.
+   * @param {number} idUsuario
+   * @param {number} idMascota
+   * @param {{ page?, size? }} [pagination]
+   * @returns {Promise<SpringPage<CitaMedicaResponse>>}
+   */
+  porUsuarioYMascota: (idUsuario, idMascota, pagination) =>
+    http.get(`/citas/usuario/${idUsuario}/mascota/${idMascota}${pageParams(pagination)}`),
 
   /**
    * Lista las citas filtradas por estado.

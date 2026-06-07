@@ -4,6 +4,7 @@ import cl.PetDate.ms_usuarios.clients.CitaMedicaClient;
 import cl.PetDate.ms_usuarios.clients.MascotaClient;
 import cl.PetDate.ms_usuarios.dto.UsuarioRequest;
 import cl.PetDate.ms_usuarios.dto.UsuarioResponse;
+import cl.PetDate.ms_usuarios.exceptions.ConsentimientoRequeridoException;
 import cl.PetDate.ms_usuarios.exceptions.CorreoDuplicadoException;
 import cl.PetDate.ms_usuarios.exceptions.UsuarioNotFoundException;
 import cl.PetDate.ms_usuarios.models.Rol;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -42,6 +44,12 @@ public class UsuarioService {
     }
 
     public UsuarioResponse crearUsuario(UsuarioRequest request) {
+        // Consentimiento informado (Ley 19.628): el tratamiento de datos
+        // personales requiere aceptación previa, libre, informada y expresa
+        // del titular. Sin esto, no se permite crear la cuenta.
+        if (request.getConsentimientoInformado() == null || !request.getConsentimientoInformado()) {
+            throw new ConsentimientoRequeridoException();
+        }
         if (usuarioRepository.findByCorreo(request.getCorreo()).isPresent()) {
             throw new CorreoDuplicadoException(request.getCorreo());
         }
@@ -49,6 +57,9 @@ public class UsuarioService {
         usuario.setId(sequenceGeneratorService.generateSequence(SEQUENCE_NAME));
         usuario.setContrasena(passwordEncoder.encode(request.getContrasena()));
         usuario.setRol(Rol.USER); // siempre USER al registrarse
+        usuario.setConsentimientoInformado(true);
+        usuario.setFechaConsentimiento(LocalDateTime.now());
+        log.info("Consentimiento informado registrado para el nuevo usuario (correo={})", request.getCorreo());
         return toResponse(usuarioRepository.save(usuario));
     }
 
@@ -122,6 +133,8 @@ public class UsuarioService {
         r.setDireccion(u.getDireccion());
         r.setFechaRegistro(u.getFechaRegistro());
         r.setRol(u.getRol());
+        r.setConsentimientoInformado(u.getConsentimientoInformado());
+        r.setFechaConsentimiento(u.getFechaConsentimiento());
         return r;
     }
 }

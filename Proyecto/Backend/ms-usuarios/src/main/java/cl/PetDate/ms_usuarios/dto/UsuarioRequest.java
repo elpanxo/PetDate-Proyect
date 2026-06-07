@@ -15,6 +15,20 @@ public class UsuarioRequest {
     private String telefono;
     private String direccion;
 
+    // Consentimiento informado para el tratamiento de datos personales
+    // (Ley 19.628). Obligatorio solo al registrarse — se valida explícitamente
+    // en el servicio (no con @AssertTrue) para no afectar las actualizaciones
+    // de perfil, que reutilizan este mismo DTO.
+    private Boolean consentimientoInformado;
+
+    public Boolean getConsentimientoInformado() {
+        return consentimientoInformado;
+    }
+
+    public void setConsentimientoInformado(Boolean consentimientoInformado) {
+        this.consentimientoInformado = consentimientoInformado;
+    }
+
     public String getNombre() {
         return nombre;
     }

@@ -26,6 +26,7 @@ const FORM_CLIENTE_INICIAL = {
   telefono: '',
   password: '',
   confirm: '',
+  consentimiento: false,
 };
 
 const FORM_EMPRESA_INICIAL = {
@@ -45,6 +46,7 @@ const FORM_EMPRESA_INICIAL = {
 // Helpers de validación local
 // ─────────────────────────────────────────────
 function validarCliente(c) {
+  if (!c.consentimiento)           return 'Debes leer y aceptar la Política de Privacidad para registrarte';
   if (c.password !== c.confirm)    return 'Las contraseñas no coinciden';
   if (c.password.length < 6)       return 'La contraseña debe tener al menos 6 caracteres';
   return null;
@@ -93,6 +95,7 @@ const Register = () => {
         correo:     cliente.email,
         contrasena: cliente.password,
         telefono:   cliente.telefono,
+        consentimientoInformado: cliente.consentimiento,
       });
 
       // Login automático tras el registro
@@ -141,6 +144,11 @@ const Register = () => {
         comuna:         empresa.comuna,
         telefono:       empresa.telefono,
       });
+
+      // Login automático tras el registro — necesario para obtener un JWT de
+      // tipo SERVICIO. Sin esto, llamadas posteriores como crear promociones
+      // (POST /promociones, exclusivo de cuentas de servicio) responden 403.
+      await api.auth.loginEmpresa(empresa.email, empresa.password);
 
       localStorage.setItem('user', JSON.stringify({
         id:         servicioCreado.idServicio,
@@ -251,6 +259,24 @@ const Register = () => {
                     value={cliente.confirm}
                     onChange={e => campoCliente('confirm', e.target.value)}
                     required
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-4">
+                  <Form.Check
+                    type="checkbox"
+                    id="consentimiento-cliente"
+                    label={
+                      <span>
+                        He leído y acepto la{' '}
+                        <Link to="/politica-privacidad" target="_blank" rel="noopener noreferrer">
+                          Política de Privacidad
+                        </Link>
+                        {' '}y autorizo el tratamiento de mis datos personales conforme a la Ley N° 19.628
+                      </span>
+                    }
+                    checked={cliente.consentimiento}
+                    onChange={e => campoCliente('consentimiento', e.target.checked)}
                   />
                 </Form.Group>
 
@@ -397,7 +423,15 @@ const Register = () => {
                   <Form.Check
                     type="checkbox"
                     id="terminos"
-                    label="Acepto los términos y condiciones de uso"
+                    label={
+                      <span>
+                        Acepto los términos y condiciones de uso y la{' '}
+                        <Link to="/politica-privacidad" target="_blank" rel="noopener noreferrer">
+                          Política de Privacidad
+                        </Link>
+                        {' '}sobre el tratamiento de mis datos personales (Ley N° 19.628)
+                      </span>
+                    }
                     checked={empresa.terminos}
                     onChange={e => campoEmpresa('terminos', e.target.checked)}
                   />

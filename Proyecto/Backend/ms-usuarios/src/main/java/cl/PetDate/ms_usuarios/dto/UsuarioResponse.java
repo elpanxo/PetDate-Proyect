@@ -12,6 +12,8 @@ public class UsuarioResponse {
     private String direccion;
     private LocalDateTime fechaRegistro;
     private Rol rol;
+    private Boolean consentimientoInformado;
+    private LocalDateTime fechaConsentimiento;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -33,4 +35,10 @@ public class UsuarioResponse {
 
     public Rol getRol() { return rol; }
     public void setRol(Rol rol) { this.rol = rol; }
+
+    public Boolean getConsentimientoInformado() { return consentimientoInformado; }
+    public void setConsentimientoInformado(Boolean consentimientoInformado) { this.consentimientoInformado = consentimientoInformado; }
+
+    public LocalDateTime getFechaConsentimiento() { return fechaConsentimiento; }
+    public void setFechaConsentimiento(LocalDateTime fechaConsentimiento) { this.fechaConsentimiento = fechaConsentimiento; }
 }

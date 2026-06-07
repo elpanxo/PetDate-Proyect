@@ -87,6 +87,13 @@ public class CitaMedicaService {
                 .map(this::toResponse);
     }
 
+    // Citas de una mascota puntual, acotadas al dueño que las consulta
+    // (evita exponer /citas/mascota/{id}, que es de uso exclusivo de ADMIN)
+    public Page<CitaMedicaResponse> buscarPorUsuarioYMascota(Long idUsuario, Long idMascota, Pageable pageable) {
+        return citaMedicaRepository.findByIdUsuarioAndIdMascota(idUsuario, idMascota, pageable)
+                .map(this::toResponse);
+    }
+
     public CitaMedicaResponse actualizarCita(Long id, CitaMedicaRequest request) {
         CitaMedica cita = citaMedicaRepository.findById(id)
                 .orElseThrow(() -> new CitaMedicaNotFoundException(id));

@@ -101,6 +101,20 @@ public class CitaMedicaController {
         return ResponseEntity.ok(citaMedicaService.buscarPorUsuarioYEstado(idUsuario, estado, pageable));
     }
 
+    @Operation(summary = "Buscar citas de una mascota puntual, vistas por su dueño")
+    @GetMapping("/usuario/{idUsuario}/mascota/{idMascota}")
+    public ResponseEntity<Page<CitaMedicaResponse>> buscarPorUsuarioYMascota(
+            @PathVariable Long idUsuario,
+            @PathVariable Long idMascota,
+            @PageableDefault(size = 10, sort = "fecha") Pageable pageable,
+            @RequestHeader(value = "X-Usuario-Id", required = false) Long tokenId,
+            @RequestHeader(value = "X-Usuario-Rol", required = false) String tokenRol) {
+        if (!esPropietarioOAdmin(tokenId, tokenRol, idUsuario)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.ok(citaMedicaService.buscarPorUsuarioYMascota(idUsuario, idMascota, pageable));
+    }
+
     @Operation(summary = "Actualizar una cita")
     @ApiResponse(responseCode = "404", description = "Cita no encontrada")
     @PutMapping("/{id}")

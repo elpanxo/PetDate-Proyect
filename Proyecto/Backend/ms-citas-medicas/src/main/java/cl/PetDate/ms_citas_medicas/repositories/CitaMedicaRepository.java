@@ -11,6 +11,7 @@ public interface CitaMedicaRepository extends MongoRepository<CitaMedica, Long> 
     Page<CitaMedica> findByIdMascota(Long idMascota, Pageable pageable);
     Page<CitaMedica> findByEstado(EstadoEvento estado, Pageable pageable);
     Page<CitaMedica> findByIdUsuarioAndEstado(Long idUsuario, EstadoEvento estado, Pageable pageable);
+    Page<CitaMedica> findByIdUsuarioAndIdMascota(Long idUsuario, Long idMascota, Pageable pageable);
 
     // Usados para la eliminación en cascada (política de retención de datos)
     void deleteByIdUsuario(Long idUsuario);

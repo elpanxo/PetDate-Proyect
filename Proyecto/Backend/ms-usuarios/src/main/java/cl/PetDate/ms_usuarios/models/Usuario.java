@@ -33,6 +33,15 @@ public class Usuario {
 
     private Rol rol;
 
+    // Consentimiento informado (Ley 19.628): registra que el titular aceptó
+    // la Política de Privacidad antes de que se traten sus datos personales,
+    // y CUÁNDO lo hizo — clave para poder demostrar trazabilidad ante una
+    // eventual fiscalización.
+    @NotNull(message = "El consentimiento informado es obligatorio para registrarse")
+    private Boolean consentimientoInformado;
+
+    private LocalDateTime fechaConsentimiento;
+
     // Constructor vacío
     public Usuario() {
         this.fechaRegistro = LocalDateTime.now();
@@ -63,4 +72,10 @@ public class Usuario {
 
     public Rol getRol() { return rol; }
     public void setRol(Rol rol) { this.rol = rol; }
+
+    public Boolean getConsentimientoInformado() { return consentimientoInformado; }
+    public void setConsentimientoInformado(Boolean consentimientoInformado) { this.consentimientoInformado = consentimientoInformado; }
+
+    public LocalDateTime getFechaConsentimiento() { return fechaConsentimiento; }
+    public void setFechaConsentimiento(LocalDateTime fechaConsentimiento) { this.fechaConsentimiento = fechaConsentimiento; }
 }
