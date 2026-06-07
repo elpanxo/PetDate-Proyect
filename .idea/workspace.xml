@@ -6,7 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="a9547596-2e53-426a-aab2-85d8af57b67c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Proyecto/Data/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Data/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Proyecto/Frontend/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Frontend/src/App.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Proyecto/Frontend/src/api/petdate-api.js" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Frontend/src/api/petdate-api.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Proyecto/Frontend/src/components/login/Login.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Frontend/src/components/login/Login.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Proyecto/Frontend/src/components/login/Register.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Frontend/src/components/login/Register.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Proyecto/Frontend/src/components/misMascotas/MascotaDetalle.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Frontend/src/components/misMascotas/MascotaDetalle.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Proyecto/Frontend/src/components/misMascotas/MisMascotas.css" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Frontend/src/components/misMascotas/MisMascotas.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Proyecto/Frontend/src/components/misMascotas/MisMascotas.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Frontend/src/components/misMascotas/MisMascotas.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,27 +38,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.ApiGatewayApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Application.MsMascotasApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Application.MsServiciosApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Application.MsUsuariosApplication.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.CitaMedicaServiceTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.MascotaServiceTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.PromocionServiceTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ServicioServiceTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.UsuarioServiceTest.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/eliec/OneDrive/Desktop/Eliecer/Duoc/Semestre V/Taller de programacion/PetDate-Proyect/Proyecto/Backend/ms-servicios&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.ApiGatewayApplication.executor": "Run",
+    "Application.MsMascotasApplication.executor": "Run",
+    "Application.MsServiciosApplication.executor": "Run",
+    "Application.MsUsuariosApplication.executor": "Run",
+    "JUnit.CitaMedicaServiceTest.executor": "Run",
+    "JUnit.MascotaServiceTest.executor": "Run",
+    "JUnit.PromocionServiceTest.executor": "Run",
+    "JUnit.ServicioServiceTest.executor": "Run",
+    "JUnit.UsuarioServiceTest.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "eliecer",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/eliec/OneDrive/Desktop/Eliecer/Duoc/Semestre V/Taller de programacion/PetDate-Proyect/Proyecto/Backend/ms-servicios"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\eliec\OneDrive\Desktop\Eliecer\Duoc\Semestre V\Taller de programacion\PetDate-Proyect\Proyecto\Backend\ms-servicios" />

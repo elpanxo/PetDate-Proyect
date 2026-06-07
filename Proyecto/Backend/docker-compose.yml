@@ -8,6 +8,8 @@ services:
     environment:
       SERVER_PORT: 8080
       JWT_SECRET: ${JWT_SECRET}
+      SPRING_DATA_MONGODB_URI: mongodb://petdate-db:27017/db-PetDate
+      spring.data.mongodb.uri: mongodb://petdate-db:27017/db-PetDate
     depends_on:
       ms-usuarios:
         condition: service_started

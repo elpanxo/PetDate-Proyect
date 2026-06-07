@@ -141,10 +141,17 @@ function MascotaDetalle() {
   // ── Cargar citas de la mascota ──
   const cargarCitas = useCallback(async () => {
     if (!id) return;
+    const userData = localStorage.getItem('user');
+    if (!userData) return;
+    const { id: idUsuario } = JSON.parse(userData);
+    if (!idUsuario) return;
+
     setLoadingCitas(true);
     setErrorCitas('');
     try {
-      const page = await api.citas.porMascota(Number(id), { size: 100 });
+      // Usamos la ruta acotada al dueño: /citas/mascota/{id} es solo para ADMIN
+      // y devuelve 403 a usuarios normales.
+      const page = await api.citas.porUsuarioYMascota(idUsuario, Number(id), { size: 100 });
       setCitas(page.content);
     } catch (err) {
       if (err instanceof ApiError && err.status === 401) {

@@ -26,6 +26,13 @@ public class GlobalExceptionHandler {
                 .body(Map.of("error", ex.getMessage()));
     }
 
+    @ExceptionHandler(ConsentimientoRequeridoException.class)
+    public ResponseEntity<Map<String,String>> handleConsentimientoRequerido(
+            ConsentimientoRequeridoException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("error", ex.getMessage()));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String,String>> handleValidation(
             MethodArgumentNotValidException ex) {

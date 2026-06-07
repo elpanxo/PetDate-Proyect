@@ -279,7 +279,10 @@ function MisMascotas() {
                 <div className="mm-card-img">
                   {m.imagenUrl
                     ? <img src={`http://localhost:8080${m.imagenUrl}`} alt={m.nombre} className="mm-card-foto" />
-                    : <span className="mm-card-emoji">{EMOJI_TIPO[m.especie] || '🐾'}</span>
+                    : (() => {
+                        const IconoTipo = ICON_TIPO[m.especie] || PawPrint;
+                        return <IconoTipo className="mm-card-emoji" size={40} />;
+                      })()
                   }
                 </div>
                 <div className="mm-card-body">

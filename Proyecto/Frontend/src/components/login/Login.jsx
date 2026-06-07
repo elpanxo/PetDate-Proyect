@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Container, Row, Col, Form, Button, Card, Alert } from 'react-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
 import AuthNavbar from '../navbar/AuthNavbar';
-import api, { ApiError } from '../../api/petdate-api';
+import api, { ApiError, token } from '../../api/petdate-api';
 import { Building2 } from 'lucide-react';
 
 const Login = () => {
@@ -22,7 +22,12 @@ const Login = () => {
       await api.auth.login(email, password);
 
       // 2. Obtener datos completos del usuario (id, nombre, etc.)
-      const usuario = await api.usuarios.porCorreo(email);
+      // Usamos el id que viene en el propio JWT: /usuarios/correo/{correo} es
+      // una ruta exclusiva para ADMIN y un usuario normal recibiría 403 al
+      // intentar consultarse a sí mismo por ese camino.
+      const claims = token.payload();
+      if (!claims?.id) throw new Error('No se pudo leer la sesión');
+      const usuario = await api.usuarios.porId(claims.id);
 
       // 3. Guardar datos del usuario para la UI
       localStorage.setItem('user', JSON.stringify({

@@ -130,6 +130,9 @@ public class JwtAuthFilter implements HandlerInterceptor {
             return true;
         if (path.startsWith("/citas/mascota/"))
             return true;
+        // Solo ADMIN puede consultar el registro de auditoría de accesos (Ley 19.628)
+        if (path.startsWith("/auditoria"))
+            return true;
         return false;
     }
 
