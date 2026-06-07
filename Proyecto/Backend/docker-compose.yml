@@ -19,6 +19,8 @@ services:
         condition: service_started
       ms-citas-medicas:
         condition: service_started
+      ms-comentarios:
+        condition: service_started
     restart: unless-stopped
     networks:
       - petdate-network
@@ -58,7 +60,9 @@ services:
     networks:
       - petdate-network
     volumes:
-      - mascotas-uploads:/app/uploads/mascotas
+      # Volumen de imagenes compartido (servidor de imagenes en Data/docker-compose.yml).
+      # ms-mascotas escribe en uploads/mascotas/, igual que antes.
+      - petdate-uploads:/app/uploads
 
   ms-servicios:
     build:
@@ -75,6 +79,10 @@ services:
     restart: on-failure
     networks:
       - petdate-network
+    volumes:
+      # Mismo volumen de imagenes compartido: ms-servicios escribe en
+      # uploads/servicios/ y uploads/blogs/
+      - petdate-uploads:/app/uploads
 
   ms-citas-medicas:
     build:
@@ -93,8 +101,28 @@ services:
     networks:
       - petdate-network
 
+  ms-comentarios:
+    build:
+      context: ./ms-comentarios
+      dockerfile: Dockerfile
+    container_name: petdate-ms-comentarios
+    expose:
+      - "8085"
+    environment:
+      SERVER_PORT: 8085
+      SPRING_DATA_MONGODB_URI: mongodb://petdate-db:27017/db-PetDate
+      spring.data.mongodb.uri: mongodb://petdate-db:27017/db-PetDate
+    restart: on-failure
+    networks:
+      - petdate-network
+
 volumes:
-  mascotas-uploads:
+  # Volumen de imagenes compartido, definido y servido desde Data/docker-compose.yml
+  # (servicio "imagen-server" junto a la base de datos). Se referencia como
+  # external porque pertenece a ese stack.
+  petdate-uploads:
+    external: true
+    name: petdate-uploads
 
 networks:
   petdate-network:

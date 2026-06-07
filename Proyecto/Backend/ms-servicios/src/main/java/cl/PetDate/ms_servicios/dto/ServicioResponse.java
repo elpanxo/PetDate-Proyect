@@ -16,6 +16,7 @@ public class ServicioResponse {
     private String sitioWeb;
     private String instagram;
     private String facebook;
+    private String imagenUrl;
 
     public Long getIdServicio() { return idServicio; }
     public void setIdServicio(Long idServicio) { this.idServicio = idServicio; }
@@ -45,4 +46,6 @@ public class ServicioResponse {
     public void setInstagram(String instagram) { this.instagram = instagram; }
     public String getFacebook() { return facebook; }
     public void setFacebook(String facebook) { this.facebook = facebook; }
+    public String getImagenUrl() { return imagenUrl; }
+    public void setImagenUrl(String imagenUrl) { this.imagenUrl = imagenUrl; }
 }

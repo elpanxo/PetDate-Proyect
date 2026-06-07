@@ -42,6 +42,10 @@ public class Servicio {
     private String instagram;
     private String facebook;
 
+    // URL relativa de la imagen del servicio, servida por el servidor de
+    // imagenes compartido (Data/image-server) a traves del gateway en /uploads/**
+    private String imagenUrl;
+
     public Long getIdServicio() { return idServicio; }
     public void setIdServicio(Long idServicio) { this.idServicio = idServicio; }
     public String getNombreServicio() { return nombreServicio; }
@@ -72,4 +76,6 @@ public class Servicio {
     public void setInstagram(String instagram) { this.instagram = instagram; }
     public String getFacebook() { return facebook; }
     public void setFacebook(String facebook) { this.facebook = facebook; }
+    public String getImagenUrl() { return imagenUrl; }
+    public void setImagenUrl(String imagenUrl) { this.imagenUrl = imagenUrl; }
 }

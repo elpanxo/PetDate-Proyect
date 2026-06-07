@@ -1,4 +1,4 @@
-package cl.PetDate.ms_servicios.exceptions;
+package cl.PetDate.ms_comentarios.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,27 +12,15 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(ServicioNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleServicioNotFound(ServicioNotFoundException ex) {
+    @ExceptionHandler(ComentarioBlogNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleComentarioBlogNotFound(ComentarioBlogNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(Map.of("error", ex.getMessage()));
     }
 
-    @ExceptionHandler(PromocionNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handlePromocionNotFound(PromocionNotFoundException ex) {
+    @ExceptionHandler(ComentarioServicioNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleComentarioServicioNotFound(ComentarioServicioNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Map.of("error", ex.getMessage()));
-    }
-
-    @ExceptionHandler(BlogNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleBlogNotFound(BlogNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Map.of("error", ex.getMessage()));
-    }
-
-    @ExceptionHandler(CorreoDuplicadoException.class)
-    public ResponseEntity<Map<String, String>> handleCorreoDuplicado(CorreoDuplicadoException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(Map.of("error", ex.getMessage()));
     }
 

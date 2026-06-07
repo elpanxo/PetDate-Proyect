@@ -18,6 +18,17 @@ services:
       retries: 5
       start_period: 20s
 
+  imagen-server:
+    build: ./image-server
+    container_name: petdate-imagen-server
+    expose:
+      - "80"
+    volumes:
+      - petdate-uploads:/usr/share/nginx/html/uploads
+    networks:
+      - petdate-network
+    restart: unless-stopped
+
   mongo-backup:
     image: mongo:7.0
     container_name: petdate-backup
@@ -45,6 +56,11 @@ services:
 
 volumes:
   petdate-data:
+  # Volumen compartido de imagenes: lo escriben ms-mascotas y ms-servicios
+  # (montado como external en Backend/docker-compose.yml) y lo sirve este
+  # mismo stack a traves de "imagen-server".
+  petdate-uploads:
+    name: petdate-uploads
 
 networks:
   petdate-network:
