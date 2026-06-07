@@ -98,9 +98,21 @@ public class JwtAuthFilter implements HandlerInterceptor {
             return true;
         if (path.startsWith("/uploads/"))
             return true;
-        if (path.startsWith("/servicios") && (method.equals("GET") || method.equals("POST")))
+        // Listados y búsquedas de servicios son públicos (GET en cualquier sub-ruta)
+        if (path.startsWith("/servicios") && method.equals("GET"))
+            return true;
+        // Solo el registro de un nuevo servicio (POST exacto a /servicios) es público;
+        // sub-rutas como /servicios/{id}/imagen quedan protegidas (requieren ser dueño)
+        if (path.equals("/servicios") && method.equals("POST"))
             return true;
         if (path.startsWith("/promociones") && method.equals("GET"))
+            return true;
+        // Listar y buscar entradas de blog son públicos; crear/editar/eliminar
+        // requieren cuenta de servicio (ver esRutaSoloServicio y el ownership check del controller)
+        if (path.startsWith("/blogs") && method.equals("GET"))
+            return true;
+        // Listar y buscar comentarios (de blog y de servicio) son públicos
+        if (path.startsWith("/comentarios") && method.equals("GET"))
             return true;
         return false;
     }
@@ -142,12 +154,22 @@ public class JwtAuthFilter implements HandlerInterceptor {
             return true;
         if (path.equals("/citas") && method.equals("POST"))
             return true;
+        // Crear comentarios (de blog o de servicio) requiere cuenta de usuario;
+        // modificar/eliminar se valida por dueño dentro del propio microservicio
+        if (path.equals("/comentarios/blog") && method.equals("POST"))
+            return true;
+        if (path.equals("/comentarios/servicio") && method.equals("POST"))
+            return true;
         return false;
     }
 
     // Rutas que requieren específicamente un token de SERVICIO
     private boolean esRutaSoloServicio(String path, String method) {
         if (path.equals("/promociones") && method.equals("POST"))
+            return true;
+        // Crear una entrada de blog requiere cuenta de servicio; modificar/eliminar/subir
+        // imagen se valida por dueño (idServicio del token) dentro del propio controller
+        if (path.equals("/blogs") && method.equals("POST"))
             return true;
         return false;
     }

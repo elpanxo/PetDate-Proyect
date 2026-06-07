@@ -1,0 +1,19 @@
+server:
+  port: ${SERVER_PORT:8085}
+
+spring:
+  application:
+    name: ms-comentarios
+
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/db-PetDate}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never

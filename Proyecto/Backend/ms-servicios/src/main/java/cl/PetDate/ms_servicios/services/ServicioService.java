@@ -5,6 +5,7 @@ import cl.PetDate.ms_servicios.dto.ServicioResponse;
 import cl.PetDate.ms_servicios.exceptions.CorreoDuplicadoException;
 import cl.PetDate.ms_servicios.exceptions.ServicioNotFoundException;
 import cl.PetDate.ms_servicios.models.Servicio;
+import cl.PetDate.ms_servicios.repositories.BlogRepository;
 import cl.PetDate.ms_servicios.repositories.PromocionRepository;
 import cl.PetDate.ms_servicios.repositories.ServicioRepository;
 import org.slf4j.Logger;
@@ -13,6 +14,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 @Service
 public class ServicioService {
@@ -24,16 +33,19 @@ public class ServicioService {
     private final SequenceGeneratorService sequenceGeneratorService;
     private final PasswordEncoder passwordEncoder;
     private final PromocionRepository promocionRepository;
+    private final BlogRepository blogRepository;
 
     public ServicioService(
             ServicioRepository servicioRepository,
             SequenceGeneratorService sequenceGeneratorService,
             PasswordEncoder passwordEncoder,
-            PromocionRepository promocionRepository) {
+            PromocionRepository promocionRepository,
+            BlogRepository blogRepository) {
         this.servicioRepository = servicioRepository;
         this.sequenceGeneratorService = sequenceGeneratorService;
         this.passwordEncoder = passwordEncoder;
         this.promocionRepository = promocionRepository;
+        this.blogRepository = blogRepository;
     }
 
     public ServicioResponse crearServicio(ServicioRequest request) {
@@ -98,6 +110,41 @@ public class ServicioService {
         // las promociones viven en la misma base de datos, por lo que se eliminan directamente (sin Feign)
         promocionRepository.deleteByIdServicio(id);
         log.info("Promociones del servicio id={} eliminadas en cascada", id);
+
+        blogRepository.deleteByIdServicio(id);
+        log.info("Blogs del servicio id={} eliminados en cascada", id);
+    }
+
+    public ServicioResponse subirImagen(Long id, MultipartFile imagen) throws IOException {
+        Servicio servicio = servicioRepository.findById(id)
+                .orElseThrow(() -> new ServicioNotFoundException(id));
+
+        // Crea el directorio si no existe (volumen compartido del servidor de imagenes)
+        String uploadDir = "/app/uploads/servicios/";
+        Path dirPath = Paths.get(uploadDir);
+        if (!Files.exists(dirPath)) {
+            Files.createDirectories(dirPath);
+        }
+
+        // Nombre unico para evitar colisiones
+        String extension = StringUtils.getFilenameExtension(imagen.getOriginalFilename());
+        String nombreArchivo = "servicio_" + id + "_" + System.currentTimeMillis() + "." + extension;
+        Path rutaArchivo = dirPath.resolve(nombreArchivo);
+
+        // Eliminar imagen anterior si existe
+        if (servicio.getImagenUrl() != null) {
+            Path anterior = Paths.get("/app/uploads/servicios/",
+                    servicio.getImagenUrl().replace("/uploads/servicios/", ""));
+            Files.deleteIfExists(anterior);
+        }
+
+        // Guardar el archivo en el volumen compartido
+        Files.copy(imagen.getInputStream(), rutaArchivo, StandardCopyOption.REPLACE_EXISTING);
+
+        // Guardar solo la URL relativa (servida por el servidor de imagenes via gateway)
+        servicio.setImagenUrl("/uploads/servicios/" + nombreArchivo);
+        log.info("Imagen actualizada para servicio id={}", id);
+        return toResponse(servicioRepository.save(servicio));
     }
 
     private Servicio toEntity(ServicioRequest r) {
@@ -135,6 +182,7 @@ public class ServicioService {
         r.setSitioWeb(s.getSitioWeb());
         r.setInstagram(s.getInstagram());
         r.setFacebook(s.getFacebook());
+        r.setImagenUrl(s.getImagenUrl());
         return r;
     }
 }

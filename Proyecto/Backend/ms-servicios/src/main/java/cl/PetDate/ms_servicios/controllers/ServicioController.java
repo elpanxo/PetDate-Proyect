@@ -13,6 +13,9 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Tag(name = "Servicios", description = "CRUD de servicios")
 @RestController
@@ -91,6 +94,21 @@ public class ServicioController {
         }
         servicioService.eliminarServicio(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Subir/actualizar la imagen del servicio")
+    @ApiResponse(responseCode = "200", description = "Imagen actualizada")
+    @ApiResponse(responseCode = "404", description = "Servicio no encontrado")
+    @PostMapping("/{id}/imagen")
+    public ResponseEntity<ServicioResponse> subirImagen(
+            @PathVariable Long id,
+            @RequestParam("imagen") MultipartFile imagen,
+            @RequestHeader(value = "X-Usuario-Id", required = false) Long tokenId,
+            @RequestHeader(value = "X-Usuario-Rol", required = false) String tokenRol) throws IOException {
+        if (!esPropioServicio(tokenId, tokenRol, id)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.ok(servicioService.subirImagen(id, imagen));
     }
 
     // Solo el propio servicio (token de tipo SERVICIO cuyo id coincide) puede modificarse/eliminarse

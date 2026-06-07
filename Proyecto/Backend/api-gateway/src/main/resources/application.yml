@@ -30,8 +30,8 @@ spring:
                 predicates:
                   - Path=/usuarios/**
 
-              - id: uploads-mascotas
-                uri: http://ms-mascotas:8082
+              - id: uploads
+                uri: http://imagen-server:80
                 predicates:
                   - Path=/uploads/**
 
@@ -49,6 +49,16 @@ spring:
                 uri: http://ms-servicios:8083
                 predicates:
                   - Path=/promociones/**
+
+              - id: ms-blogs
+                uri: http://ms-servicios:8083
+                predicates:
+                  - Path=/blogs/**
+
+              - id: ms-comentarios
+                uri: http://ms-comentarios:8085
+                predicates:
+                  - Path=/comentarios/**
 
               - id: ms-citas-medicas
                 uri: http://ms-citas-medicas:8084
