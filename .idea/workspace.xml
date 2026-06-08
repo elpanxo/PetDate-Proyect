@@ -5,19 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="085a64ef-5299-48f5-972a-79aab9909382" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Proyecto/Frontend/src/components/comentarios/Comentarios.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Proyecto/Frontend/src/components/comentarios/Comentarios.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Proyecto/Data/backups/backup_2026-05-26_20-24-06.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Proyecto/Data/backups/backup_2026-05-27_15-26-38.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Proyecto/Data/backups/backup_2026-05-28_12-34-41.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Proyecto/Data/backups/backup_2026-05-28_14-36-02.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Proyecto/Data/backups/backup_2026-06-04_13-57-00.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Proyecto/Data/backups/backup_2026-06-04_14-57-44.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Proyecto/Data/backups/backup_2026-06-04_15-02-38.gz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Proyecto/Backend/ms-comentarios/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Backend/ms-comentarios/src/main/resources/application.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Proyecto/Frontend/src/api/petdate-api.js" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Frontend/src/api/petdate-api.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Proyecto/Frontend/src/components/miEmpresa/MiEmpresa.css" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Frontend/src/components/miEmpresa/MiEmpresa.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Proyecto/Frontend/src/components/miEmpresa/MiEmpresa.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Frontend/src/components/miEmpresa/MiEmpresa.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Proyecto/Frontend/src/components/misMascotas/MascotaDetalle.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Frontend/src/components/misMascotas/MascotaDetalle.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Proyecto/Frontend/src/components/misMascotas/MisMascotas.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Frontend/src/components/misMascotas/MisMascotas.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Proyecto/Frontend/src/components/blogs/Blogs.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Frontend/src/components/blogs/Blogs.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Proyecto/Frontend/src/components/servicios/ServicioDetalle.css" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Frontend/src/components/servicios/ServicioDetalle.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Proyecto/Frontend/src/components/servicios/ServicioDetalle.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Frontend/src/components/servicios/ServicioDetalle.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,16 +36,24 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "eliecer",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/eliec/OneDrive/Desktop/Eliecer/Duoc/Semestre V/Taller de programacion/PetDate-Proyect/Proyecto/Frontend/src/components"
+    "last_opened_file_path": "C:/Users/eliec/OneDrive/Desktop/Eliecer/Duoc/Semestre V/Taller de programacion/PetDate-Proyect/Proyecto/Frontend/src/components/blogs",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\eliec\OneDrive\Desktop\Eliecer\Duoc\Semestre V\Taller de programacion\PetDate-Proyect\Proyecto\Frontend\src\components" />
-      <recent name="C:\Users\eliec\OneDrive\Desktop\Eliecer\Duoc\Semestre V\Taller de programacion\PetDate-Proyect\Proyecto\Frontend\src\components\misMascotas" />
+      <recent name="C:\Users\eliec\OneDrive\Desktop\Eliecer\Duoc\Semestre V\Taller de programacion\PetDate-Proyect\Proyecto\Frontend\src\components\blogs" />
+      <recent name="C:\Users\eliec\OneDrive\Desktop\Eliecer\Duoc\Semestre V\Taller de programacion\PetDate-Proyect\Proyecto\Frontend\src\components\servicios" />
+      <recent name="C:\Users\eliec\OneDrive\Desktop\Eliecer\Duoc\Semestre V\Taller de programacion\PetDate-Proyect\Proyecto\Frontend\src\api" />
       <recent name="C:\Users\eliec\OneDrive\Desktop\Eliecer\Duoc\Semestre V\Taller de programacion\PetDate-Proyect\Proyecto\Frontend\src\components\miEmpresa" />
+      <recent name="C:\Users\eliec\OneDrive\Desktop\Eliecer\Duoc\Semestre V\Taller de programacion\PetDate-Proyect\Proyecto\Frontend\src\components" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\eliec\OneDrive\Desktop\Eliecer\Duoc\Semestre V\Taller de programacion\PetDate-Proyect\Proyecto\Frontend\src\components\comentarios" />
     </key>
   </component>
   <component name="SharedIndexes">

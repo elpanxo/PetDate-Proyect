@@ -764,6 +764,129 @@ export const blogs = {
 }
 
 // ─────────────────────────────────────────────
+// 9. COMENTARIOS  →  /comentarios/blog y /comentarios/servicio
+// ─────────────────────────────────────────────
+
+/**
+ * @typedef {Object} ComentarioRequest
+ * @property {number} idBlog|idServicio - id de la entrada o servicio comentado
+ * @property {string} nombreUsuario     - nombre a mostrar (obligatorio)
+ * @property {string} texto             - máx. 100 caracteres (obligatorio)
+ * @property {number} calificacion      - entero entre 0 y 5 (obligatorio)
+ */
+
+/**
+ * @typedef {Object} ComentarioResponse
+ * @property {number} id
+ * @property {number} idBlog|idServicio
+ * @property {number} idUsuario
+ * @property {string} nombreUsuario
+ * @property {string} texto
+ * @property {number} calificacion
+ * @property {string} fecha - ISO datetime
+ */
+
+export const comentarios = {
+  /** Comentarios y calificaciones de entradas de blog (`/comentarios/blog`). */
+  blog: {
+    /**
+     * Crea un comentario en una entrada de blog (requiere cuenta de usuario).
+     * @param {{ idBlog: number, nombreUsuario: string, texto: string, calificacion: number }} data
+     * @returns {Promise<ComentarioResponse>}
+     */
+    crear: (data) => http.post('/comentarios/blog', data),
+
+    /**
+     * Lista todos los comentarios de blog paginados (público).
+     * @param {{ page?, size?, sort? }} [pagination]
+     * @returns {Promise<SpringPage<ComentarioResponse>>}
+     */
+    listar: (pagination) => http.get(`/comentarios/blog${pageParams(pagination)}`, false),
+
+    /** @param {number} id @returns {Promise<ComentarioResponse>} */
+    porId: (id) => http.get(`/comentarios/blog/${id}`, false),
+
+    /**
+     * Comentarios de una entrada de blog específica (público).
+     * @param {number} idBlog
+     * @param {{ page?, size?, sort? }} [pagination]
+     * @returns {Promise<SpringPage<ComentarioResponse>>}
+     */
+    porBlog: (idBlog, pagination) =>
+      http.get(`/comentarios/blog/blog/${idBlog}${pageParams(pagination)}`, false),
+
+    /**
+     * Comentarios realizados por un usuario (público).
+     * @param {number} idUsuario
+     * @param {{ page?, size?, sort? }} [pagination]
+     * @returns {Promise<SpringPage<ComentarioResponse>>}
+     */
+    porUsuario: (idUsuario, pagination) =>
+      http.get(`/comentarios/blog/usuario/${idUsuario}${pageParams(pagination)}`, false),
+
+    /**
+     * Actualiza un comentario propio.
+     * @param {number} id
+     * @param {{ idBlog: number, nombreUsuario: string, texto: string, calificacion: number }} data
+     * @returns {Promise<ComentarioResponse>}
+     */
+    actualizar: (id, data) => http.put(`/comentarios/blog/${id}`, data),
+
+    /** Elimina un comentario propio. @param {number} id @returns {Promise<null>} */
+    eliminar: (id) => http.delete(`/comentarios/blog/${id}`),
+  },
+
+  /** Comentarios y calificaciones de servicios (`/comentarios/servicio`). */
+  servicio: {
+    /**
+     * Crea un comentario sobre un servicio (requiere cuenta de usuario).
+     * @param {{ idServicio: number, nombreUsuario: string, texto: string, calificacion: number }} data
+     * @returns {Promise<ComentarioResponse>}
+     */
+    crear: (data) => http.post('/comentarios/servicio', data),
+
+    /**
+     * Lista todos los comentarios de servicio paginados (público).
+     * @param {{ page?, size?, sort? }} [pagination]
+     * @returns {Promise<SpringPage<ComentarioResponse>>}
+     */
+    listar: (pagination) => http.get(`/comentarios/servicio${pageParams(pagination)}`, false),
+
+    /** @param {number} id @returns {Promise<ComentarioResponse>} */
+    porId: (id) => http.get(`/comentarios/servicio/${id}`, false),
+
+    /**
+     * Comentarios de un servicio específico (público).
+     * @param {number} idServicio
+     * @param {{ page?, size?, sort? }} [pagination]
+     * @returns {Promise<SpringPage<ComentarioResponse>>}
+     */
+    porServicio: (idServicio, pagination) =>
+      http.get(`/comentarios/servicio/servicio/${idServicio}${pageParams(pagination)}`, false),
+
+    /**
+     * Comentarios realizados por un usuario (público).
+     * @param {number} idUsuario
+     * @param {{ page?, size?, sort? }} [pagination]
+     * @returns {Promise<SpringPage<ComentarioResponse>>}
+     */
+    porUsuario: (idUsuario, pagination) =>
+      http.get(`/comentarios/servicio/usuario/${idUsuario}${pageParams(pagination)}`, false),
+
+    /**
+     * Actualiza un comentario propio.
+     * @param {number} id
+     * @param {{ idServicio: number, nombreUsuario: string, texto: string, calificacion: number }} data
+     * @returns {Promise<ComentarioResponse>}
+     */
+    actualizar: (id, data) => http.put(`/comentarios/servicio/${id}`, data),
+
+    /** Elimina un comentario propio. @param {number} id @returns {Promise<null>} */
+    eliminar: (id) => http.delete(`/comentarios/servicio/${id}`),
+  },
+}
+
+// ─────────────────────────────────────────────
 // Export default (objeto unificado)
 // ─────────────────────────────────────────────
 
@@ -807,6 +930,7 @@ const api = {
   servicios,
   promociones,
   blogs,
+  comentarios,
 }
 
 export default api
