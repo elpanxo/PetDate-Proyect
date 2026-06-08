@@ -4,6 +4,7 @@ import AppNavbar from '../navbar/Navbar'
 import Footer from '../footer/Footer'
 import { Stethoscope, Beef, Bath, Dog, Cat, Home as HomeIcon, Newspaper, Hourglass, TriangleAlert } from 'lucide-react'
 import api, { BASE_URL } from '../../api/petdate-api'
+import Comentarios from '../comentarios/Comentarios'
 import './Blogs.css'
 
 // ─────────────────────────────────────────────
@@ -130,6 +131,8 @@ function Blogs() {
               )}
               {seleccionado.fecha && <p className="blog-modal__fecha">{formatearFecha(seleccionado.fecha)}</p>}
               <p className="blog-modal__texto">{seleccionado.texto}</p>
+
+              <Comentarios tipo="blog" id={seleccionado.idBlog} />
             </Modal.Body>
           </>
         )}
