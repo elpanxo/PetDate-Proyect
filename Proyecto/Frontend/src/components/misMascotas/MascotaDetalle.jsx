@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Modal, Button, Form } from 'react-bootstrap';
 import Navbar from '../navbar/Navbar';
 import Footer from '../footer/Footer';
-import api, { ApiError } from '../../api/petdate-api';
+import api, { ApiError, BASE_URL } from '../../api/petdate-api';
 import { Dog, Cat, Bird, Rabbit, Turtle, Fish, PawPrint, Stethoscope, Syringe, Microscope, Pill, Hospital, ClipboardList, Scissors, Bath, Pin, Hourglass, TriangleAlert, Calendar, Clock, Pencil, Trash2 } from 'lucide-react';
 import './MascotaDetalle.css';
 
@@ -274,8 +274,8 @@ function MascotaDetalle() {
           {/* Foto + nombre */}
           <div className="md-ficha-header">
             <div className="md-perfil-img">
-              {localStorage.getItem(`mascota_img_${mascota.id}`)
-                ? <img src={localStorage.getItem(`mascota_img_${mascota.id}`)} alt={mascota.nombre} className="md-photo-big" />
+              {mascota.imagenUrl
+                ? <img src={`${BASE_URL}${mascota.imagenUrl}`} alt={mascota.nombre} className="md-photo-big" />
                 : (() => { const EspecieIcon = ICON_TIPO[mascota.especie] || PawPrint; return <EspecieIcon size={52} className="md-emoji-big" />; })()
               }
             </div>

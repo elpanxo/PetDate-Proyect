@@ -1,4 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PropertiesComponent">{}</component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="085a64ef-5299-48f5-972a-79aab9909382" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Proyecto/Data/backups/backup_2026-05-26_20-24-06.gz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Proyecto/Data/backups/backup_2026-05-27_15-26-38.gz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Proyecto/Data/backups/backup_2026-05-28_12-34-41.gz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Proyecto/Data/backups/backup_2026-05-28_14-36-02.gz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Proyecto/Data/backups/backup_2026-06-04_13-57-00.gz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Proyecto/Data/backups/backup_2026-06-04_14-57-44.gz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Proyecto/Data/backups/backup_2026-06-04_15-02-38.gz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Proyecto/Frontend/src/api/petdate-api.js" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Frontend/src/api/petdate-api.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Proyecto/Frontend/src/components/miEmpresa/MiEmpresa.css" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Frontend/src/components/miEmpresa/MiEmpresa.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Proyecto/Frontend/src/components/miEmpresa/MiEmpresa.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Frontend/src/components/miEmpresa/MiEmpresa.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Proyecto/Frontend/src/components/misMascotas/MascotaDetalle.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Frontend/src/components/misMascotas/MascotaDetalle.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Proyecto/Frontend/src/components/misMascotas/MisMascotas.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Proyecto/Frontend/src/components/misMascotas/MisMascotas.jsx" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="3EpKykw9ghdjDzEAThICVMWSUkK" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/eliec/OneDrive/Desktop/Eliecer/Duoc/Semestre V/Taller de programacion/PetDate-Proyect/Proyecto/Frontend/src/components"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\eliec\OneDrive\Desktop\Eliecer\Duoc\Semestre V\Taller de programacion\PetDate-Proyect\Proyecto\Frontend\src\components" />
+      <recent name="C:\Users\eliec\OneDrive\Desktop\Eliecer\Duoc\Semestre V\Taller de programacion\PetDate-Proyect\Proyecto\Frontend\src\components\misMascotas" />
+      <recent name="C:\Users\eliec\OneDrive\Desktop\Eliecer\Duoc\Semestre V\Taller de programacion\PetDate-Proyect\Proyecto\Frontend\src\components\miEmpresa" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="085a64ef-5299-48f5-972a-79aab9909382" name="Changes" comment="" />
+      <created>1780870327646</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1780870327646</updated>
+    </task>
+    <servers />
+  </component>
 </project>
