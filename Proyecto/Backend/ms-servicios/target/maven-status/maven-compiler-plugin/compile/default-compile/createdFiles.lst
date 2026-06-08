@@ -1,0 +1,7 @@
+cl\PetDate\ms_servicios\dto\BlogResponse.class
+cl\PetDate\ms_servicios\exceptions\BlogNotFoundException.class
+cl\PetDate\ms_servicios\repositories\BlogRepository.class
+cl\PetDate\ms_servicios\models\Blog.class
+cl\PetDate\ms_servicios\services\BlogService.class
+cl\PetDate\ms_servicios\controllers\BlogController.class
+cl\PetDate\ms_servicios\dto\BlogRequest.class
