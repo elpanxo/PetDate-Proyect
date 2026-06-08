@@ -17,7 +17,7 @@
 // Configuración base
 // ─────────────────────────────────────────────
 
-const BASE_URL = 'http://localhost:8080'
+export const BASE_URL = 'http://localhost:8080'
 
 const TOKEN_KEY = 'petdate_token'
 
@@ -586,6 +586,25 @@ export const servicios = {
    * @returns {Promise<null>}
    */
   eliminar: (id) => http.delete(`/servicios/${id}`),
+
+/**
+   * Sube o reemplaza la imagen/logo del servicio (multipart/form-data).
+   * Solo el propio servicio autenticado puede hacerlo (validado en el backend).
+   * @param {number} id
+   * @param {File} archivo
+   * @returns {Promise<ServicioResponse>}
+   */
+  subirImagen: (id, archivo) => {
+    const formData = new FormData()
+    formData.append('imagen', archivo)
+    // OJO: no fijar 'Content-Type' a mano — el navegador agrega el boundary
+    // correcto del multipart automáticamente al usar FormData.
+    return request(`/servicios/${id}/imagen`, {
+      method: 'POST',
+      headers: token.exists() ? { Authorization: `Bearer ${token.get()}` } : {},
+      body: formData,
+    })
+  },
 }
 
 // ─────────────────────────────────────────────
@@ -659,6 +678,92 @@ export const promociones = {
 }
 
 // ─────────────────────────────────────────────
+// 7. BLOGS  →  /blogs
+// ─────────────────────────────────────────────
+
+/**
+ * @typedef {Object} BlogRequest
+ * @property {number} idServicio - obligatorio
+ * @property {string} titulo     - obligatorio
+ * @property {string} texto      - obligatorio
+ */
+
+/**
+ * @typedef {Object} BlogResponse
+ * @property {number} idBlog
+ * @property {number} idServicio
+ * @property {string} titulo
+ * @property {string} fecha   - ISO datetime
+ * @property {string} texto
+ * @property {string} imagen  - URL relativa de la imagen (o null)
+ */
+
+export const blogs = {
+  /**
+   * Crea una entrada de blog (solo cuentas de tipo SERVICIO, para su propio servicio).
+   * @param {BlogRequest} data
+   * @returns {Promise<BlogResponse>}
+   */
+  crear: (data) => http.post('/blogs', data),
+
+  /**
+   * Lista todas las entradas de blog paginadas (público).
+   * @param {{ page?, size?, sort? }} [pagination]
+   * @returns {Promise<SpringPage<BlogResponse>>}
+   */
+  listar: (pagination) => http.get(`/blogs${pageParams(pagination)}`, false),
+
+  /**
+   * Busca una entrada de blog por ID (público).
+   * @param {number} id
+   * @returns {Promise<BlogResponse>}
+   */
+  porId: (id) => http.get(`/blogs/${id}`, false),
+
+  /**
+   * Lista las entradas de blog de un servicio específico (público).
+   * @param {number} idServicio
+   * @param {{ page?, size?, sort? }} [pagination]
+   * @returns {Promise<SpringPage<BlogResponse>>}
+   */
+  porServicio: (idServicio, pagination) =>
+    http.get(`/blogs/servicio/${idServicio}${pageParams(pagination)}`, false),
+
+  /**
+   * Actualiza el título y texto de una entrada de blog (solo el servicio dueño).
+   * @param {number} id
+   * @param {BlogRequest} data
+   * @returns {Promise<BlogResponse>}
+   */
+  actualizar: (id, data) => http.put(`/blogs/${id}`, data),
+
+  /**
+   * Elimina una entrada de blog (solo el servicio dueño).
+   * @param {number} id
+   * @returns {Promise<null>}
+   */
+  eliminar: (id) => http.delete(`/blogs/${id}`),
+
+  /**
+   * Sube o reemplaza la imagen de una entrada de blog (multipart/form-data, solo el servicio dueño).
+   * @param {number} id
+   * @param {File} archivo
+   * @returns {Promise<BlogResponse>}
+   */
+  subirImagen: (id, archivo) => {
+    const formData = new FormData()
+    formData.append('imagen', archivo)
+    // OJO: no fijar 'Content-Type' a mano — el navegador agrega el boundary
+    // correcto del multipart automáticamente al usar FormData.
+    return request(`/blogs/${id}/imagen`, {
+      method: 'POST',
+      headers: token.exists() ? { Authorization: `Bearer ${token.get()}` } : {},
+      body: formData,
+    })
+  },
+}
+
+// ─────────────────────────────────────────────
 // Export default (objeto unificado)
 // ─────────────────────────────────────────────
 
@@ -701,6 +806,7 @@ const api = {
   citas,
   servicios,
   promociones,
+  blogs,
 }
 
 export default api
