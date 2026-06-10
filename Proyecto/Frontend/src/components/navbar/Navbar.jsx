@@ -15,7 +15,9 @@ function Navbar() {
 
   const navigate  = useNavigate();
   const location  = useLocation();
-  const isHome    = location.pathname === '/';
+  const isHome    = 
+    location.pathname === '/' ||
+    location.pathname === '/contacto';
 
   /* ── Detectar scroll ── */
   useEffect(() => {
