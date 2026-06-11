@@ -264,8 +264,8 @@ function Servicios() {
                   {filtrados.map(s => {
                     const tipo = normalizarTipo(s.tipoServicio)
                     const IconoRespaldo = ICONO_RESPALDO[tipo] || Store
-                    const fotoUrl = s.fotoUrl
-                      ? (s.fotoUrl.startsWith('http') ? s.fotoUrl : `${BASE_URL}${s.fotoUrl}`)
+                    const fotoUrl = s.imagenUrl
+                      ? (s.imagenUrl.startsWith('http') ? s.imagenUrl : `${BASE_URL}${s.imagenUrl}`)
                       : null
 
                     return (

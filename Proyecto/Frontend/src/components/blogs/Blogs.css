@@ -178,6 +178,13 @@
   overflow: hidden;
 }
 
+.blog-card__autor {
+  font-size: 0.75rem;
+  color: #9b7eb8;
+  font-weight: 600;
+  margin: 0;
+}
+
 .blog-card__extracto {
   font-size: 0.875rem;
   color: #666;
@@ -237,13 +244,27 @@
   margin-bottom: 16px;
 }
 
+.blog-modal__meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
 .blog-modal__fecha {
   font-size: 0.78rem;
   font-weight: 700;
   color: #7e6492;
   text-transform: uppercase;
   letter-spacing: 0.03rem;
-  margin-bottom: 10px;
+  margin: 0;
+}
+
+.blog-modal__autor {
+  font-size: 0.82rem;
+  color: #9b7eb8;
+  font-weight: 600;
 }
 
 .blog-modal__texto {

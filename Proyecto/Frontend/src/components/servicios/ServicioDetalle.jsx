@@ -4,7 +4,7 @@ import AppNavbar from '../navbar/Navbar'
 import Footer from '../footer/Footer'
 import { TIPO_COLOR, TIPO_ICON } from './serviciosData'
 import { Store, MapPin, Clock, Phone, MessageCircle, Globe, Camera, User, Tag, PawPrint, Hourglass } from 'lucide-react'
-import api from '../../api/petdate-api'
+import api, { BASE_URL } from '../../api/petdate-api'
 import Comentarios from '../comentarios/Comentarios'
 import './ServicioDetalle.css'
 
@@ -64,8 +64,11 @@ function ServicioDetalle() {
     </>
   )
 
-  const color   = resolverColor(servicio.tipoServicio)
+  const color    = resolverColor(servicio.tipoServicio)
   const TipoIcon = resolverIcon(servicio.tipoServicio)
+  const imagenUrl = servicio.imagenUrl
+    ? (servicio.imagenUrl.startsWith('http') ? servicio.imagenUrl : `${BASE_URL}${servicio.imagenUrl}`)
+    : null
 
   return (
     <>
@@ -80,6 +83,12 @@ function ServicioDetalle() {
 
           {/* ── Panel izquierdo: información ── */}
           <aside className="detalle-info">
+            {imagenUrl && (
+              <div className="detalle-info__banner">
+                <img src={imagenUrl} alt={servicio.nombreServicio} className="detalle-info__banner-img" />
+              </div>
+            )}
+
             <div className="detalle-info__top" style={{ borderTopColor: color }}>
               <div className="detalle-info__icono"><TipoIcon size={28} /></div>
               <div>

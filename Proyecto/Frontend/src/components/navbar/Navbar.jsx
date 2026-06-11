@@ -15,12 +15,14 @@ function Navbar() {
 
   const navigate  = useNavigate();
   const location  = useLocation();
-  const isHome    = 
+  const isHome    =
     location.pathname === '/' ||
     location.pathname === '/contacto' ||
     location.pathname === '/nosotros' ||
     location.pathname === '/blogs' ||
     location.pathname === '/servicios';
+
+  const showFab = location.pathname !== '/login' && location.pathname !== '/register';
 
   /* ── Detectar scroll ── */
   useEffect(() => {
@@ -159,6 +161,14 @@ function Navbar() {
           onClick={() => setOpen(false)}
           aria-hidden="true"
         />
+      )}
+
+      {/* ── FAB urgencias ── */}
+      {showFab && (
+        <Link to="/servicios?tipo=Veterinaria+24%2F7" className="fab">
+          <span className="fab__icon">🚨</span>
+          <span className="fab__label">Urgencia 24/7</span>
+        </Link>
       )}
 
       {/* ── Drawer lateral mobile ── */}
