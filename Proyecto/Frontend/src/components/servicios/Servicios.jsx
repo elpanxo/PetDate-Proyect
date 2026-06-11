@@ -4,6 +4,10 @@ import AppNavbar from '../navbar/Navbar'
 import Footer from '../footer/Footer'
 import api, { ApiError, BASE_URL } from '../../api/petdate-api'
 import { TIPOS, TIPO_COLOR, TIPO_ICON } from './serviciosData'
+import vetImg from '../../assets/roots/veterinaria-servicio.jpg'
+import dogSpaImg from '../../assets/roots/dogHair.jpg'
+import petShopImg from '../../assets/roots/catPetShop.jpg'
+import urgenciaImg from '../../assets/roots/catVet.jpg'
 import { Search, Hospital, Siren, Scissors, ShoppingCart, PawPrint, TriangleAlert, Hourglass, Store, MapPin, Clock } from 'lucide-react'
 import './Servicios.css'
 
@@ -17,7 +21,16 @@ function extraerComunas(servicios) {
   return ['Todas', ...Array.from(set).sort()]
 }
 
-// Chips de categoría visibles (sin "Todos")
+const bgPhotos = [
+  { src: vetImg, pos: 'center center' },
+  { src: dogSpaImg, pos: 'center top'    },
+  { src: petShopImg, pos: 'center center' },
+  { src: urgenciaImg, pos: 'center 40%'   },
+]
+
+const zoomDuration = ['24s', '20s', '27s', '22s']
+const zoomDir      = ['normal', 'alternate', 'normal', 'alternate']
+
 const CHIPS = [
   {
     valor: 'Veterinaria',
@@ -61,7 +74,6 @@ const CHIPS = [
   },
 ]
 
-// Icono de respaldo por tipo cuando no hay foto
 const ICONO_RESPALDO = {
   'Veterinaria':        Hospital,
   'Veterinaria 24/7':   Siren,
@@ -82,7 +94,6 @@ function Servicios() {
   const [loading, setLoading]     = useState(true)
   const [error, setError]         = useState('')
 
-  // Leer usuario del localStorage
   const [user, setUser] = useState(() => {
     const stored = localStorage.getItem('user')
     return stored ? JSON.parse(stored) : null
@@ -125,7 +136,6 @@ function Servicios() {
     cargarServicios()
   }, [cargarServicios])
 
-  // Filtrado local
   const filtrados = serviciosTodos.filter(s => {
     const coincideTipo = tipoActivo === 'todos' || s.tipoServicio === tipoActivo
     const coincideComuna = comunaActiva === 'Todas' || s.comuna === comunaActiva
@@ -136,7 +146,6 @@ function Servicios() {
   const chipActivo = CHIPS.find(c => c.valor === tipoActivo)
 
   const handleChip = (valor) => {
-    // Toggle: si ya está activo, vuelve a todos
     setTipoActivo(prev => prev === valor ? 'todos' : valor)
     setComunaActiva('Todas')
   }
@@ -149,13 +158,26 @@ function Servicios() {
       <section className="servicios-hero">
         <div className="servicios-hero__bg" aria-hidden="true">
           <div className="servicios-hero__collage">
-            <div className="servicios-hero__cell">
-              <div className="servicios-hero__bg-placeholder">🐾</div></div>
-              <div className="servicios-hero__cell"><div className="servicios-hero__bg-placeholder">🐾</div></div>
-              <div className="servicios-hero__cell"><div className="servicios-hero__bg-placeholder">🐾</div></div>
-              <div className="servicios-hero__cell"><div className="servicios-hero__bg-placeholder">🐾</div></div>
-            </div>
+            {bgPhotos.map((photo, i) => (
+              <div key={i} className="servicios-hero__cell">
+                {photo.src ? (
+                  <img
+                    src={photo.src}
+                    alt=""
+                    className="servicios-hero__bg-img"
+                    style={{
+                      objectPosition: photo.pos,
+                      animationDuration: zoomDuration[i],
+                      animationDirection: zoomDir[i],
+                    }}
+                  />
+                ) : (
+                  <div className="servicios-hero__bg-placeholder">🐾</div>
+                )}
+              </div>
+            ))}
           </div>
+        </div>
         <div className="servicios-hero__vignette" aria-hidden="true" />
         <div className="servicios-hero__content">
           <h1 className="servicios-hero__title">Servicios</h1>
@@ -274,7 +296,6 @@ function Servicios() {
                         to={`/servicios/${s.idServicio}`}
                         className="servicio-card"
                       >
-                        {/* Foto o icono de respaldo */}
                         <div className="servicio-card__media">
                           {fotoUrl ? (
                             <img src={fotoUrl} alt={s.nombreServicio} className="servicio-card__img" />
@@ -291,7 +312,6 @@ function Servicios() {
                           </span>
                         </div>
 
-                        {/* Info */}
                         <div className="servicio-card__body">
                           <h3 className="servicio-card__nombre">{s.nombreServicio}</h3>
                           {s.tipoServicio && (
