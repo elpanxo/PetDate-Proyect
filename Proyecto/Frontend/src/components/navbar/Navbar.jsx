@@ -17,7 +17,10 @@ function Navbar() {
   const location  = useLocation();
   const isHome    = 
     location.pathname === '/' ||
-    location.pathname === '/contacto';
+    location.pathname === '/contacto' ||
+    location.pathname === '/nosotros' ||
+    location.pathname === '/blogs' ||
+    location.pathname === '/servicios';
 
   /* ── Detectar scroll ── */
   useEffect(() => {

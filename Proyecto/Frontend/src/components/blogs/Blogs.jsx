@@ -60,6 +60,10 @@ function Blogs() {
 
       {/* Hero */}
       <section className="blogs-hero">
+        <div className="blogs-hero__bg" aria-hidden="true">
+          <div className="blogs-hero__bg-placeholder">🐾</div>
+        </div>
+        <div className="blogs-hero__vignette" aria-hidden="true" />
         <div className="blogs-hero__content">
           <h1 className="blogs-hero__title">Blog PetDate</h1>
           <p className="blogs-hero__slogan">Explora artículos, consejos y novedades sobre el cuidado de tus mascotas, escritos por los servicios de la comunidad.</p>
