@@ -252,6 +252,35 @@
 
 .mobile-drawer__link:hover { color: #7e6492; }
 
+/* ── FAB Urgencias ── */
+.fab {
+  text-decoration: none;
+  position: fixed;
+  bottom: 32px; right: 32px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  background: #c0392b;
+  color: #fff;
+  border-radius: 50px;
+  padding: 14px;
+  box-shadow: 0 4px 16px rgba(192, 57, 43, 0.45);
+  cursor: pointer;
+  width: 52px;
+  overflow: hidden;
+  transition: width 0.35s ease, padding 0.35s ease;
+  white-space: nowrap;
+}
+
+.fab:hover { width: 200px; padding: 14px 20px; }
+.fab__icon { font-size: 1.35rem; flex-shrink: 0; }
+.fab__label {
+  font-size: 0.85rem; font-weight: 700;
+  opacity: 0; max-width: 0; overflow: hidden;
+  transition: opacity 0.25s ease 0.1s, max-width 0.35s ease;
+}
+.fab:hover .fab__label { opacity: 1; max-width: 160px; }
+
 .mobile-drawer__footer {
   padding: 0 24px 32px;
   display: flex;

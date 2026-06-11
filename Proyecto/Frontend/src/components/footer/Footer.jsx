@@ -29,6 +29,7 @@ function Footer() {
             <li><Link to="/servicios" className="footer__link">Servicios</Link></li>
             <li><Link to="/blogs" className="footer__link">Blog</Link></li>
             <li><Link to="/contacto" className="footer__link">Contacto</Link></li>
+            <li><Link to="/politica-privacidad" className="footer__link">Política de Privacidad</Link></li>
           </ul>
         </div>
 

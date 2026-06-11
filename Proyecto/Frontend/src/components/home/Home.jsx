@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import AppNavbar from '../navbar/Navbar'
 import Footer from '../footer/Footer'
-import api from '../../api/petdate-api'
+import api, { BASE_URL } from '../../api/petdate-api'
 import { TIPO_COLOR } from '../servicios/serviciosData'
 import './Home.css'
 
@@ -20,17 +20,19 @@ const bgPhotos = [
 const zoomDuration = ['22s', '27s', '19s', '24s', '29s', '21s']
 const zoomDir      = ['normal', 'alternate', 'alternate', 'normal', 'normal', 'alternate']
 
-const tips = [
-  { id: 1, title: 'CUÁL ES LA FORMA CORRECTA DE LLEVAR A TU MASCOTA',     desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed...' },
-  { id: 2, title: 'CÓMO PRESENTAR UNA NUEVA MASCOTA EN CASA',              desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed...' },
-  { id: 3, title: 'QUÉ HACER SI TU GATO VOMITA',                           desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed...' },
-  { id: 4, title: 'INFORMATIVO SOBRE EL EXAMEN SOMA DE IDEXX',             desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed...' },
-]
+function formatearFecha(fechaStr) {
+  if (!fechaStr) return ''
+  const d = new Date(fechaStr)
+  return d.toLocaleDateString('es-CL', { day: '2-digit', month: 'long', year: 'numeric' }).toUpperCase()
+}
 
 function Home() {
   const [user, setUser]           = useState(null)
-  const [promos, setPromos]       = useState([])
+  const [promos, setPromos]             = useState([])
   const [cargandoPromos, setCargandoPromos] = useState(true)
+  const [blogs, setBlogs]               = useState([])
+  const [blogsServicios, setBlogsServicios] = useState({})
+  const [cargandoBlogs, setCargandoBlogs] = useState(true)
 
   useEffect(() => {
     const stored = localStorage.getItem('user')
@@ -72,6 +74,26 @@ function Home() {
       }
     }
     cargarPromos()
+  }, [])
+
+  useEffect(() => {
+    const cargarBlogs = async () => {
+      try {
+        const resultado = await api.blogs.listar({ size: 3, sort: 'id,desc' })
+        const lista = resultado.content || []
+        setBlogs(lista)
+
+        const idsUnicos = [...new Set(lista.map(b => b.idServicio).filter(Boolean))]
+        const svcs      = await Promise.all(idsUnicos.map(id => api.servicios.porId(id).catch(() => null)))
+        const mapa      = Object.fromEntries(svcs.filter(Boolean).map(s => [s.idServicio, s]))
+        setBlogsServicios(mapa)
+      } catch {
+        setBlogs([])
+      } finally {
+        setCargandoBlogs(false)
+      }
+    }
+    cargarBlogs()
   }, [])
 
   return (
@@ -140,12 +162,6 @@ function Home() {
           </div>
         </div>
       </section>
-
-      {/* FAB urgencias */}
-      <Link to="/servicios?tipo=Veterinaria+24%2F7" className="fab">
-        <span className="fab__icon">🚨</span>
-        <span className="fab__label">Urgencia 24/7</span>
-      </Link>
 
       {/* ══════ PROMOCIONES ══════ */}
       <section className="home-promos">
@@ -216,22 +232,49 @@ function Home() {
 
 </section>
 
-      {/* ══════ CONSEJOS ══════ */}
+      {/* ══════ BLOGS / CONSEJOS ══════ */}
       <section className="home-tips">
         <div className="home-tips__header">
           <h2 className="home-tips__title">Consejos y cuidados</h2>
         </div>
         <div className="home-tips__grid">
-          {tips.map((tip) => (
-            <article key={tip.id} className="tip-card">
-              <div className="tip-card__media"/>
-              <div className="tip-card__body">
-                <h3 className="tip-card__title">{tip.title}</h3>
-                <p className="tip-card__desc">{tip.desc}</p>
-                <button className="tip-card__btn">Leer ahora</button>
-              </div>
-            </article>
-          ))}
+          {cargandoBlogs ? (
+            <p style={{ gridColumn: '1/-1', textAlign: 'center', padding: '2rem', color: '#888' }}>
+              Cargando artículos...
+            </p>
+          ) : blogs.length === 0 ? (
+            <p style={{ gridColumn: '1/-1', textAlign: 'center', padding: '2rem', color: '#888' }}>
+              Aún no hay artículos publicados.
+            </p>
+          ) : (
+            blogs.map((blog) => (
+              <article key={blog.idBlog} className="tip-card">
+                <div className="tip-card__media">
+                  {blog.imagen
+                    ? <img src={`${BASE_URL}${blog.imagen}`} alt={blog.titulo} className="tip-card__media-img" />
+                    : null
+                  }
+                </div>
+                <div className="tip-card__body">
+                  {blog.fecha && <span className="tip-card__fecha">{formatearFecha(blog.fecha)}</span>}
+                  <h3 className="tip-card__title">{blog.titulo}</h3>
+                  {blogsServicios[blog.idServicio] && (
+                    <p className="tip-card__autor">Por {blogsServicios[blog.idServicio].nombreServicio}</p>
+                  )}
+                  <p className="tip-card__desc">{blog.texto?.slice(0, 110)}{blog.texto?.length > 110 ? '...' : ''}</p>
+                  <Link to="/blogs" className="tip-card__btn">Leer ahora</Link>
+                </div>
+              </article>
+            ))
+          )}
+
+          {/* CTA — siempre visible */}
+          <article className="tip-card tip-card--cta">
+            <span className="tip-card__cta-icon">🐾</span>
+            <h3 className="tip-card__cta-title">¿Quieres leer más?</h3>
+            <p className="tip-card__cta-desc">Explora todos los artículos y consejos de la comunidad.</p>
+            <Link to="/blogs" className="tip-card__cta-btn">Ver todos</Link>
+          </article>
         </div>
       </section>
 

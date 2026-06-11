@@ -33,9 +33,10 @@ const extracto = (texto, max = 160) => {
 }
 
 function Blogs() {
-  const [posts, setPosts]     = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError]     = useState('')
+  const [posts, setPosts]           = useState([])
+  const [servicios, setServicios]   = useState({})
+  const [loading, setLoading]       = useState(true)
+  const [error, setError]           = useState('')
   const [seleccionado, setSeleccionado] = useState(null)
 
   useEffect(() => {
@@ -43,8 +44,14 @@ function Blogs() {
       setLoading(true)
       setError('')
       try {
-        const page = await api.blogs.listar({ size: 30, sort: 'fecha,desc' })
-        setPosts(page.content || [])
+        const page   = await api.blogs.listar({ size: 30, sort: 'fecha,desc' })
+        const lista  = page.content || []
+        setPosts(lista)
+
+        const idsUnicos = [...new Set(lista.map(p => p.idServicio).filter(Boolean))]
+        const svcs      = await Promise.all(idsUnicos.map(id => api.servicios.porId(id).catch(() => null)))
+        const mapa      = Object.fromEntries(svcs.filter(Boolean).map(s => [s.idServicio, s]))
+        setServicios(mapa)
       } catch {
         setError('No se pudieron cargar las entradas del blog. Intenta de nuevo más tarde.')
       } finally {
@@ -108,6 +115,9 @@ function Blogs() {
                   <div className="blog-card__body">
                     {post.fecha && <span className="blog-card__fecha">{formatearFecha(post.fecha)}</span>}
                     <h3 className="blog-card__titulo">{post.titulo}</h3>
+                    {servicios[post.idServicio] && (
+                      <p className="blog-card__autor">Por {servicios[post.idServicio].nombreServicio}</p>
+                    )}
                     <p className="blog-card__extracto">{extracto(post.texto)}</p>
                     <button className="blog-card__btn" onClick={() => setSeleccionado(post)}>Ver más</button>
                   </div>
@@ -133,7 +143,12 @@ function Blogs() {
                   className="blog-modal__img"
                 />
               )}
-              {seleccionado.fecha && <p className="blog-modal__fecha">{formatearFecha(seleccionado.fecha)}</p>}
+              <div className="blog-modal__meta">
+                {seleccionado.fecha && <span className="blog-modal__fecha">{formatearFecha(seleccionado.fecha)}</span>}
+                {servicios[seleccionado.idServicio] && (
+                  <span className="blog-modal__autor">Por {servicios[seleccionado.idServicio].nombreServicio}</span>
+                )}
+              </div>
               <p className="blog-modal__texto">{seleccionado.texto}</p>
 
               <Comentarios tipo="blog" id={seleccionado.idBlog} />
