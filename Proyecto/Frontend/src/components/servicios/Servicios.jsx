@@ -190,6 +190,22 @@ function Servicios() {
       {/* ── Body ── */}
       <div className="servicios-body">
 
+        {/* Banner CTA — solo para no-empresa */}
+        {(!user || user.role !== 'empresa') && (
+          <div className="servicios-cta">
+            <div className="servicios-cta__icon-wrap">
+              <Store size={32} color="#7e6492" />
+            </div>
+            <div className="servicios-cta__text">
+              <h3 className="servicios-cta__title">¿Tienes un negocio relacionado con mascotas?</h3>
+              <p className="servicios-cta__desc">Registra tu emprendimiento y conecta con miles de dueños de mascotas.</p>
+            </div>
+            <Link to="/register" className="servicios-cta__btn">
+              Registra tu negocio <Store size={18} />
+            </Link>
+          </div>
+        )}
+
         {/* Barra de búsqueda + select comuna */}
         <div className="servicios-search-bar">
           <div className="servicios-search-input">
@@ -337,22 +353,6 @@ function Servicios() {
             </>
           )}
         </div>
-
-        {/* Banner CTA — solo para no-empresa */}
-        {(!user || user.role !== 'empresa') && (
-          <div className="servicios-cta">
-            <div className="servicios-cta__icon-wrap">
-              <Store size={32} color="#7e6492" />
-            </div>
-            <div className="servicios-cta__text">
-              <h3 className="servicios-cta__title">¿Tienes un negocio relacionado con mascotas?</h3>
-              <p className="servicios-cta__desc">Registra tu emprendimiento y conecta con miles de dueños de mascotas.</p>
-            </div>
-            <Link to="/register" className="servicios-cta__btn">
-              Registra tu negocio <Store size={18} />
-            </Link>
-          </div>
-        )}
 
       </div>
 
