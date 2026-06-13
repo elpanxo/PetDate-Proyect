@@ -8,7 +8,7 @@ import vetImg from '../../assets/roots/veterinaria-servicio.jpg'
 import dogSpaImg from '../../assets/roots/dogHair.jpg'
 import petShopImg from '../../assets/roots/catPetShop.jpg'
 import urgenciaImg from '../../assets/roots/catVet.jpg'
-import { Search, Hospital, Siren, Scissors, ShoppingCart, PawPrint, TriangleAlert, Hourglass, Store, MapPin, Clock } from 'lucide-react'
+import { Search, Hospital, Siren, Scissors, ShoppingCart, PawPrint, TriangleAlert, Hourglass, Store, MapPin, Clock, Star } from 'lucide-react'
 import './Servicios.css'
 
 function normalizarTipo(tipoServicio) {
@@ -81,6 +81,28 @@ const ICONO_RESPALDO = {
   'Tienda de mascotas': ShoppingCart,
 }
 
+// Estrellas + cantidad de comentarios para la card de servicio
+function MiniEstrellas({ valor = 0, total = 0 }) {
+  if (total === 0) return null
+  const redondeado = Math.round(valor)
+  return (
+    <span className="servicio-card__rating">
+      <span className="servicio-card__estrellas">
+        {[1, 2, 3, 4, 5].map((n) => (
+          <Star
+            key={n}
+            size={13}
+            className={n <= redondeado ? 'servicio-card__estrella servicio-card__estrella--llena' : 'servicio-card__estrella'}
+          />
+        ))}
+      </span>
+      <span className="servicio-card__rating-count">
+        ({total} {total === 1 ? 'comentario' : 'comentarios'})
+      </span>
+    </span>
+  )
+}
+
 function Servicios() {
   const [searchParams] = useSearchParams()
 
@@ -93,6 +115,7 @@ function Servicios() {
   const [comunas, setComunas]     = useState(['Todas'])
   const [loading, setLoading]     = useState(true)
   const [error, setError]         = useState('')
+  const [ratings, setRatings]     = useState({}) // { [idServicio]: { promedio, total } }
 
   const [user, setUser] = useState(() => {
     const stored = localStorage.getItem('user')
@@ -135,6 +158,37 @@ function Servicios() {
   useEffect(() => {
     cargarServicios()
   }, [cargarServicios])
+
+  // Cargar calificaciones (estrellas + total) por cada servicio
+  useEffect(() => {
+    if (serviciosTodos.length === 0) return
+
+    let cancelado = false
+
+    const cargarRatings = async () => {
+      const resultados = await Promise.all(
+        serviciosTodos.map(async (s) => {
+          try {
+            const page = await api.comentarios.servicio.porServicio(s.idServicio, { size: 200 })
+            const lista = page.content || []
+            const total = lista.length
+            const promedio = total
+              ? lista.reduce((acc, c) => acc + (c.calificacion || 0), 0) / total
+              : 0
+            return [s.idServicio, { promedio, total }]
+          } catch {
+            return [s.idServicio, { promedio: 0, total: 0 }]
+          }
+        })
+      )
+      if (!cancelado) {
+        setRatings(Object.fromEntries(resultados))
+      }
+    }
+
+    cargarRatings()
+    return () => { cancelado = true }
+  }, [serviciosTodos])
 
   const filtrados = serviciosTodos.filter(s => {
     const coincideTipo = tipoActivo === 'todos' || s.tipoServicio === tipoActivo
@@ -329,7 +383,13 @@ function Servicios() {
                         </div>
 
                         <div className="servicio-card__body">
-                          <h3 className="servicio-card__nombre">{s.nombreServicio}</h3>
+                          <div className="servicio-card__title-row">
+                            <h3 className="servicio-card__nombre">{s.nombreServicio}</h3>
+                            <MiniEstrellas
+                              valor={ratings[s.idServicio]?.promedio || 0}
+                              total={ratings[s.idServicio]?.total || 0}
+                            />
+                          </div>
                           {s.tipoServicio && (
                             <p className="servicio-card__tipo">
                               <PawPrint size={12} /> {s.tipoServicio}
