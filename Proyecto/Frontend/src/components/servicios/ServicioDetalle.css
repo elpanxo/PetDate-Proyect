@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Aclonica&family=Jost:wght@300;400;500;600;700&display=swap');
+
 /* Wrapper general */
 .detalle-wrapper {
   padding-top: 86px;
@@ -10,141 +12,186 @@
 
 /* Breadcrumb */
 .detalle-breadcrumb {
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .detalle-breadcrumb__link {
-  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.95rem;
   font-weight: 600;
-  color: #7e6492;
+  color: #555;
   text-decoration: none;
   transition: color 0.15s;
 }
 
 .detalle-breadcrumb__link:hover {
-  color: #5f4c72;
-  text-decoration: underline;
+  color: #7e6492;
 }
 
 /* Layout dividido */
 .detalle-layout {
   display: grid;
-  grid-template-columns: 3fr 2fr;
-  gap: 32px;
-  max-width: 1100px;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 24px;
+  max-width: 1300px;
   align-items: start;
 }
 
-/* ── Panel izquierdo ── */
+/* ══════════════════════════════════════════
+   COLUMNA IZQUIERDA — info de la empresa
+   ══════════════════════════════════════════ */
 .detalle-info {
   background: #fff;
   border-radius: 16px;
-  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
-.detalle-info__banner {
-  width: 100%;
-  height: 180px;
-  overflow: hidden;
+/* Header: avatar + badge + nombre + rating, todo centrado a la izquierda */
+.detalle-info__header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.detalle-info__banner-img {
+.detalle-info__avatar {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.detalle-info__avatar-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
-}
-
-.detalle-info__top {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  padding: 28px 28px 20px;
-  border-top: 5px solid #7e6492;
-}
-
-.detalle-info__icono {
-  font-size: 3rem;
-  flex-shrink: 0;
 }
 
 .detalle-info__badge {
   display: inline-block;
-  color: #fff;
-  font-size: 0.72rem;
+  align-self: flex-start;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.7rem;
   font-weight: 700;
-  padding: 3px 12px;
+  padding: 4px 12px;
   border-radius: 20px;
   text-transform: uppercase;
-  letter-spacing: 0.04rem;
-  margin-bottom: 6px;
+  letter-spacing: 0.05rem;
 }
 
+/* Título — Aclonica */
 .detalle-info__nombre {
+  font-family: 'Aclonica', sans-serif;
   font-size: 1.7rem;
-  font-weight: 800;
-  color: #333;
-  margin: 0;
+  font-weight: 400;
+  color: #2d2d2d;
+  margin: 2px 0 0;
   line-height: 1.2;
 }
 
-.detalle-info__desc {
-  font-size: 0.95rem;
-  color: #555;
-  line-height: 1.75;
-  margin: 0;
-  padding: 0 28px 24px;
-  border-bottom: 1px solid #f0ebf8;
+/* Rating bajo el nombre */
+.detalle-info__rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
 }
 
-/* Lista de datos */
+.detalle-estrellas {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.detalle-estrella-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.detalle-estrella {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.detalle-estrella--fondo {
+  color: #e0e0e8;
+  fill: #e0e0e8;
+}
+
+.detalle-estrella--llena {
+  color: #f5a623;
+  fill: #f5a623;
+}
+
+.detalle-info__rating-text {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #444;
+}
+
+.detalle-info__rating-count {
+  font-weight: 400;
+  color: #999;
+}
+
+/* ── Lista de contacto: iconos circulares grises ── */
 .detalle-info__lista {
   list-style: none;
   margin: 0;
-  padding: 20px 28px 28px;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
 .detalle-info__lista li {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 14px;
 }
 
 .detalle-info__lista-icon {
-  font-size: 1.2rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #f2f0f4;
+  color: #888;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
-  margin-top: 1px;
 }
 
-.detalle-info__lista-label {
-  display: block;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #aaa;
-  text-transform: uppercase;
-  letter-spacing: 0.05rem;
-  margin-bottom: 2px;
+.detalle-info__lista-icon--wsp {
+  color: #25d366;
 }
 
-.detalle-info__lista-valor {
+.detalle-info__lista-valor,
+.detalle-info__lista-link {
+  font-family: 'Jost', sans-serif;
   font-size: 0.95rem;
-  color: #333;
+  color: #444;
+  text-decoration: none;
 }
 
 .detalle-info__lista-link {
-  font-size: 0.95rem;
-  color: #7e6492;
-  text-decoration: none;
-  font-weight: 600;
+  font-weight: 500;
   transition: color 0.15s;
 }
 
 .detalle-info__lista-link:hover {
-  color: #5f4c72;
+  color: #7e6492;
   text-decoration: underline;
 }
 
@@ -156,43 +203,128 @@
   color: #1da851;
 }
 
-/* Comentarios y calificaciones */
-.detalle-info__comentarios {
-  padding: 0 28px 28px;
+/* ── Sobre la empresa ── */
+.detalle-info__sobre {
+  border-top: 1px solid #f0ebf8;
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.detalle-info__comentarios .cm-wrap {
-  margin-top: 0;
-  padding-top: 24px;
+.detalle-info__seccion-titulo {
+  font-family: 'Jost', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2d2d2d;
+  margin: 0;
 }
 
-/* ── Panel derecho: promociones ── */
-.detalle-promos {
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
-  padding: 28px;
-  position: sticky;
-  top: 90px;
+.detalle-info__desc {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.7;
+  margin: 0;
 }
 
-.detalle-promos__title {
-  font-size: 1.25rem;
-  font-weight: 800;
-  color: #333;
-  margin: 0 0 20px;
+/* Caja gris con características */
+.detalle-info__caracteristicas {
+  background: #f7f6fa;
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.detalle-info__caracteristica {
   display: flex;
   align-items: center;
   gap: 10px;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.9rem;
+  color: #444;
+  font-weight: 500;
 }
 
-.detalle-promos__count {
-  background: #7e6492;
-  color: #fff;
-  font-size: 0.8rem;
+.detalle-info__caracteristica-icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* Botón Editar información — full width outline */
+.detalle-info__editar-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: transparent;
+  border: 1.5px solid #ddd;
+  border-radius: 10px;
+  padding: 12px;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.detalle-info__editar-btn:hover {
+  background: #faf8fd;
+}
+
+/* ══════════════════════════════════════════
+   COLUMNA DERECHA — Tabs Promociones / Comentarios
+   ══════════════════════════════════════════ */
+.detalle-tabs {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+  position: sticky;
+  top: 90px;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 120px);
+  overflow: hidden;
+}
+
+.detalle-tabs__header {
+  display: flex;
+  border-bottom: 1px solid #f0ebf8;
+  flex-shrink: 0;
+}
+
+.detalle-tab-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 18px 12px;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.92rem;
   font-weight: 700;
-  padding: 2px 9px;
-  border-radius: 20px;
+  color: #aaa;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+  text-align: center;
+}
+
+.detalle-tab-btn--activo {
+  color: #7e6492;
+}
+
+/* Cuerpo con scroll propio */
+.detalle-tabs__body {
+  padding: 24px 28px;
+  overflow-y: auto;
+  flex: 1;
 }
 
 /* Empty state promos */
@@ -202,16 +334,13 @@
   align-items: center;
   text-align: center;
   gap: 12px;
-  padding: 32px 0;
+  padding: 48px 0;
   color: #aaa;
-  font-size: 0.9rem;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.92rem;
 }
 
-.detalle-promos__empty-icon {
-  font-size: 2.5rem;
-}
-
-/* Lista de promos */
+/* Lista de promos — sin foto */
 .detalle-promos__lista {
   display: flex;
   flex-direction: column;
@@ -221,25 +350,51 @@
 .promo-detalle {
   border-left: 4px solid #7e6492;
   background: #f9f6fd;
-  border-radius: 0 10px 10px 0;
-  padding: 14px 16px;
+  border-radius: 0 12px 12px 0;
+  padding: 16px 18px;
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
 .promo-detalle__titulo {
-  font-size: 0.95rem;
-  font-weight: 700;
+  font-family: 'Aclonica', sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
   color: #333;
   margin: 0;
 }
 
 .promo-detalle__desc {
-  font-size: 0.85rem;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.88rem;
   color: #666;
   margin: 0;
   line-height: 1.6;
+}
+
+.promo-detalle__estado {
+  display: inline-block;
+  align-self: flex-start;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 12px;
+  border-radius: 20px;
+  margin-top: 4px;
+}
+
+.promo-detalle__fecha {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.78rem;
+  color: #999;
+  margin-top: 2px;
+}
+
+/* Comentarios dentro del tab */
+.detalle-comentarios .cm-wrap {
+  margin-top: 0;
+  padding-top: 0;
 }
 
 /* Not found */
@@ -250,10 +405,12 @@
   align-items: center;
   gap: 12px;
   color: #aaa;
+  font-family: 'Jost', sans-serif;
   font-size: 1.1rem;
 }
 
 .detalle-back {
+  font-family: 'Jost', sans-serif;
   font-size: 0.95rem;
   font-weight: 600;
   color: #7e6492;
@@ -265,13 +422,18 @@
 }
 
 /* Responsive */
-@media (max-width: 860px) {
+@media (max-width: 960px) {
   .detalle-layout {
     grid-template-columns: 1fr;
   }
 
-  .detalle-promos {
+  .detalle-tabs {
     position: static;
+    max-height: none;
+  }
+
+  .detalle-tabs__body {
+    max-height: 480px;
   }
 
   .detalle-wrapper {
