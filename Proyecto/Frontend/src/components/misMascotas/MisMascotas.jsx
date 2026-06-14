@@ -1,10 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Modal, Button, Form } from 'react-bootstrap';
 import Navbar from '../navbar/Navbar';
 import Footer from '../footer/Footer';
 import api, { ApiError, BASE_URL, token } from '../../api/petdate-api';
-import { Dog, Cat, Bird, Rabbit, Turtle, Fish, PawPrint, Hourglass, TriangleAlert, Pencil, Trash2, User, Star } from 'lucide-react';
+import { Dog, Cat, Bird, Rabbit, Turtle, Fish, PawPrint, Hourglass, TriangleAlert, Pencil, Trash2, User, Star, ChevronLeft, ChevronRight, Calendar, UploadCloud, Heart, Info, X, Eye, EyeOff, HeartHandshake } from 'lucide-react';
 import './MisMascotas.css';
 
 // ─────────────────────────────────────────────
@@ -77,6 +77,7 @@ function MisMascotas() {
   // Editar perfil
   const [editandoPerfil, setEditandoPerfil]     = useState(false);
   const [formPerfil, setFormPerfil]             = useState({ nombre: '', telefono: '', sobreMi: '', contrasena: '' });
+  const [verContrasena, setVerContrasena]       = useState(false);
   const [guardandoPerfil, setGuardandoPerfil]   = useState(false);
   const [errorPerfil, setErrorPerfil]           = useState('');
 
@@ -104,6 +105,25 @@ function MisMascotas() {
   const [errNombre, setErrNombre]     = useState(false);
   const [guardando, setGuardando]     = useState(false);
   const [errorModal, setErrorModal]   = useState('');
+
+  // ─── Scroll horizontal del carrusel de mascotas ───
+  const carruselRef = useRef(null);
+  const [puedeScrollIzq, setPuedeScrollIzq] = useState(false);
+  const [puedeScrollDer, setPuedeScrollDer] = useState(false);
+
+  const actualizarFlechas = useCallback(() => {
+    const el = carruselRef.current;
+    if (!el) return;
+    setPuedeScrollIzq(el.scrollLeft > 4);
+    setPuedeScrollDer(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+  }, []);
+
+  const scrollCarrusel = (dir) => {
+    const el = carruselRef.current;
+    if (!el) return;
+    const distancia = el.clientWidth * 0.8;
+    el.scrollBy({ left: dir === 'left' ? -distancia : distancia, behavior: 'smooth' });
+  };
 
   // ─── Verificar sesión al montar ───
   useEffect(() => {
@@ -347,6 +367,19 @@ function MisMascotas() {
 
   const campo = (field, value) => setForm(prev => ({ ...prev, [field]: value }));
 
+  // Actualiza flechas cuando cambian las mascotas o el tamaño de la ventana
+  useEffect(() => {
+    actualizarFlechas();
+    const el = carruselRef.current;
+    if (!el) return;
+    el.addEventListener('scroll', actualizarFlechas, { passive: true });
+    window.addEventListener('resize', actualizarFlechas);
+    return () => {
+      el.removeEventListener('scroll', actualizarFlechas);
+      window.removeEventListener('resize', actualizarFlechas);
+    };
+  }, [mascotas, actualizarFlechas]);
+
   const iniciales = (nombre) => {
     if (!nombre) return '?';
     return nombre.trim().split(/\s+/).map(n => n[0]).slice(0, 2).join('').toUpperCase();
@@ -420,66 +453,102 @@ function MisMascotas() {
                   </div>
                 </>
               ) : (
-                <div className="perfil-form">
+                <div className="perfil-edit-card">
+                  <div className="perfil-edit-card__header">
+                    <h3>Editar mi perfil</h3>
+                    <button
+                      className="perfil-edit-card__close"
+                      onClick={() => { setEditandoPerfil(false); setErrorPerfil(''); }}
+                      aria-label="Cerrar"
+                    >
+                      <X size={18} />
+                    </button>
+                  </div>
+
                   {errorPerfil && (
                     <div className="alert alert-danger py-2 px-3 mb-3 small">{errorPerfil}</div>
                   )}
 
-                  <Form.Group className="mb-3">
-                    <Form.Label className="perfil-form__label">Nombre</Form.Label>
-                    <Form.Control
-                      value={formPerfil.nombre}
-                      onChange={e => setFormPerfil(p => ({ ...p, nombre: e.target.value }))}
-                    />
-                  </Form.Group>
+                  <div className="perfil-form">
+                    <div className="perfil-form__field">
+                      <label className="perfil-form__label">Nombre</label>
+                      <input
+                        className="perfil-form__input"
+                        maxLength={50}
+                        value={formPerfil.nombre}
+                        onChange={e => setFormPerfil(p => ({ ...p, nombre: e.target.value }))}
+                      />
+                      <span className="perfil-form__counter">{formPerfil.nombre.length}/50</span>
+                    </div>
 
-                  <Form.Group className="mb-3">
-                    <Form.Label className="perfil-form__label">Sobre mí</Form.Label>
-                    <Form.Control
-                      as="textarea" rows={3} maxLength={200}
-                      value={formPerfil.sobreMi}
-                      onChange={e => setFormPerfil(p => ({ ...p, sobreMi: e.target.value }))}
-                      placeholder="Cuéntanos algo sobre ti..."
-                    />
-                    <Form.Text className="text-muted">{formPerfil.sobreMi.length}/200</Form.Text>
-                  </Form.Group>
+                    <div className="perfil-form__field">
+                      <label className="perfil-form__label">Sobre mí</label>
+                      <textarea
+                        className="perfil-form__input perfil-form__textarea"
+                        rows={3} maxLength={200}
+                        value={formPerfil.sobreMi}
+                        onChange={e => setFormPerfil(p => ({ ...p, sobreMi: e.target.value }))}
+                        placeholder="Cuéntanos algo sobre ti..."
+                      />
+                      <span className="perfil-form__counter">{formPerfil.sobreMi.length}/200</span>
+                    </div>
 
-                  <Form.Group className="mb-3">
-                    <Form.Label className="perfil-form__label">Teléfono</Form.Label>
-                    <Form.Control
-                      value={formPerfil.telefono}
-                      onChange={e => setFormPerfil(p => ({ ...p, telefono: e.target.value }))}
-                    />
-                  </Form.Group>
+                    <div className="perfil-form__field">
+                      <label className="perfil-form__label">Correo</label>
+                      <input
+                        className="perfil-form__input"
+                        value={perfilData?.correo || ''}
+                        disabled
+                      />
+                    </div>
 
-                  <Form.Group className="mb-3">
-                    <Form.Label className="perfil-form__label">
-                      Contraseña <span className="text-danger">*</span>
-                    </Form.Label>
-                    <Form.Control
-                      type="password"
-                      value={formPerfil.contrasena}
-                      onChange={e => setFormPerfil(p => ({ ...p, contrasena: e.target.value }))}
-                      placeholder="Ingresa tu contraseña para confirmar"
-                    />
-                  </Form.Group>
+                    <div className="perfil-form__field">
+                      <label className="perfil-form__label">Teléfono</label>
+                      <input
+                        className="perfil-form__input"
+                        value={formPerfil.telefono}
+                        onChange={e => setFormPerfil(p => ({ ...p, telefono: e.target.value }))}
+                      />
+                    </div>
 
-                  <div className="perfil-form-acciones">
-                    <button
-                      className="perfil-btn perfil-btn--cancelar"
-                      onClick={() => { setEditandoPerfil(false); setErrorPerfil(''); }}
-                      disabled={guardandoPerfil}
-                    >
-                      Cancelar
-                    </button>
-                    <button
-                      className="perfil-btn perfil-btn--guardar"
-                      onClick={guardarPerfil}
-                      disabled={guardandoPerfil}
-                    >
-                      {guardandoPerfil ? 'Guardando...' : 'Guardar'}
-                    </button>
+                    <div className="perfil-form__field">
+                      <label className="perfil-form__label">
+                        Contraseña <span className="perfil-form__required">*</span>
+                      </label>
+                      <div className="perfil-form__pass-wrap">
+                        <input
+                          type={verContrasena ? 'text' : 'password'}
+                          className="perfil-form__input"
+                          value={formPerfil.contrasena}
+                          onChange={e => setFormPerfil(p => ({ ...p, contrasena: e.target.value }))}
+                          placeholder="Ingresa tu contraseña para confirmar"
+                        />
+                        <button
+                          type="button"
+                          className="perfil-form__pass-toggle"
+                          onClick={() => setVerContrasena(v => !v)}
+                          aria-label={verContrasena ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                        >
+                          {verContrasena ? <EyeOff size={16} /> : <Eye size={16} />}
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="perfil-form-acciones">
+                      <button
+                        className="perfil-btn perfil-btn--guardar"
+                        onClick={guardarPerfil}
+                        disabled={guardandoPerfil}
+                      >
+                        <PawPrint size={14} />
+                        {guardandoPerfil ? 'Guardando...' : 'Guardar cambios'}
+                      </button>
+                    </div>
                   </div>
+
+                  <button className="perfil-btn perfil-btn--eliminar perfil-btn--eliminar-cuenta" onClick={eliminarCuenta}>
+                    <Trash2 size={14} /> Eliminar cuenta
+                  </button>
                 </div>
               )}
             </div>
@@ -562,12 +631,23 @@ function MisMascotas() {
             ══════════════════════════════════════ */}
         <main className="perfil-mascotas">
           <div className="mm-header">
-            <div>
-              <h1 className="mm-titulo"><PawPrint size={22} /> Mis Mascotas</h1>
-              <p className="mm-subtitulo">Gestiona el perfil y la agenda de tus compañeros</p>
+            <div className="mm-header-icon"><PawPrint size={24} /></div>
+            <div className="mm-header-text">
+              <h1 className="mm-titulo">Mis Mascotas</h1>
+              <p className="mm-subtitulo">Gestiona el perfil y la información de tus mascotas.</p>
             </div>
-            <button className="mm-btn-agregar" onClick={abrirAgregar}>+ Agregar Mascota</button>
           </div>
+
+          {!loading && !error && mascotas.length > 0 && (
+            <div className="mm-banner">
+              <div className="mm-banner-icon"><HeartHandshake size={22} /></div>
+              <div className="mm-banner-text">
+                <h4>¿Tienes más mascotas?</h4>
+                <p>Agrega todas las mascotas que forman parte de tu hogar.</p>
+              </div>
+              <button className="mm-btn-agregar" onClick={abrirAgregar}>+ Agregar Mascota</button>
+            </div>
+          )}
 
           {loading && (
             <div className="mm-empty">
@@ -594,26 +674,52 @@ function MisMascotas() {
           )}
 
           {!loading && !error && mascotas.length > 0 && (
-            <div className="mm-grid">
-              {mascotas.map(m => (
-                <div className="mm-card" key={m.id} onClick={() => navigate(`/mis-mascotas/${m.id}`)}>
-                  <div className="mm-card-img">
-                    {m.imagenUrl
-                      ? <img src={`${BASE_URL}${m.imagenUrl}`} alt={m.nombre} className="mm-card-foto" />
-                      : (() => { const I = ICON_TIPO[m.especie] || PawPrint; return <I className="mm-card-emoji" size={40} />; })()
-                    }
-                  </div>
-                  <div className="mm-card-body">
-                    <h3 className="mm-card-nombre">{m.nombre}</h3>
-                    <p className="mm-card-tipo">{m.especie}{m.raza ? ` · ${m.raza}` : ''}</p>
-                    {m.edad > 0 && <p className="mm-card-edad">{m.edad} {m.edad === 1 ? 'año' : 'años'}</p>}
-                  </div>
-                  <div className="mm-card-actions">
-                    <button className="mm-btn-edit" onClick={(e) => abrirEditar(m, e)}><Pencil size={14} /> Editar</button>
-                    <button className="mm-btn-delete" onClick={(e) => eliminar(m.id, e)}><Trash2 size={14} /> Eliminar</button>
-                  </div>
-                </div>
-              ))}
+            <div className="mm-carrusel-wrap">
+              {puedeScrollIzq && (
+                <button className="mm-flecha mm-flecha--izq" onClick={() => scrollCarrusel('left')} aria-label="Anterior">
+                  <ChevronLeft size={22} />
+                </button>
+              )}
+
+              <div className="mm-grid" ref={carruselRef}>
+                {mascotas.map(m => {
+                  const Icono = ICON_TIPO[m.especie] || PawPrint;
+                  return (
+                    <div className="mm-card" key={m.id} onClick={() => navigate(`/mis-mascotas/${m.id}`)}>
+                      <div className="mm-card-foto-wrap">
+                        {m.imagenUrl
+                          ? <img src={`${BASE_URL}${m.imagenUrl}`} alt={m.nombre} className="mm-card-foto" />
+                          : <div className="mm-card-foto mm-card-foto--placeholder"><Icono size={40} color="#b09cbf" /></div>
+                        }
+                        <span className="mm-card-tipo-badge"><Icono size={14} /></span>
+                      </div>
+
+                      <div className="mm-card-body">
+                        <h3 className="mm-card-nombre">{m.nombre}</h3>
+                        <span className="mm-card-tipo-pill">{m.especie}</span>
+
+                        {m.raza && (
+                          <p className="mm-card-detalle"><PawPrint size={13} /> {m.raza}</p>
+                        )}
+                        {m.edad > 0 && (
+                          <p className="mm-card-detalle"><Calendar size={13} /> {m.edad} {m.edad === 1 ? 'año' : 'años'}</p>
+                        )}
+                      </div>
+
+                      <div className="mm-card-actions">
+                        <button className="mm-btn-edit" onClick={(e) => abrirEditar(m, e)}><Pencil size={14} /> Editar</button>
+                        <button className="mm-btn-delete" onClick={(e) => eliminar(m.id, e)}><Trash2 size={14} /> Eliminar</button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {puedeScrollDer && (
+                <button className="mm-flecha mm-flecha--der" onClick={() => scrollCarrusel('right')} aria-label="Siguiente">
+                  <ChevronRight size={22} />
+                </button>
+              )}
             </div>
           )}
         </main>
@@ -664,75 +770,144 @@ function MisMascotas() {
       </Modal>
 
       {/* ── Modal agregar / editar mascota ── */}
-      <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" centered>
-        <Modal.Header closeButton>
-          <Modal.Title>{editandoId ? 'Editar mascota' : 'Agregar mascota'}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+      <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" centered dialogClassName="mm-modal" contentClassName="mm-modal-content">
+        <div className="mm-modal-header">
+          <div className="mm-modal-header__icon"><PawPrint size={24} /></div>
+          <div className="mm-modal-header__text">
+            <h2>{editandoId ? 'Editar mascota' : 'Agregar mascota'}</h2>
+            <p>Completa la información de tu mascota para gestionar su perfil y agenda.</p>
+          </div>
+          <button className="mm-modal-close" onClick={() => setShowModal(false)} aria-label="Cerrar">
+            <X size={20} />
+          </button>
+        </div>
+
+        <div className="mm-modal-divider" />
+
+        <div className="mm-modal-body">
           {errorModal && <div className="alert alert-danger" role="alert">{errorModal}</div>}
-          <Form>
-            <div className="mm-form-grid">
-              <Form.Group className="mm-form-full">
-                <Form.Label>Foto de la mascota</Form.Label>
-                <Form.Control type="file" accept="image/*" onChange={handleImagen} />
-                {form.imagen && <img src={form.imagen} alt="preview" className="mm-img-preview" />}
-                <Form.Text className="text-muted">La foto se guarda en el servidor y estará disponible en cualquier dispositivo.</Form.Text>
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Nombre <span className="text-danger">*</span></Form.Label>
-                <Form.Control value={form.nombre} isInvalid={errNombre}
-                  onChange={e => { campo('nombre', e.target.value); setErrNombre(false); }} />
-                {errNombre && <Form.Text className="text-danger">El nombre es obligatorio</Form.Text>}
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Tipo de mascota</Form.Label>
-                <Form.Select value={form.tipo} onChange={e => campo('tipo', e.target.value)}>
-                  {TIPOS_MASCOTA.map(t => <option key={t}>{t}</option>)}
-                </Form.Select>
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Raza</Form.Label>
-                <Form.Control value={form.raza} onChange={e => campo('raza', e.target.value)} />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Edad (años)</Form.Label>
-                <Form.Control type="number" min="0" max="50" value={form.edad} onChange={e => campo('edad', e.target.value)} />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Sexo</Form.Label>
-                <Form.Select value={form.sexo} onChange={e => campo('sexo', e.target.value)}>
-                  <option>Macho</option><option>Hembra</option>
-                </Form.Select>
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Peso (kg)</Form.Label>
-                <Form.Control type="number" step="0.1" min="0" value={form.peso} onChange={e => campo('peso', e.target.value)} />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Fecha de nacimiento</Form.Label>
-                <Form.Control type="date" value={form.fechaNacimiento} onChange={e => campo('fechaNacimiento', e.target.value)} />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Color</Form.Label>
-                <Form.Control value={form.color} onChange={e => campo('color', e.target.value)} />
-              </Form.Group>
-              <Form.Group className="mm-form-full">
-                <Form.Label>Observaciones</Form.Label>
-                <Form.Control as="textarea" rows={2} value={form.observaciones} onChange={e => campo('observaciones', e.target.value)} />
-              </Form.Group>
-              <Form.Group className="mm-form-full">
-                <Form.Label>Información médica básica</Form.Label>
-                <Form.Control as="textarea" rows={2} value={form.infoMedica} onChange={e => campo('infoMedica', e.target.value)} />
-              </Form.Group>
+
+          {/* Foto de la mascota */}
+          <div className="mm-modal-field mm-modal-field--full">
+            <label className="mm-modal-label">Foto de la mascota</label>
+            <div className="mm-foto-row">
+              <label className="mm-foto-dropzone">
+                <input type="file" accept="image/*" onChange={handleImagen} hidden />
+                {form.imagen ? (
+                  <img src={form.imagen} alt="preview" className="mm-foto-preview" />
+                ) : (
+                  <>
+                    <UploadCloud size={26} className="mm-foto-dropzone__icon" />
+                    <span className="mm-foto-dropzone__text">
+                      Seleccionar archivo
+                      <small>Sin archivos seleccionados</small>
+                    </span>
+                  </>
+                )}
+              </label>
+              <div className="mm-foto-info">
+                <Info size={16} className="mm-foto-info__icon" />
+                <p>La foto se guarda en el servidor y estará disponible en cualquier dispositivo.</p>
+              </div>
             </div>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)} disabled={guardando}>Cancelar</Button>
-          <Button style={{ backgroundColor: '#7e6492', border: 'none' }} onClick={guardar} disabled={guardando}>
+          </div>
+
+          {/* Grid 2 columnas */}
+          <div className="mm-modal-grid">
+            <div className="mm-modal-field">
+              <label className="mm-modal-label">Nombre <span className="mm-modal-required">*</span></label>
+              <input
+                className={`mm-modal-input ${errNombre ? 'mm-modal-input--error' : ''}`}
+                placeholder="Ej: Rocky"
+                value={form.nombre}
+                onChange={e => { campo('nombre', e.target.value); setErrNombre(false); }}
+              />
+              {errNombre && <span className="mm-modal-error">El nombre es obligatorio</span>}
+            </div>
+
+            <div className="mm-modal-field">
+              <label className="mm-modal-label">Tipo de mascota <span className="mm-modal-required">*</span></label>
+              <select className="mm-modal-input mm-modal-select" value={form.tipo} onChange={e => campo('tipo', e.target.value)}>
+                <option value="" disabled hidden>Seleccionar tipo</option>
+                {TIPOS_MASCOTA.map(t => <option key={t} value={t}>{t}</option>)}
+              </select>
+            </div>
+
+            <div className="mm-modal-field">
+              <label className="mm-modal-label">Raza</label>
+              <input className="mm-modal-input" placeholder="Ej: Golden Retriever" value={form.raza} onChange={e => campo('raza', e.target.value)} />
+            </div>
+
+            <div className="mm-modal-field">
+              <label className="mm-modal-label">Edad (años)</label>
+              <input type="number" min="0" max="50" className="mm-modal-input" placeholder="Ej: 4" value={form.edad} onChange={e => campo('edad', e.target.value)} />
+            </div>
+
+            <div className="mm-modal-field">
+              <label className="mm-modal-label">Sexo</label>
+              <select className="mm-modal-input mm-modal-select" value={form.sexo} onChange={e => campo('sexo', e.target.value)}>
+                <option value="" disabled hidden>Seleccionar sexo</option>
+                <option>Macho</option><option>Hembra</option>
+              </select>
+            </div>
+
+            <div className="mm-modal-field">
+              <label className="mm-modal-label">Peso (kg)</label>
+              <input type="number" step="0.1" min="0" className="mm-modal-input" placeholder="Ej: 25" value={form.peso} onChange={e => campo('peso', e.target.value)} />
+            </div>
+
+            <div className="mm-modal-field">
+              <label className="mm-modal-label">Fecha de nacimiento</label>
+              <div className="mm-modal-date-wrap">
+                <Calendar size={16} className="mm-modal-date-icon" />
+                <input type="date" className="mm-modal-input mm-modal-input--date" placeholder="dd-mm-aaaa" value={form.fechaNacimiento} onChange={e => campo('fechaNacimiento', e.target.value)} />
+              </div>
+            </div>
+
+            <div className="mm-modal-field">
+              <label className="mm-modal-label">Color</label>
+              <input className="mm-modal-input" placeholder="Ej: Dorado" value={form.color} onChange={e => campo('color', e.target.value)} />
+            </div>
+
+            <div className="mm-modal-field mm-modal-field--full">
+              <label className="mm-modal-label">Observaciones</label>
+              <textarea
+                className="mm-modal-input mm-modal-textarea"
+                rows={3}
+                maxLength={200}
+                placeholder="Información adicional sobre tu mascota..."
+                value={form.observaciones}
+                onChange={e => campo('observaciones', e.target.value)}
+              />
+              <span className="mm-modal-counter">{form.observaciones.length}/200</span>
+            </div>
+
+            <div className="mm-modal-field mm-modal-field--full">
+              <label className="mm-modal-label mm-modal-label--icon">
+                <Heart size={15} /> Información médica básica
+              </label>
+              <textarea
+                className="mm-modal-input mm-modal-textarea"
+                rows={3}
+                maxLength={200}
+                placeholder="Ej: Vacunas al día, alergias, condiciones médicas, etc."
+                value={form.infoMedica}
+                onChange={e => campo('infoMedica', e.target.value)}
+              />
+              <span className="mm-modal-counter">{form.infoMedica.length}/200</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="mm-modal-footer">
+          <button className="mm-modal-btn mm-modal-btn--cancelar" onClick={() => setShowModal(false)} disabled={guardando}>
+            Cancelar
+          </button>
+          <button className="mm-modal-btn mm-modal-btn--guardar" onClick={guardar} disabled={guardando}>
+            <PawPrint size={16} />
             {guardando ? (editandoId ? 'Guardando...' : 'Agregando...') : (editandoId ? 'Guardar cambios' : 'Agregar mascota')}
-          </Button>
-        </Modal.Footer>
+          </button>
+        </div>
       </Modal>
 
       <Footer />
