@@ -196,6 +196,38 @@ export const auth = {
   logout() {
     token.remove()
   },
+
+  /**
+   * Solicita el envío de un código de recuperación al correo del usuario.
+   * @param {string} correo
+   */
+  forgotPassword: (correo) =>
+    http.post('/auth/forgot-password', { correo }, false),
+
+  /**
+   * Restablece la contraseña del usuario usando el código recibido.
+   * @param {string} correo
+   * @param {string} codigo - 6 dígitos
+   * @param {string} nuevaContrasena
+   */
+  resetPassword: (correo, codigo, nuevaContrasena) =>
+    http.post('/auth/reset-password', { correo, codigo, nuevaContrasena }, false),
+
+  /**
+   * Solicita el envío de un código de recuperación al correo de la empresa.
+   * @param {string} correo
+   */
+  forgotPasswordEmpresa: (correo) =>
+    http.post('/auth/servicios/forgot-password', { correo }, false),
+
+  /**
+   * Restablece la contraseña de la empresa usando el código recibido.
+   * @param {string} correo
+   * @param {string} codigo - 6 dígitos
+   * @param {string} nuevaContrasena
+   */
+  resetPasswordEmpresa: (correo, codigo, nuevaContrasena) =>
+    http.post('/auth/servicios/reset-password', { correo, codigo, nuevaContrasena }, false),
 }
 
 // ─────────────────────────────────────────────

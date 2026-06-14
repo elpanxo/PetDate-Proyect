@@ -121,6 +121,10 @@ const LoginEmpresa = () => {
                 </div>
               </div>
 
+              <p className="login-forgot-link">
+                <Link to="/recuperar-contrasena-empresa">¿Olvidaste tu contraseña?</Link>
+              </p>
+
               <button type="submit" className="login-btn-primary" disabled={loading}>
                 {loading ? 'Ingresando...' : 'Ingresar'}
               </button>
