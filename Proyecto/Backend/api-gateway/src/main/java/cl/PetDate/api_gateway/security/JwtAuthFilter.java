@@ -125,6 +125,10 @@ public class JwtAuthFilter implements HandlerInterceptor {
             return true;
         if (path.startsWith("/citas/interno/"))
             return true;
+        if (path.startsWith("/comentarios/blog/interno/"))
+            return true;
+        if (path.startsWith("/comentarios/servicio/interno/"))
+            return true;
         // Solo ADMIN puede listar todos los usuarios
         if (path.equals("/usuarios") && method.equals("GET"))
             return true;

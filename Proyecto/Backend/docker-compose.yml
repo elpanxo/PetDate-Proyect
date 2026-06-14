@@ -39,6 +39,7 @@ services:
       spring.data.mongodb.uri: mongodb://petdate-db:27017/db-PetDate
       MS_MASCOTAS_URL: http://ms-mascotas:8082
       MS_CITAS_MEDICAS_URL: http://ms-citas-medicas:8084
+      MS_COMENTARIOS_URL: http://ms-comentarios:8085
     restart: on-failure
     networks:
       - petdate-network

@@ -100,6 +100,14 @@ public class ComentarioBlogController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Eliminar todos los comentarios de blog de un usuario (uso interno entre microservicios)")
+    @ApiResponse(responseCode = "204", description = "Comentarios eliminados")
+    @DeleteMapping("/interno/usuario/{idUsuario}")
+    public ResponseEntity<Void> eliminarPorUsuario(@PathVariable Long idUsuario) {
+        comentarioBlogService.eliminarPorUsuario(idUsuario);
+        return ResponseEntity.noContent().build();
+    }
+
     // Solo el propio usuario (token de usuario cuyo id coincide con idUsuario del comentario)
     private boolean esPropioUsuario(Long tokenId, String tokenRol, Long idUsuario) {
         return !"SERVICIO".equals(tokenRol) && tokenId != null && tokenId.equals(idUsuario);

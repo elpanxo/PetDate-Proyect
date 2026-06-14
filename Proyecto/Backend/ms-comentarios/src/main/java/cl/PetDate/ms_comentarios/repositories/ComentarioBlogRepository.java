@@ -9,4 +9,5 @@ public interface ComentarioBlogRepository extends MongoRepository<ComentarioBlog
     Page<ComentarioBlog> findByIdBlog(Long idBlog, Pageable pageable);
     Page<ComentarioBlog> findByIdUsuario(Long idUsuario, Pageable pageable);
     void deleteByIdBlog(Long idBlog);
+    void deleteByIdUsuario(Long idUsuario);
 }

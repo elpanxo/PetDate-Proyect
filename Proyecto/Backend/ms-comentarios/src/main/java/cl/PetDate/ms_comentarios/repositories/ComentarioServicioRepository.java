@@ -9,4 +9,5 @@ public interface ComentarioServicioRepository extends MongoRepository<Comentario
     Page<ComentarioServicio> findByIdServicio(Long idServicio, Pageable pageable);
     Page<ComentarioServicio> findByIdUsuario(Long idUsuario, Pageable pageable);
     void deleteByIdServicio(Long idServicio);
+    void deleteByIdUsuario(Long idUsuario);
 }

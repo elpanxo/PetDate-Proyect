@@ -1,6 +1,7 @@
 package cl.PetDate.ms_usuarios.services;
 
 import cl.PetDate.ms_usuarios.clients.CitaMedicaClient;
+import cl.PetDate.ms_usuarios.clients.ComentarioClient;
 import cl.PetDate.ms_usuarios.clients.MascotaClient;
 import cl.PetDate.ms_usuarios.dto.UsuarioRequest;
 import cl.PetDate.ms_usuarios.dto.UsuarioResponse;
@@ -29,18 +30,21 @@ public class UsuarioService {
     private final PasswordEncoder passwordEncoder;
     private final MascotaClient mascotaClient;
     private final CitaMedicaClient citaMedicaClient;
+    private final ComentarioClient comentarioClient;
 
     public UsuarioService(
             UsuarioRepository usuarioRepository,
             SequenceGeneratorService sequenceGeneratorService,
             PasswordEncoder passwordEncoder,
             MascotaClient mascotaClient,
-            CitaMedicaClient citaMedicaClient) {
+            CitaMedicaClient citaMedicaClient,
+            ComentarioClient comentarioClient) {
         this.usuarioRepository = usuarioRepository;
         this.sequenceGeneratorService = sequenceGeneratorService;
         this.passwordEncoder = passwordEncoder;
         this.mascotaClient = mascotaClient;
         this.citaMedicaClient = citaMedicaClient;
+        this.comentarioClient = comentarioClient;
     }
 
     public UsuarioResponse crearUsuario(UsuarioRequest request) {
@@ -104,13 +108,25 @@ public class UsuarioService {
             mascotaClient.eliminarMascotasPorUsuario(id);
             log.info("Mascotas del usuario id={} eliminadas en cascada", id);
         } catch (Exception e) {
-            log.warn("No se pudieron eliminar en cascada las mascotas del usuario id={}: {}", id, e.getMessage());
+            log.error("Fallo cascada mascotas para usuario id={}: {}", id, e.getMessage(), e);
         }
         try {
             citaMedicaClient.eliminarCitasPorUsuario(id);
             log.info("Citas del usuario id={} eliminadas en cascada", id);
         } catch (Exception e) {
-            log.warn("No se pudieron eliminar en cascada las citas del usuario id={}: {}", id, e.getMessage());
+            log.error("Fallo cascada citas para usuario id={}: {}", id, e.getMessage(), e);
+        }
+        try {
+            comentarioClient.eliminarComentariosBlogPorUsuario(id);
+            log.info("Comentarios de blog del usuario id={} eliminados en cascada", id);
+        } catch (Exception e) {
+            log.error("Fallo cascada comentarios-blog para usuario id={}: {}", id, e.getMessage(), e);
+        }
+        try {
+            comentarioClient.eliminarComentariosServicioPorUsuario(id);
+            log.info("Comentarios de servicio del usuario id={} eliminados en cascada", id);
+        } catch (Exception e) {
+            log.error("Fallo cascada comentarios-servicio para usuario id={}: {}", id, e.getMessage(), e);
         }
     }
 

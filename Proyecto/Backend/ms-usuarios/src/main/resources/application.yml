@@ -21,6 +21,9 @@ ms-mascotas:
 ms-citas-medicas:
   url: ${MS_CITAS_MEDICAS_URL:http://localhost:8084}
 
+ms-comentarios:
+  url: ${MS_COMENTARIOS_URL:http://localhost:8085}
+
 management:
   endpoints:
     web:
