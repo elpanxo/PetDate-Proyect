@@ -86,6 +86,12 @@ public class ComentarioServicioService {
         log.info("Comentarios del servicio id={} eliminados en cascada", idServicio);
     }
 
+    // Usado para la eliminación en cascada al eliminar un usuario (política de retención de datos)
+    public void eliminarPorUsuario(Long idUsuario) {
+        comentarioServicioRepository.deleteByIdUsuario(idUsuario);
+        log.info("Comentarios de servicio del usuario id={} eliminados en cascada", idUsuario);
+    }
+
     private ComentarioServicio toEntity(ComentarioServicioRequest r) {
         ComentarioServicio c = new ComentarioServicio();
         c.setIdServicio(r.getIdServicio());
