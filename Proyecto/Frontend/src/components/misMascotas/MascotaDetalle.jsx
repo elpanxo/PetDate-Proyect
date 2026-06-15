@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { Modal, Button, Form } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import Navbar from '../navbar/Navbar';
 import Footer from '../footer/Footer';
 import api, { ApiError, BASE_URL } from '../../api/petdate-api';
-import { Dog, Cat, Bird, Rabbit, Turtle, Fish, PawPrint, Stethoscope, Syringe, Microscope, Pill, Hospital, ClipboardList, Scissors, Bath, Pin, Hourglass, TriangleAlert, Calendar, Clock, Pencil, Trash2 } from 'lucide-react';
+import { Dog, Cat, Bird, Rabbit, Turtle, Fish, PawPrint, Stethoscope, Syringe, Microscope, Pill, Hospital, ClipboardList, Scissors, Bath, Pin, Hourglass, TriangleAlert, Calendar, Clock, Pencil, Trash2, X } from 'lucide-react';
 import './MascotaDetalle.css';
 
 // ─────────────────────────────────────────────
@@ -269,6 +269,8 @@ function MascotaDetalle() {
           <span> / {mascota.nombre}</span>
         </div>
 
+        <div className="md-layout">
+
         {/* Perfil de la mascota */}
         <div className="md-perfil">
           {/* Foto + nombre */}
@@ -339,8 +341,13 @@ function MascotaDetalle() {
         {/* ── Columna derecha: agenda ── */}
         <div className="md-col-right">
 
-        {/* Resumen agenda */}
-        {citas.length > 0 && (
+        {/* Agenda */}
+        <div className="md-agenda">
+          <div className="md-agenda-header">
+            <h2><Calendar size={20} /> Agenda veterinaria</h2>
+          </div>
+
+          {/* Resumen agenda */}
           <div className="md-resumen">
             <div className="md-resumen-item md-resumen-total">
               <span className="md-resumen-num">{citas.length}</span>
@@ -358,14 +365,6 @@ function MascotaDetalle() {
               <span className="md-resumen-num">{completados}</span>
               <span className="md-resumen-label">Completados</span>
             </div>
-          </div>
-        )}
-
-        {/* Agenda */}
-        <div className="md-agenda">
-          <div className="md-agenda-header">
-            <h2><Calendar size={20} /> Agenda veterinaria</h2>
-            <button className="md-btn-evento" onClick={abrirAgregarEvento}>+ Agregar evento</button>
           </div>
 
           {loadingCitas && (
@@ -386,158 +385,176 @@ function MascotaDetalle() {
           {!loadingCitas && !errorCitas && citasOrdenadas.length === 0 && (
             <div className="md-agenda-empty">
               <ClipboardList size={24} />
-              <p>No hay eventos registrados para {mascota.nombre}.</p>
-              <p>Agrega visitas al veterinario, vacunas, tratamientos y más.</p>
+              <p className="md-agenda-empty__titulo">Aún no tienes eventos registrados</p>
+              <p className="md-agenda-empty__desc">Agrega el primer evento veterinario para mantener al día la salud de {mascota.nombre}.</p>
+              <button className="md-btn-evento" onClick={abrirAgregarEvento}>+ Agregar evento</button>
             </div>
           )}
 
-          {!loadingCitas && !errorCitas && citasOrdenadas.length > 0 && (
-            <div className="md-timeline">
-              {citasOrdenadas.map(cita => (
-                <div
-                  className="md-evento"
-                  key={cita.idEvento}
-                  style={{ borderLeftColor: ESTADO_COLOR[cita.estado] }}
-                >
-                  <div className="md-evento-icon">
-                    {(() => { const EventIcon = ICON_EVENTO[cita.tipoEvento] || Pin; return <EventIcon size={20} />; })()}
-                  </div>
+          {!loadingCitas && !errorCitas && citasOrdenadas.length > 0 && (() => {
+            // Próximo evento: el pendiente más cercano (o el primero si no hay pendientes)
+            const pendientesOrdenados = [...citas]
+              .filter(c => c.estado === 'PENDIENTE')
+              .sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+            const proximo = pendientesOrdenados[0] || null;
+            const resto = citasOrdenadas.filter(c => !proximo || c.idEvento !== proximo.idEvento);
 
-                  <div className="md-evento-body">
-                    <div className="md-evento-top">
-                      <span className="md-evento-tipo">{cita.tipoEvento}</span>
-                      <span
-                        className="md-evento-estado"
-                        style={{
-                          color: ESTADO_COLOR[cita.estado],
-                          backgroundColor: ESTADO_BG[cita.estado],
-                          cursor: 'pointer',
-                        }}
-                        title="Clic para cambiar estado"
-                        onClick={() => {
-                          const idx = ESTADOS.indexOf(cita.estado);
-                          const siguiente = ESTADOS[(idx + 1) % ESTADOS.length];
-                          cambiarEstado(cita.idEvento, siguiente);
-                        }}
-                      >
-                        {ESTADO_LABEL[cita.estado] || cita.estado}
-                      </span>
-                    </div>
-                    <div className="md-evento-fecha">
-                      <Calendar size={13} /> {String(cita.fecha).slice(0, 10)}
-                      {cita.hora ? <> · <Clock size={13} /> {String(cita.hora).slice(0, 5)}</> : ''}
-                    </div>
-                    {cita.descripcion  && <p className="md-evento-desc">{cita.descripcion}</p>}
-                    {cita.observacion  && <p className="md-evento-obs">{cita.observacion}</p>}
-                  </div>
+            const renderEvento = (cita) => (
+              <div
+                className="md-evento"
+                key={cita.idEvento}
+                style={{ borderLeftColor: ESTADO_COLOR[cita.estado] }}
+              >
+                <div className="md-evento-icon" style={{ color: ESTADO_COLOR[cita.estado], backgroundColor: ESTADO_BG[cita.estado] }}>
+                  {(() => { const EventIcon = ICON_EVENTO[cita.tipoEvento] || Pin; return <EventIcon size={20} />; })()}
+                </div>
 
-                  <div className="md-evento-actions">
-                    <button title="Editar"   onClick={() => abrirEditarEvento(cita)}><Pencil size={14} /></button>
-                    <button title="Eliminar" onClick={() => eliminarEvento(cita.idEvento)}><Trash2 size={14} /></button>
+                <div className="md-evento-body">
+                  <div className="md-evento-top">
+                    <span className="md-evento-tipo">{cita.descripcion || cita.tipoEvento}</span>
+                    <span
+                      className="md-evento-estado"
+                      style={{
+                        color: ESTADO_COLOR[cita.estado],
+                        backgroundColor: ESTADO_BG[cita.estado],
+                      }}
+                      title="Clic para cambiar estado"
+                      onClick={() => {
+                        const idx = ESTADOS.indexOf(cita.estado);
+                        const siguiente = ESTADOS[(idx + 1) % ESTADOS.length];
+                        cambiarEstado(cita.idEvento, siguiente);
+                      }}
+                    >
+                      {ESTADO_LABEL[cita.estado] || cita.estado}
+                    </span>
+                  </div>
+                  {cita.descripcion && <p className="md-evento-subtipo">{cita.tipoEvento}</p>}
+                  <div className="md-evento-fecha">
+                    <Calendar size={13} /> {String(cita.fecha).slice(0, 10)}
+                    {cita.hora ? <> · <Clock size={13} /> {String(cita.hora).slice(0, 5)}</> : ''}
+                  </div>
+                  {cita.observacion && <p className="md-evento-obs">{cita.observacion}</p>}
+                </div>
+
+                <div className="md-evento-actions">
+                  <button title="Editar"   onClick={() => abrirEditarEvento(cita)}><Pencil size={14} /></button>
+                  <button title="Eliminar" onClick={() => eliminarEvento(cita.idEvento)}><Trash2 size={14} /></button>
+                </div>
+              </div>
+            );
+
+            return (
+              <>
+                {proximo && (
+                  <div className="md-agenda-bloque">
+                    <h3 className="md-agenda-subtitulo">Próximo evento</h3>
+                    <div className="md-timeline">
+                      {renderEvento(proximo)}
+                    </div>
+                  </div>
+                )}
+
+                <div className="md-agenda-bloque">
+                  <h3 className="md-agenda-subtitulo">Historial de eventos</h3>
+                  <div className="md-timeline">
+                    {resto.map(renderEvento)}
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
+
+                <button className="md-btn-evento md-btn-evento--full" onClick={abrirAgregarEvento}>
+                  + Agregar evento
+                </button>
+              </>
+            );
+          })()}
         </div>
         </div>{/* /md-col-right */}
+        </div>{/* /md-layout */}
       </div>{/* /md-page */}
 
       {/* Modal evento */}
-      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>{editandoCitaId ? 'Editar evento' : 'Agregar evento'}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {errorModal && (
-            <div className="alert alert-danger">{errorModal}</div>
-          )}
-          <Form>
-            <Form.Group className="mb-3">
-              <Form.Label>Tipo de evento</Form.Label>
-              <Form.Select value={formEvento.tipo} onChange={e => campo('tipo', e.target.value)}>
-                {TIPOS_EVENTO.map(t => <option key={t}>{t}</option>)}
-              </Form.Select>
-            </Form.Group>
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered dialogClassName="md-modal" contentClassName="md-modal-content">
+        <div className="md-modal-header">
+          <div className="md-modal-header__icon"><Calendar size={22} /></div>
+          <h2 className="md-modal-header__title">{editandoCitaId ? 'Editar evento' : 'Agregar evento'}</h2>
+          <button className="md-modal-close" onClick={() => setShowModal(false)} aria-label="Cerrar">
+            <X size={20} />
+          </button>
+        </div>
 
-            <div className="d-flex gap-3">
-              <Form.Group className="mb-3 flex-grow-1">
-                <Form.Label>Fecha <span className="text-danger">*</span></Form.Label>
-                <Form.Control
+        <div className="md-modal-divider" />
+
+        <div className="md-modal-body">
+          {errorModal && <div className="alert alert-danger py-2 px-3">{errorModal}</div>}
+
+          <div className="md-modal-field">
+            <label className="md-modal-label">Tipo de evento <span className="md-modal-required">*</span></label>
+            <select className="md-modal-input md-modal-select" value={formEvento.tipo} onChange={e => campo('tipo', e.target.value)}>
+              {TIPOS_EVENTO.map(t => <option key={t}>{t}</option>)}
+            </select>
+          </div>
+
+          <div className="md-modal-grid">
+            <div className="md-modal-field">
+              <label className="md-modal-label">Fecha <span className="md-modal-required">*</span></label>
+              <div className="md-modal-date-wrap">
+                <Calendar size={16} className="md-modal-date-icon" />
+                <input
                   type="date"
-                  isInvalid={errFecha}
+                  className={`md-modal-input md-modal-input--date ${errFecha ? 'md-modal-input--error' : ''}`}
+                  placeholder="dd-mm-aaaa"
                   value={formEvento.fecha}
                   onChange={e => { campo('fecha', e.target.value); setErrFecha(false); }}
                 />
-                {errFecha && <Form.Text className="text-danger">La fecha es obligatoria</Form.Text>}
-              </Form.Group>
-
-              <Form.Group className="mb-3 flex-grow-1">
-                <Form.Label>Hora</Form.Label>
-                <Form.Control
-                  type="time"
-                  value={formEvento.hora}
-                  onChange={e => campo('hora', e.target.value)}
-                />
-              </Form.Group>
+              </div>
+              {errFecha && <span className="md-modal-error">La fecha es obligatoria</span>}
             </div>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Descripción</Form.Label>
-              <Form.Control
-                value={formEvento.descripcion}
-                placeholder="Ej: Vacuna antirrábica anual"
-                onChange={e => campo('descripcion', e.target.value)}
+            <div className="md-modal-field">
+              <label className="md-modal-label">Hora</label>
+              <input
+                type="time"
+                className="md-modal-input"
+                placeholder="--:--"
+                value={formEvento.hora}
+                onChange={e => campo('hora', e.target.value)}
               />
-            </Form.Group>
+            </div>
+          </div>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Observaciones</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={2}
-                value={formEvento.observaciones}
-                onChange={e => campo('observaciones', e.target.value)}
-              />
-            </Form.Group>
+          <div className="md-modal-field">
+            <label className="md-modal-label">Descripción</label>
+            <input
+              className="md-modal-input"
+              value={formEvento.descripcion}
+              placeholder="Ej: Vacuna antirrábica anual"
+              onChange={e => campo('descripcion', e.target.value)}
+            />
+          </div>
 
-            <Form.Group className="mb-1">
-              <Form.Label>Estado</Form.Label>
-              <div className="d-flex gap-2">
-                {ESTADOS.map(s => (
-                  <button
-                    key={s}
-                    type="button"
-                    className="md-estado-btn"
-                    style={{
-                      backgroundColor: formEvento.estado === s ? ESTADO_COLOR[s] : '#f5f5f5',
-                      color: formEvento.estado === s ? '#fff' : '#555',
-                      borderColor: ESTADO_COLOR[s],
-                    }}
-                    onClick={() => campo('estado', s)}
-                  >
-                    {ESTADO_LABEL[s]}
-                  </button>
-                ))}
-              </div>
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)} disabled={guardando}>
+          <div className="md-modal-field">
+            <label className="md-modal-label">Observaciones</label>
+            <textarea
+              className="md-modal-input md-modal-textarea"
+              rows={2}
+              placeholder="Agrega observaciones adicionales (opcional)"
+              value={formEvento.observaciones}
+              onChange={e => campo('observaciones', e.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className="md-modal-footer">
+          <button className="md-modal-btn md-modal-btn--cancelar" onClick={() => setShowModal(false)} disabled={guardando}>
             Cancelar
-          </Button>
-          <Button
-            style={{ backgroundColor: '#7e6492', border: 'none' }}
-            onClick={guardarEvento}
-            disabled={guardando}
-          >
+          </button>
+          <button className="md-modal-btn md-modal-btn--guardar" onClick={guardarEvento} disabled={guardando}>
             {guardando
               ? (editandoCitaId ? 'Guardando...' : 'Agregando...')
               : (editandoCitaId ? 'Guardar cambios' : 'Agregar evento')
             }
-          </Button>
-        </Modal.Footer>
+          </button>
+        </div>
       </Modal>
 
       <Footer />
