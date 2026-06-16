@@ -59,6 +59,33 @@ body {
   margin: 0;
 }
 
+button,
+input[type="button"],
+input[type="submit"],
+button[class*="btn"],
+a[class*="btn"],
+.btn,
+.hero__btn,
+.home-about__btn,
+.reg-btn,
+.login-btn-primary,
+.login-mode-btn,
+.servicios-search-btn,
+.promo-card__btn,
+.tip-card__cta-btn,
+.blog-card__btn,
+.detalle-info__editar-btn,
+.perfil-btn,
+.perfil-calif-btn,
+.mm-btn-agregar,
+.mm-btn-edit,
+.mm-btn-delete {
+  font-family: 'Jost', sans-serif !important;
+  font-size: 0.82rem !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.02em !important;
+}
+
 #root {
   width: 100%;
   min-height: 100svh;
