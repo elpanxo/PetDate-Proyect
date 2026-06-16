@@ -419,6 +419,14 @@
   transition: background-color 0.15s, color 0.15s;
 }
 
+.md-evento-actions button:first-child {
+  color: #7e6492;
+}
+
+.md-evento-actions button:last-child {
+  color: #e74c3c;
+}
+
 .md-evento-actions button:first-child:hover {
   background-color: #ede8f2;
   color: #7e6492;
