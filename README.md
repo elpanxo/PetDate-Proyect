@@ -155,6 +155,15 @@ npm run dev
 
 La aplicación quedará disponible en `http://localhost:5173`.
 
+### 5.1 Ejecutar el Frontend(alternativa en docker)
+
+```bash
+cd Proyecto/Frontend
+docker compose up -d
+```
+
+La aplicación quedará disponible en `http://localhost:3000`.
+
 ---
 
 ## Datos y persistencia
