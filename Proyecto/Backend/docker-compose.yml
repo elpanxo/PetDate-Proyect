@@ -117,6 +117,8 @@ services:
       SERVER_PORT: 8085
       SPRING_DATA_MONGODB_URI: mongodb://petdate-db:27017/db-PetDate
       spring.data.mongodb.uri: mongodb://petdate-db:27017/db-PetDate
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
     restart: on-failure
     networks:
       - petdate-network

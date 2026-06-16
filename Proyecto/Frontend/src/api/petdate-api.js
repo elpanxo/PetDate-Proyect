@@ -919,6 +919,20 @@ export const comentarios = {
 }
 
 // ─────────────────────────────────────────────
+// 10. CONTACTO  →  /contacto
+// ─────────────────────────────────────────────
+
+export const contacto = {
+  /**
+   * Envía un mensaje de contacto y lo guarda en la base de datos.
+   * También despacha un email a petdate8@gmail.com.
+   * @param {{ nombre: string, correo: string, mensaje: string }} data
+   * @returns {Promise<{ id: string, nombre: string, correo: string, mensaje: string, fecha: string }>}
+   */
+  enviar: (data) => http.post('/contacto', data, false),
+}
+
+// ─────────────────────────────────────────────
 // Export default (objeto unificado)
 // ─────────────────────────────────────────────
 
@@ -963,6 +977,7 @@ const api = {
   promociones,
   blogs,
   comentarios,
+  contacto,
 }
 
 export default api
