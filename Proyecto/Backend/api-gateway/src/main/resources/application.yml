@@ -60,6 +60,11 @@ spring:
                 predicates:
                   - Path=/comentarios/**
 
+              - id: ms-contacto
+                uri: http://ms-comentarios:8085
+                predicates:
+                  - Path=/contacto/**
+
               - id: ms-citas-medicas
                 uri: http://ms-citas-medicas:8084
                 predicates:

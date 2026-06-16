@@ -2,6 +2,7 @@ import { useState } from 'react'
 import AppNavbar from '../navbar/Navbar'
 import Footer from '../footer/Footer'
 import { CheckCircle2, Mail } from 'lucide-react'
+import api from '../../api/petdate-api'
 import './Contacto.css'
 
 const MAX_CHARS = 500
@@ -47,6 +48,8 @@ function Contacto() {
   const [form, setForm] = useState({ nombre: '', correo: '', mensaje: '' })
   const [touched, setTouched] = useState({ nombre: false, correo: false, mensaje: false })
   const [enviado, setEnviado] = useState(false)
+  const [enviando, setEnviando] = useState(false)
+  const [errorEnvio, setErrorEnvio] = useState('')
 
   const errores = {
     nombre:  form.nombre.trim() === '' ? 'El nombre o empresa es obligatorio.' : '',
@@ -71,13 +74,22 @@ function Contacto() {
     setTouched((prev) => ({ ...prev, [name]: true }))
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
     setTouched({ nombre: true, correo: true, mensaje: true })
     if (!formularioValido) return
-    setEnviado(true)
-    setForm({ nombre: '', correo: '', mensaje: '' })
-    setTouched({ nombre: false, correo: false, mensaje: false })
+    setEnviando(true)
+    setErrorEnvio('')
+    try {
+      await api.contacto.enviar({ nombre: form.nombre, correo: form.correo, mensaje: form.mensaje })
+      setEnviado(true)
+      setForm({ nombre: '', correo: '', mensaje: '' })
+      setTouched({ nombre: false, correo: false, mensaje: false })
+    } catch {
+      setErrorEnvio('No se pudo enviar el mensaje. Por favor intenta nuevamente.')
+    } finally {
+      setEnviando(false)
+    }
   }
 
   const remaining = MAX_CHARS - form.mensaje.length
@@ -189,9 +201,12 @@ function Contacto() {
                 </span>
               </div>
  
+              {errorEnvio && (
+                <span className="contacto-field__error">{errorEnvio}</span>
+              )}
               <div className="contacto-form__footer">
-                <button type="submit" className="contacto-btn">
-                  Enviar mensaje
+                <button type="submit" className="contacto-btn" disabled={enviando}>
+                  {enviando ? 'Enviando...' : 'Enviar mensaje'}
                 </button>
               </div>
  

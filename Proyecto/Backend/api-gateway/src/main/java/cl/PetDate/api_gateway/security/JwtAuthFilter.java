@@ -114,6 +114,9 @@ public class JwtAuthFilter implements HandlerInterceptor {
         // Listar y buscar comentarios (de blog y de servicio) son públicos
         if (path.startsWith("/comentarios") && method.equals("GET"))
             return true;
+        // El formulario de contacto es público (no requiere cuenta)
+        if (path.startsWith("/contacto") && method.equals("POST"))
+            return true;
         return false;
     }
 
