@@ -1,0 +1,16 @@
+services:
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: petdate-frontend
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+    networks:
+      - petdate-network
+
+networks:
+  petdate-network:
+    external: true

@@ -45,6 +45,8 @@ services:
     restart: on-failure
     networks:
       - petdate-network
+    volumes:
+      - petdate-uploads:/app/uploads
 
   ms-mascotas:
     build:

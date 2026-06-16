@@ -80,6 +80,8 @@ function MisMascotas() {
   const [verContrasena, setVerContrasena]       = useState(false);
   const [guardandoPerfil, setGuardandoPerfil]   = useState(false);
   const [errorPerfil, setErrorPerfil]           = useState('');
+  const avatarInputRef                          = useRef(null);
+  const [subiendoAvatar, setSubiendoAvatar]     = useState(false);
 
   // ─── Calificaciones ───
   const [califBlog, setCalifBlog]       = useState([]);
@@ -208,6 +210,24 @@ function MisMascotas() {
       setLoading(false);
     }
   }, [navigate]);
+
+  // ─────────────────────────────────────────────
+  // Perfil: subir foto de perfil
+  // ─────────────────────────────────────────────
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file || !usuario?.id) return;
+    setSubiendoAvatar(true);
+    try {
+      const actualizado = await api.usuarios.subirImagen(usuario.id, file);
+      setPerfilData(actualizado);
+    } catch {
+      // silencioso — el avatar simplemente no cambia si falla
+    } finally {
+      setSubiendoAvatar(false);
+      e.target.value = '';
+    }
+  };
 
   // ─────────────────────────────────────────────
   // Perfil: guardar
@@ -426,8 +446,25 @@ function MisMascotas() {
           {/* ── Tab: Mi Perfil ── */}
           {tabActiva === 'perfil' && (
             <div className="perfil-content">
-              <div className="perfil-avatar">
-                <span className="perfil-avatar__iniciales">{iniciales(perfilData?.nombre)}</span>
+              <div
+                className="perfil-avatar"
+                onClick={() => avatarInputRef.current?.click()}
+                title="Cambiar foto de perfil"
+              >
+                {perfilData?.imagen
+                  ? <img src={`${BASE_URL}${perfilData.imagen}`} alt="Avatar" className="perfil-avatar__img" />
+                  : <span className="perfil-avatar__iniciales">{iniciales(perfilData?.nombre)}</span>
+                }
+                <div className="perfil-avatar__overlay">
+                  {subiendoAvatar ? <Hourglass size={18} /> : <UploadCloud size={18} />}
+                </div>
+                <input
+                  ref={avatarInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="perfil-avatar__input"
+                  onChange={handleAvatarChange}
+                />
               </div>
 
               {!editandoPerfil ? (

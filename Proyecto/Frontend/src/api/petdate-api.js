@@ -297,6 +297,25 @@ export const usuarios = {
    * @returns {Promise<null>}
    */
   eliminar: (id) => http.delete(`/usuarios/${id}`),
+
+  /**
+   * Sube o reemplaza la foto de perfil del usuario.
+   * @param {number} id
+   * @param {File} file
+   * @returns {Promise<UsuarioResponse>}
+   */
+  subirImagen: async (id, file) => {
+    const formData = new FormData();
+    formData.append('imagen', file);
+    const headers = token.exists() ? { Authorization: `Bearer ${token.get()}` } : {};
+    const res = await fetch(`${BASE_URL}/usuarios/${id}/imagen`, {
+      method: 'POST',
+      headers,
+      body: formData,
+    });
+    if (!res.ok) throw new ApiError(res.status, await res.text());
+    return res.json();
+  },
 }
 
 // ─────────────────────────────────────────────

@@ -31,6 +31,8 @@ public class Usuario {
 
     private String direccion;
 
+    private String imagen;
+
     private Rol rol;
 
     // Consentimiento informado (Ley 19.628): registra que el titular aceptó
@@ -69,6 +71,9 @@ public class Usuario {
 
     public String getDireccion() { return direccion; }
     public void setDireccion(String direccion) { this.direccion = direccion; }
+
+    public String getImagen() { return imagen; }
+    public void setImagen(String imagen) { this.imagen = imagen; }
 
     public Rol getRol() { return rol; }
     public void setRol(Rol rol) { this.rol = rol; }
