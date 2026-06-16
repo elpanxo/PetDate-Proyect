@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 import Navbar from '../navbar/Navbar';
@@ -111,7 +111,15 @@ function MascotaDetalle() {
   const [formEvento, setFormEvento]         = useState(FORM_INICIAL);
   const [errFecha, setErrFecha]             = useState(false);
   const [guardando, setGuardando]           = useState(false);
+  const fechaEventoRef = useRef(null);
   const [errorModal, setErrorModal]         = useState('');
+
+  const abrirCalendarioEvento = () => {
+    const input = fechaEventoRef.current;
+    if (!input) return;
+    input.showPicker?.();
+    input.focus?.();
+  };
 
   // ── Verificar sesión ──
   useEffect(() => {
@@ -498,8 +506,9 @@ function MascotaDetalle() {
             <div className="md-modal-field">
               <label className="md-modal-label">Fecha <span className="md-modal-required">*</span></label>
               <div className="md-modal-date-wrap">
-                <Calendar size={16} className="md-modal-date-icon" />
+                <Calendar size={16} className="md-modal-date-icon" onClick={abrirCalendarioEvento} />
                 <input
+                  ref={fechaEventoRef}
                   type="date"
                   className={`md-modal-input md-modal-input--date ${errFecha ? 'md-modal-input--error' : ''}`}
                   placeholder="dd-mm-aaaa"

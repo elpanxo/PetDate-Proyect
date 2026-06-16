@@ -108,6 +108,7 @@ function MisMascotas() {
 
   // ─── Scroll horizontal del carrusel de mascotas ───
   const carruselRef = useRef(null);
+  const fechaNacimientoRef = useRef(null);
   const [puedeScrollIzq, setPuedeScrollIzq] = useState(false);
   const [puedeScrollDer, setPuedeScrollDer] = useState(false);
 
@@ -117,6 +118,13 @@ function MisMascotas() {
     setPuedeScrollIzq(el.scrollLeft > 4);
     setPuedeScrollDer(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
   }, []);
+
+  const abrirCalendarioNacimiento = () => {
+    const input = fechaNacimientoRef.current;
+    if (!input) return;
+    input.showPicker?.();
+    input.focus?.();
+  };
 
   const scrollCarrusel = (dir) => {
     const el = carruselRef.current;
@@ -859,8 +867,8 @@ function MisMascotas() {
             <div className="mm-modal-field">
               <label className="mm-modal-label">Fecha de nacimiento</label>
               <div className="mm-modal-date-wrap">
-                <Calendar size={16} className="mm-modal-date-icon" />
-                <input type="date" className="mm-modal-input mm-modal-input--date" placeholder="dd-mm-aaaa" value={form.fechaNacimiento} onChange={e => campo('fechaNacimiento', e.target.value)} />
+                <Calendar size={16} className="mm-modal-date-icon" onClick={abrirCalendarioNacimiento} />
+                <input ref={fechaNacimientoRef} type="date" className="mm-modal-input mm-modal-input--date" placeholder="dd-mm-aaaa" value={form.fechaNacimiento} onChange={e => campo('fechaNacimiento', e.target.value)} />
               </div>
             </div>
 
