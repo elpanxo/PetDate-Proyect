@@ -229,8 +229,8 @@
 }
 
 .home-promos__title {
-  font-family: 'Georgia', serif;
-  font-style: italic;
+  font-family: 'Aclonica', sans-serif;
+  font-style: normal;
   font-size: 1.8rem;
   font-weight: 400;
   color: var(--cafe);
@@ -386,9 +386,11 @@
 .home-tips__header { text-align: center; margin-bottom: 32px; }
 
 .home-tips__title {
-  font-family: 'Georgia', serif;
-  font-style: italic;
-  font-size: 1.8rem; font-weight: 400; color: var(--cafe);
+  font-family: 'Aclonica', sans-serif;
+  font-style: normal;
+  font-size: 1.8rem;
+  font-weight: 400;
+  color: var(--cafe);
 }
 
 .home-tips__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }

@@ -584,7 +584,8 @@
   position: absolute;
   left: 14px;
   color: #999;
-  pointer-events: none;
+  cursor: pointer;
+  pointer-events: auto;
 }
 
 .md-modal-input--date {
