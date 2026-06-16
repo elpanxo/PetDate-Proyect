@@ -73,8 +73,9 @@
   padding: 28px 24px 24px;
 }
 
-/* Avatar circular con iniciales */
+/* Avatar circular con iniciales o foto */
 .perfil-avatar {
+  position: relative;
   width: 80px;
   height: 80px;
   border-radius: 50%;
@@ -84,6 +85,8 @@
   justify-content: center;
   margin: 0 auto 20px;
   box-shadow: 0 4px 16px rgba(126, 100, 146, 0.3);
+  cursor: pointer;
+  overflow: hidden;
 }
 
 .perfil-avatar__iniciales {
@@ -92,6 +95,34 @@
   font-weight: 700;
   letter-spacing: 0.02em;
   line-height: 1;
+}
+
+.perfil-avatar__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.perfil-avatar__overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.perfil-avatar:hover .perfil-avatar__overlay {
+  opacity: 1;
+}
+
+.perfil-avatar__input {
+  display: none;
 }
 
 /* Info del perfil */

@@ -15,7 +15,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -130,6 +137,32 @@ public class UsuarioService {
         }
     }
 
+    public UsuarioResponse subirImagen(Long id, MultipartFile imagen) throws IOException {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new UsuarioNotFoundException(id));
+
+        String uploadDir = "/app/uploads/usuarios/";
+        Path dirPath = Paths.get(uploadDir);
+        if (!Files.exists(dirPath)) {
+            Files.createDirectories(dirPath);
+        }
+
+        String extension = StringUtils.getFilenameExtension(imagen.getOriginalFilename());
+        String nombreArchivo = "usuario_" + id + "_" + System.currentTimeMillis() + "." + extension;
+        Path rutaArchivo = dirPath.resolve(nombreArchivo);
+
+        if (usuario.getImagen() != null) {
+            Path anterior = Paths.get("/app/uploads/usuarios/",
+                    usuario.getImagen().replace("/uploads/usuarios/", ""));
+            Files.deleteIfExists(anterior);
+        }
+
+        Files.copy(imagen.getInputStream(), rutaArchivo, StandardCopyOption.REPLACE_EXISTING);
+
+        usuario.setImagen("/uploads/usuarios/" + nombreArchivo);
+        return toResponse(usuarioRepository.save(usuario));
+    }
+
     private Usuario toEntity(UsuarioRequest r) {
         Usuario u = new Usuario();
         u.setNombre(r.getNombre());
@@ -147,6 +180,7 @@ public class UsuarioService {
         r.setCorreo(u.getCorreo());
         r.setTelefono(u.getTelefono());
         r.setDireccion(u.getDireccion());
+        r.setImagen(u.getImagen());
         r.setFechaRegistro(u.getFechaRegistro());
         r.setRol(u.getRol());
         r.setConsentimientoInformado(u.getConsentimientoInformado());

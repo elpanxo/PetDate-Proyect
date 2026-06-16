@@ -7,7 +7,9 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -73,6 +75,19 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return ResponseEntity.ok(usuarioService.actualizarUsuario(id, request));
+    }
+
+    @PostMapping("/{id}/imagen")
+    public ResponseEntity<UsuarioResponse> subirImagen(
+            @PathVariable Long id,
+            @RequestParam("imagen") MultipartFile imagen,
+            @RequestHeader(value = "X-Usuario-Id", required = false) Long tokenId,
+            @RequestHeader(value = "X-Usuario-Rol", required = false) String tokenRol) throws IOException {
+
+        if (!"ADMIN".equals(tokenRol) && (tokenId == null || !tokenId.equals(id))) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.ok(usuarioService.subirImagen(id, imagen));
     }
 
     // Cada usuario solo puede eliminar su propia cuenta

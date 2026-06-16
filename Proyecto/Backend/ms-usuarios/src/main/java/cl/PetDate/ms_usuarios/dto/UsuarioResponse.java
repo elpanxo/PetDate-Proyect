@@ -10,6 +10,7 @@ public class UsuarioResponse {
     private String correo;
     private String telefono;
     private String direccion;
+    private String imagen;
     private LocalDateTime fechaRegistro;
     private Rol rol;
     private Boolean consentimientoInformado;
@@ -29,6 +30,9 @@ public class UsuarioResponse {
 
     public String getDireccion() { return direccion; }
     public void setDireccion(String direccion) { this.direccion = direccion; }
+
+    public String getImagen() { return imagen; }
+    public void setImagen(String imagen) { this.imagen = imagen; }
 
     public LocalDateTime getFechaRegistro() { return fechaRegistro; }
     public void setFechaRegistro(LocalDateTime fechaRegistro) { this.fechaRegistro = fechaRegistro; }
