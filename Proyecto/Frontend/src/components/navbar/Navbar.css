@@ -256,7 +256,8 @@
 .fab {
   text-decoration: none;
   position: fixed;
-  bottom: 32px; right: 32px;
+  bottom: 32px;
+  right: 32px;
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -273,13 +274,29 @@
 }
 
 .fab:hover { width: 200px; padding: 14px 20px; }
-.fab__icon { font-size: 1.35rem; flex-shrink: 0; }
+.fab__icon { font-size: 1.55rem; flex-shrink: 0; margin-right: 10px; }
 .fab__label {
-  font-size: 0.85rem; font-weight: 700;
+  font-size: 0.85rem;
+  font-weight: 700;
   opacity: 0; max-width: 0; overflow: hidden;
   transition: opacity 0.25s ease 0.1s, max-width 0.35s ease;
 }
 .fab:hover .fab__label { opacity: 1; max-width: 160px; }
+
+.fab__label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  opacity: 0;
+  max-width: 0;
+  overflow: hidden;
+  transition: opacity 0.25s ease 0.1s, max-width 0.35s ease;
+}
+
+.fab:hover .fab__label {
+  opacity: 1;
+  max-width: 260px;
+}
 
 .mobile-drawer__footer {
   padding: 0 24px 32px;

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import logo from '../../assets/logo/petdate-logo.png';
-import { PawPrint, User, ClipboardList } from 'lucide-react';
+import { PawPrint, User, ClipboardList, Siren } from 'lucide-react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Navbar.css';
 
@@ -166,7 +166,7 @@ function Navbar() {
       {/* ── FAB urgencias ── */}
       {showFab && (
         <Link to="/servicios?tipo=Veterinaria+24%2F7" className="fab">
-          <span className="fab__icon">🚨</span>
+          <Siren size={22} className="fab__icon" />
           <span className="fab__label">Urgencia 24/7</span>
         </Link>
       )}
