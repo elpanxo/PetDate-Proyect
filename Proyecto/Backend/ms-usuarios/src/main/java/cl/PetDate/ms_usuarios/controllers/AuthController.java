@@ -4,6 +4,7 @@ import cl.PetDate.ms_usuarios.dto.AuthRequest;
 import cl.PetDate.ms_usuarios.dto.AuthResponse;
 import cl.PetDate.ms_usuarios.dto.ForgotPasswordRequest;
 import cl.PetDate.ms_usuarios.dto.ResetPasswordRequest;
+import cl.PetDate.ms_usuarios.models.Rol;
 import cl.PetDate.ms_usuarios.models.Usuario;
 import cl.PetDate.ms_usuarios.repositories.UsuarioRepository;
 import cl.PetDate.ms_usuarios.security.JwtService;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import java.util.Map;
 import java.util.Optional;
 
@@ -28,6 +31,12 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final PasswordResetService passwordResetService;
+
+    @Value("${admin.email}")
+    private String adminEmail;
+
+    @Value("${admin.password}")
+    private String adminPassword;
 
     public AuthController(UsuarioRepository usuarioRepository,
                           PasswordEncoder passwordEncoder,
@@ -53,6 +62,16 @@ public class AuthController {
 
         Usuario usuario = usuarioOpt.get();
         String token = jwtService.generarToken(usuario.getCorreo(), usuario.getId(), usuario.getRol());
+        return ResponseEntity.ok(new AuthResponse(token, null));
+    }
+
+    @PostMapping("/admin/login")
+    public ResponseEntity<AuthResponse> loginAdmin(@RequestBody AuthRequest request) {
+        if (!adminEmail.equals(request.getCorreo()) || !adminPassword.equals(request.getContrasena())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new AuthResponse(null, "Credenciales inválidas"));
+        }
+        String token = jwtService.generarToken(adminEmail, 0L, Rol.ADMIN);
         return ResponseEntity.ok(new AuthResponse(token, null));
     }
 
