@@ -192,6 +192,18 @@ export const auth = {
     return data
   },
 
+  /**
+   * Inicia sesión como administrador (credenciales desde variables de entorno del servidor).
+   * @param {string} correo
+   * @param {string} contrasena
+   * @returns {Promise<AuthResponse>}
+   */
+  async loginAdmin(correo, contrasena) {
+    const data = await http.post('/auth/admin/login', { correo, contrasena }, false)
+    token.set(data.token)
+    return data
+  },
+
   /** Elimina el token guardado (logout local). */
   logout() {
     token.remove()
@@ -938,7 +950,19 @@ export const comentarios = {
 }
 
 // ─────────────────────────────────────────────
-// 10. CONTACTO  →  /contacto
+// 10. AUDITORÍA  →  /auditoria  (solo ADMIN)
+// ─────────────────────────────────────────────
+
+export const auditoria = {
+  listar: (pagination) => http.get(`/auditoria${pageParams({ size: 20, ...pagination })}`),
+  porUsuario: (usuarioId, pagination) => http.get(`/auditoria/usuario/${usuarioId}${pageParams(pagination)}`),
+  porRecurso: (recurso, pagination) => http.get(`/auditoria/recurso/${encodeURIComponent(recurso)}${pageParams(pagination)}`),
+  porRango: (desde, hasta, pagination) =>
+    http.get(`/auditoria/rango?desde=${encodeURIComponent(desde)}&hasta=${encodeURIComponent(hasta)}${pageParams(pagination).replace('?','&')}`),
+}
+
+// ─────────────────────────────────────────────
+// 11. CONTACTO  →  /contacto
 // ─────────────────────────────────────────────
 
 export const contacto = {
@@ -997,6 +1021,7 @@ const api = {
   blogs,
   comentarios,
   contacto,
+  auditoria,
 }
 
 export default api

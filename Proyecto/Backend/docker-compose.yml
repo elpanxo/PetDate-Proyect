@@ -42,6 +42,8 @@ services:
       MS_COMENTARIOS_URL: http://ms-comentarios:8085
       MAIL_USERNAME: ${MAIL_USERNAME}
       MAIL_PASSWORD: ${MAIL_PASSWORD}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
     restart: on-failure
     networks:
       - petdate-network

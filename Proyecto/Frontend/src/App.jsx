@@ -13,6 +13,17 @@ import LoginEmpresa from './components/login/LoginEmpresa'
 import MiEmpresa from './components/miEmpresa/MiEmpresa'
 import PoliticaPrivacidad from './components/politicaPrivacidad/PoliticaPrivacidad'
 import RecuperarContrasena from './components/login/RecuperarContrasena'
+import AdminLogin from './components/admin/AdminLogin'
+import AdminRoute from './components/admin/AdminRoute'
+import AdminLayout from './components/admin/AdminLayout'
+import AdminDashboard from './components/admin/sections/AdminDashboard'
+import AdminUsuarios from './components/admin/sections/AdminUsuarios'
+import AdminMascotas from './components/admin/sections/AdminMascotas'
+import AdminCitas from './components/admin/sections/AdminCitas'
+import AdminComentarios from './components/admin/sections/AdminComentarios'
+import AdminBlogs from './components/admin/sections/AdminBlogs'
+import AdminServicios from './components/admin/sections/AdminServicios'
+import AdminLogs from './components/admin/sections/AdminLogs'
 import './App.css'
 
 // AQUI ESTA LAS RUTAS DE LA APP, HACIA DONDE SE REDIRIGE
@@ -34,6 +45,18 @@ function App() {
       <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
       <Route path="/recuperar-contrasena" element={<RecuperarContrasena tipo="cliente" />} />
       <Route path="/recuperar-contrasena-empresa" element={<RecuperarContrasena tipo="empresa" />} />
+
+      {/* ── Rutas de administración ── */}
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route path="/admin" element={<AdminRoute><AdminLayout><AdminDashboard /></AdminLayout></AdminRoute>} />
+      <Route path="/admin/usuarios" element={<AdminRoute><AdminLayout><AdminUsuarios /></AdminLayout></AdminRoute>} />
+      <Route path="/admin/mascotas" element={<AdminRoute><AdminLayout><AdminMascotas /></AdminLayout></AdminRoute>} />
+      <Route path="/admin/citas" element={<AdminRoute><AdminLayout><AdminCitas /></AdminLayout></AdminRoute>} />
+      <Route path="/admin/comentarios" element={<AdminRoute><AdminLayout><AdminComentarios /></AdminLayout></AdminRoute>} />
+      <Route path="/admin/blogs" element={<AdminRoute><AdminLayout><AdminBlogs /></AdminLayout></AdminRoute>} />
+      <Route path="/admin/servicios" element={<AdminRoute><AdminLayout><AdminServicios /></AdminLayout></AdminRoute>} />
+      <Route path="/admin/logs" element={<AdminRoute><AdminLayout><AdminLogs /></AdminLayout></AdminRoute>} />
+
       <Route path="/" element={<Home />} />
     </Routes>
   )
