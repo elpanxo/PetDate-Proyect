@@ -120,13 +120,17 @@
 
 /* Título de sección — Poppins bold uppercase */
 .contacto-section__title {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Aclonica', sans-serif;
   font-size: 1.1rem;
   font-weight: 800;
   color: #3d2b1f;
   letter-spacing: 0.08em;
-  text-transform: uppercase;
+  text-transform: lowercase;
   margin: 0 0 36px;
+}
+
+.contacto-section__title::first-letter {
+  text-transform: uppercase;
 }
 
 /* ── Formulario izquierdo ── */
