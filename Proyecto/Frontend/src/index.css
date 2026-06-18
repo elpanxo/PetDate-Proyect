@@ -58,6 +58,7 @@
 
 body {
   margin: 0;
+  background: #f5f0f0;
 }
 
 button,
@@ -93,6 +94,7 @@ a[class*="btn"],
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  background: #f5f0f0;
 }
 
 h1,

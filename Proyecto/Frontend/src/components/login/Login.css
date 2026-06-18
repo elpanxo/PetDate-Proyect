@@ -12,7 +12,7 @@
   padding-top: 64px;           /* espacio para AuthNavbar */
   display: grid;
   grid-template-columns: 1fr 1fr;
-  background-color: #f5ede8;   /* beige suave del mockup */
+  background-color: #f5f0f0;
 }
 
 /* ════════════════════════════════
@@ -292,7 +292,7 @@
    FOOTER
    ═══════════════════════════════ */
 .login-footer {
-  background-color: #f5ede8;
+  background-color: #f5f0f0;
   text-align: center;
   padding: 20px;
   font-family: 'Jost', sans-serif;

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import logo from '../../assets/logo/petdate-logo.png';
 import { PawPrint, User, ClipboardList, Siren } from 'lucide-react';
+import { clearSession } from '../../api/petdate-api';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Navbar.css';
 
@@ -57,8 +58,7 @@ function Navbar() {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
-    window.dispatchEvent(new Event('userChanged'));
+    clearSession();          // borra usuario + token y emite 'userChanged'
     navigate('/');
   };
 
