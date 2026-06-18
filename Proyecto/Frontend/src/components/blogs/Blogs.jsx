@@ -5,7 +5,11 @@ import Footer from '../footer/Footer'
 import { Newspaper, Hourglass, TriangleAlert, BookOpen, Calendar, Clock } from 'lucide-react'
 import api, { BASE_URL } from '../../api/petdate-api'
 import { TIPO_COLOR } from '../servicios/serviciosData'
+import catBlog from '../../assets/roots/catBlog.jpg'
 import './Blogs.css'
+
+// ── Imagen de fondo del hero ── cámbiala aquí
+const HERO_IMG = catBlog
 
 const formatearFecha = (fecha) => {
   if (!fecha) return ''
@@ -53,7 +57,10 @@ function Blogs() {
       {/* Hero */}
       <section className="blogs-hero">
         <div className="blogs-hero__bg" aria-hidden="true">
-          <div className="blogs-hero__bg-placeholder"></div>
+          {HERO_IMG
+            ? <img src={HERO_IMG} alt="" className="blogs-hero__bg-img" />
+            : <div className="blogs-hero__bg-placeholder"></div>
+          }
         </div>
         <div className="blogs-hero__vignette" aria-hidden="true" />
         <div className="blogs-hero__content">
