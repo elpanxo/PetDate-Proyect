@@ -5,6 +5,7 @@ import Navbar from '../navbar/Navbar';
 import Footer from '../footer/Footer';
 import api, { ApiError, BASE_URL } from '../../api/petdate-api';
 import { Dog, Cat, Bird, Rabbit, Turtle, Fish, PawPrint, Stethoscope, Syringe, Microscope, Pill, Hospital, ClipboardList, Scissors, Bath, Pin, Hourglass, TriangleAlert, Calendar, Clock, Pencil, Trash2, X } from 'lucide-react';
+import ConfirmModal from '../confirm/ConfirmModal';
 import './MascotaDetalle.css';
 
 // ─────────────────────────────────────────────
@@ -113,6 +114,7 @@ function MascotaDetalle() {
   const [guardando, setGuardando]           = useState(false);
   const fechaEventoRef = useRef(null);
   const [errorModal, setErrorModal]         = useState('');
+  const [confirmEvento, setConfirmEvento]   = useState(null); // idEvento
 
   const abrirCalendarioEvento = () => {
     const input = fechaEventoRef.current;
@@ -195,11 +197,14 @@ function MascotaDetalle() {
   };
 
   // ── Eliminar cita ──
-  const eliminarEvento = async (idEvento) => {
-    if (!window.confirm('¿Eliminar este evento?')) return;
+  const eliminarEvento = (idEvento) => setConfirmEvento(idEvento);
+
+  const confirmarEliminarEvento = async () => {
+    const id = confirmEvento;
+    setConfirmEvento(null);
     try {
-      await api.citas.eliminar(idEvento);
-      setCitas(prev => prev.filter(c => c.idEvento !== idEvento));
+      await api.citas.eliminar(id);
+      setCitas(prev => prev.filter(c => c.idEvento !== id));
     } catch {
       alert('No se pudo eliminar el evento. Intenta de nuevo.');
     }
@@ -565,6 +570,15 @@ function MascotaDetalle() {
           </button>
         </div>
       </Modal>
+
+      <ConfirmModal
+        show={confirmEvento !== null}
+        titulo="¿Eliminar evento?"
+        mensaje="Se eliminará este evento de la agenda de tu mascota. Esta acción no se puede deshacer."
+        labelOk="Eliminar"
+        onConfirm={confirmarEliminarEvento}
+        onCancel={() => setConfirmEvento(null)}
+      />
 
       <Footer />
     </>

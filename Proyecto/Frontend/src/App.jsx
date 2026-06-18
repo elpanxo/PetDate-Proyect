@@ -5,6 +5,7 @@ import Home from './components/home/Home'
 import Nosotros from './components/nosotros/Nosotros'
 import Contacto from './components/contacto/Contacto'
 import Blogs from './components/blogs/Blogs'
+import BlogDetalle from './components/blogs/BlogDetalle'
 import Servicios from './components/servicios/Servicios'
 import ServicioDetalle from './components/servicios/ServicioDetalle'
 import MisMascotas from './components/misMascotas/MisMascotas'
@@ -36,6 +37,7 @@ function App() {
       <Route path="/nosotros" element={<Nosotros />} />
       <Route path="/contacto" element={<Contacto />} />
       <Route path="/blogs" element={<Blogs />} />
+      <Route path="/blogs/:id" element={<BlogDetalle />} />
       <Route path="/servicios" element={<Servicios />} />
       <Route path="/servicios/:id" element={<ServicioDetalle />} />
       <Route path="/mis-mascotas" element={<MisMascotas />} />

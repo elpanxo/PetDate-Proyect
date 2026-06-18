@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Star, MessageSquare, Pencil, Trash2, Hourglass, TriangleAlert } from 'lucide-react'
 import api from '../../api/petdate-api'
+import ConfirmModal from '../confirm/ConfirmModal'
 import './Comentarios.css'
 
 // ─────────────────────────────────────────────
@@ -83,6 +84,7 @@ function Comentarios({ tipo, id, color = '#7e6492' }) {
   const [form, setForm]               = useState({ texto: '', calificacion: 0 })
   const [errForm, setErrForm]         = useState({})
   const [guardando, setGuardando]     = useState(false)
+  const [confirm, setConfirm]         = useState(false)
 
   const cargar = useCallback(async () => {
     setCargando(true)
@@ -155,7 +157,11 @@ function Comentarios({ tipo, id, color = '#7e6492' }) {
 
   const eliminar = async () => {
     if (!propio) return
-    if (!window.confirm('¿Eliminar tu comentario y calificación?')) return
+    setConfirm(true)
+  }
+
+  const confirmarEliminar = async () => {
+    setConfirm(false)
     try {
       await apiTipo.eliminar(propio.id)
       await cargar()
@@ -277,6 +283,15 @@ function Comentarios({ tipo, id, color = '#7e6492' }) {
           )}
         </>
       )}
+
+      <ConfirmModal
+        show={confirm}
+        titulo="¿Eliminar comentario?"
+        mensaje="Se eliminará tu comentario y calificación. Esta acción no se puede deshacer."
+        labelOk="Eliminar"
+        onConfirm={confirmarEliminar}
+        onCancel={() => setConfirm(false)}
+      />
     </div>
   )
 }

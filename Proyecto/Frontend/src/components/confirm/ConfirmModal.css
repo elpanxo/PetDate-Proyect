@@ -1,0 +1,114 @@
+.cm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.cm-box {
+  background: #fff;
+  border-radius: 18px;
+  padding: 32px 28px 26px;
+  max-width: 420px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  position: relative;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
+  font-family: 'Jost', sans-serif;
+}
+
+.cm-box__ico-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.cm-box__ico-wrap--danger {
+  background: #fdecea;
+  color: #c0392b;
+}
+
+.cm-box__ico-wrap--lila {
+  background: #f0ecf5;
+  color: #7e6492;
+}
+
+.cm-box__close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: transparent;
+  border: none;
+  color: #bbb;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  transition: color 0.15s;
+}
+.cm-box__close:hover { color: #555; }
+
+.cm-box__titulo {
+  font-family: 'Jost', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #2d2d2d;
+  margin: 0;
+}
+
+.cm-box__mensaje {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.cm-box__acciones {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.cm-box__btn {
+  flex: 1;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 500;
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: opacity 0.15s, background 0.15s;
+  border: none;
+}
+
+.cm-box__btn--cancelar {
+  background: #f5f5f5;
+  color: #555;
+  border: 1.5px solid #ddd;
+}
+.cm-box__btn--cancelar:hover { background: #ebebeb; }
+
+.cm-box__btn--danger {
+  background: #c0392b;
+  color: #fff;
+}
+.cm-box__btn--danger:hover { background: #a93226; }
+
+.cm-box__btn--lila {
+  background: #7e6492;
+  color: #fff;
+}
+.cm-box__btn--lila:hover { background: #6a5280; }
