@@ -1,26 +1,11 @@
 import { useState, useEffect } from 'react'
-import { Modal } from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom'
 import AppNavbar from '../navbar/Navbar'
 import Footer from '../footer/Footer'
-import { Stethoscope, Beef, Bath, Dog, Cat, Home as HomeIcon, Newspaper, Hourglass, TriangleAlert } from 'lucide-react'
+import { Newspaper, Hourglass, TriangleAlert, BookOpen, Calendar, Clock } from 'lucide-react'
 import api, { BASE_URL } from '../../api/petdate-api'
-import Comentarios from '../comentarios/Comentarios'
+import { TIPO_COLOR } from '../servicios/serviciosData'
 import './Blogs.css'
-
-// ─────────────────────────────────────────────
-// Estilo de respaldo cuando la entrada no tiene imagen propia
-// (se elige de forma determinística según el id, para variar el look del grid)
-// ─────────────────────────────────────────────
-const ESTILOS_RESPALDO = [
-  { bg: 'linear-gradient(135deg, #f5f0fa 0%, #d8c9ed 100%)', Icon: Stethoscope },
-  { bg: 'linear-gradient(135deg, #eaf4f8 0%, #b8dce8 100%)', Icon: Beef },
-  { bg: 'linear-gradient(135deg, #fff3ee 0%, #f5c9b0 100%)', Icon: Bath },
-  { bg: 'linear-gradient(135deg, #f0ecfa 0%, #c9b8e8 100%)', Icon: Dog },
-  { bg: 'linear-gradient(135deg, #e6f5f9 0%, #a8d5e5 100%)', Icon: Cat },
-  { bg: 'linear-gradient(135deg, #fff0ea 0%, #f0b896 100%)', Icon: HomeIcon },
-]
-
-const estiloRespaldo = (id) => ESTILOS_RESPALDO[Number(id) % ESTILOS_RESPALDO.length]
 
 const formatearFecha = (fecha) => {
   if (!fecha) return ''
@@ -33,19 +18,19 @@ const extracto = (texto, max = 160) => {
 }
 
 function Blogs() {
-  const [posts, setPosts]           = useState([])
-  const [servicios, setServicios]   = useState({})
-  const [loading, setLoading]       = useState(true)
-  const [error, setError]           = useState('')
-  const [seleccionado, setSeleccionado] = useState(null)
+  const navigate = useNavigate()
+  const [posts, setPosts]         = useState([])
+  const [servicios, setServicios] = useState({})
+  const [loading, setLoading]     = useState(true)
+  const [error, setError]         = useState('')
 
   useEffect(() => {
     const cargar = async () => {
       setLoading(true)
       setError('')
       try {
-        const page   = await api.blogs.listar({ size: 30, sort: 'fecha,desc' })
-        const lista  = page.content || []
+        const page  = await api.blogs.listar({ size: 30, sort: 'fecha,desc' })
+        const lista = page.content || []
         setPosts(lista)
 
         const idsUnicos = [...new Set(lista.map(p => p.idServicio).filter(Boolean))]
@@ -68,7 +53,7 @@ function Blogs() {
       {/* Hero */}
       <section className="blogs-hero">
         <div className="blogs-hero__bg" aria-hidden="true">
-          <div className="blogs-hero__bg-placeholder">🐾</div>
+          <div className="blogs-hero__bg-placeholder"></div>
         </div>
         <div className="blogs-hero__vignette" aria-hidden="true" />
         <div className="blogs-hero__content">
@@ -103,23 +88,34 @@ function Blogs() {
         {!loading && !error && posts.length > 0 && (
           <div className="blogs-grid">
             {posts.map((post) => {
-              const respaldo = estiloRespaldo(post.idBlog)
+              const servicio = servicios[post.idServicio]
+              const color    = TIPO_COLOR[servicio?.tipoServicio] || '#7e6492'
               return (
-                <article key={post.idBlog} className="blog-card">
-                  <div className="blog-card__image" style={post.imagen ? undefined : { background: respaldo.bg }}>
+                <article key={post.idBlog} className="hp-blog-card">
+                  <div className="hp-blog-card__img-wrap">
                     {post.imagen
-                      ? <img src={`${BASE_URL}${post.imagen}`} alt={post.titulo} className="blog-card__foto" />
-                      : <respaldo.Icon className="blog-card__emoji" size={48} />
+                      ? <img src={`${BASE_URL}${post.imagen}`} alt={post.titulo} className="hp-blog-card__img" />
+                      : <div className="hp-blog-card__img-placeholder"><BookOpen size={32} color="#ccc" /></div>
                     }
                   </div>
-                  <div className="blog-card__body">
-                    {post.fecha && <span className="blog-card__fecha">{formatearFecha(post.fecha)}</span>}
-                    <h3 className="blog-card__titulo">{post.titulo}</h3>
-                    {servicios[post.idServicio] && (
-                      <p className="blog-card__autor">Por {servicios[post.idServicio].nombreServicio}</p>
+                  <div className="hp-blog-card__body">
+                    {servicio && (
+                      <span className="hp-blog-card__cat" style={{ color, background: `${color}18` }}>
+                        {servicio.tipoServicio}
+                      </span>
                     )}
-                    <p className="blog-card__extracto">{extracto(post.texto)}</p>
-                    <button className="blog-card__btn" onClick={() => setSeleccionado(post)}>Ver más</button>
+                    <h3 className="hp-blog-card__titulo">{post.titulo}</h3>
+                    <p className="hp-blog-card__desc">{extracto(post.texto, 120)}</p>
+                    <div className="hp-blog-card__meta">
+                      {post.fecha && <span><Calendar size={12} /> {formatearFecha(post.fecha)}</span>}
+                      <span><Clock size={12} /> {Math.max(1, Math.round((post.texto?.split(' ').length || 0) / 200))} min de lectura</span>
+                    </div>
+                    <button
+                      className="hp-blog-card__ver-mas"
+                      onClick={() => navigate(`/blogs/${post.idBlog}`)}
+                    >
+                      Ver más
+                    </button>
                   </div>
                 </article>
               )
@@ -127,35 +123,6 @@ function Blogs() {
           </div>
         )}
       </section>
-
-      {/* Modal: entrada completa */}
-      <Modal show={!!seleccionado} onHide={() => setSeleccionado(null)} centered size="lg">
-        {seleccionado && (
-          <>
-            <Modal.Header closeButton>
-              <Modal.Title>{seleccionado.titulo}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              {seleccionado.imagen && (
-                <img
-                  src={`${BASE_URL}${seleccionado.imagen}`}
-                  alt={seleccionado.titulo}
-                  className="blog-modal__img"
-                />
-              )}
-              <div className="blog-modal__meta">
-                {seleccionado.fecha && <span className="blog-modal__fecha">{formatearFecha(seleccionado.fecha)}</span>}
-                {servicios[seleccionado.idServicio] && (
-                  <span className="blog-modal__autor">Por {servicios[seleccionado.idServicio].nombreServicio}</span>
-                )}
-              </div>
-              <p className="blog-modal__texto">{seleccionado.texto}</p>
-
-              <Comentarios tipo="blog" id={seleccionado.idBlog} />
-            </Modal.Body>
-          </>
-        )}
-      </Modal>
 
       <Footer />
     </>

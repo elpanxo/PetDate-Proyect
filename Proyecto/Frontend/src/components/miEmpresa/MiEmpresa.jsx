@@ -5,6 +5,7 @@ import Navbar from '../navbar/Navbar';
 import Footer from '../footer/Footer';
 import { TIPO_COLOR, COMUNAS } from '../servicios/serviciosData';
 import { Building2, ClipboardList, CheckCircle2, Tag, Pencil, Trash2, Image as ImageIcon, Newspaper, MapPin, Phone, MessageCircle, Globe, Clock, Eye, BookOpen, X } from 'lucide-react';
+import ConfirmModal from '../confirm/ConfirmModal';
 
 // SVGs inline para redes que no están en lucide-react
 function InstagramIcon({ size = 16, className }) {
@@ -77,6 +78,9 @@ function MiEmpresa() {
   const [archivoImagenBlog, setArchivoImagenBlog] = useState(null);
   const [imagenPreviewBlog, setImagenPreviewBlog] = useState(null);
   const [errorImagenBlog, setErrorImagenBlog]     = useState('');
+
+  const [confirmPromo, setConfirmPromo] = useState(null); // idPromocion
+  const [confirmBlog, setConfirmBlog]   = useState(null); // idBlog
 
   useEffect(() => {
     if (!user?.servicioId) return;
@@ -161,7 +165,12 @@ function MiEmpresa() {
 
   const abrirAgregarPromo  = () => { setEditandoPromoId(null); setFormPromo({ titulo: '', descripcion: '', fechaInicio: '', fechaTermino: '' }); setErrPromo({}); setShowModal(true); };
   const abrirEditarPromo   = (p) => { setEditandoPromoId(p.idPromocion); setFormPromo({ titulo: p.titulo || '', descripcion: p.descripcion || '', fechaInicio: p.fechaInicio || '', fechaTermino: p.fechaTermino || '' }); setErrPromo({}); setShowModal(true); };
-  const eliminarPromo      = async (id) => { if (!window.confirm('¿Eliminar esta promoción?')) return; try { await api.promociones.eliminar(id); await recargarPromociones(); } catch { alert('Error al eliminar la promoción.'); } };
+  const eliminarPromo      = (id) => setConfirmPromo(id);
+  const confirmarEliminarPromo = async () => {
+    const id = confirmPromo;
+    setConfirmPromo(null);
+    try { await api.promociones.eliminar(id); await recargarPromociones(); } catch { alert('Error al eliminar la promoción.'); }
+  };
 
   const validarPromo = () => {
     const e = {};
@@ -188,7 +197,12 @@ function MiEmpresa() {
   const limpiarSeleccionImagenBlog = () => { if (imagenPreviewBlog) URL.revokeObjectURL(imagenPreviewBlog); setArchivoImagenBlog(null); setImagenPreviewBlog(null); setErrorImagenBlog(''); };
   const abrirAgregarBlog = () => { setEditandoBlogId(null); setFormBlog({ titulo: '', texto: '' }); setErrBlog({}); setImagenActualBlog(''); limpiarSeleccionImagenBlog(); setShowModalBlog(true); };
   const abrirEditarBlog  = (b) => { setEditandoBlogId(b.idBlog); setFormBlog({ titulo: b.titulo || '', texto: b.texto || '' }); setErrBlog({}); setImagenActualBlog(b.imagen || ''); limpiarSeleccionImagenBlog(); setShowModalBlog(true); };
-  const eliminarBlog     = async (id) => { if (!window.confirm('¿Eliminar esta entrada de blog?')) return; try { await api.blogs.eliminar(id); await recargarBlogs(); } catch { alert('Error al eliminar la entrada de blog.'); } };
+  const eliminarBlog     = (id) => setConfirmBlog(id);
+  const confirmarEliminarBlog = async () => {
+    const id = confirmBlog;
+    setConfirmBlog(null);
+    try { await api.blogs.eliminar(id); await recargarBlogs(); } catch { alert('Error al eliminar la entrada de blog.'); }
+  };
 
   const seleccionarImagenBlog = (e) => {
     const archivo = e.target.files?.[0]; setErrorImagenBlog('');
@@ -687,6 +701,24 @@ function MiEmpresa() {
           </div>
         </div>
       )}
+
+      <ConfirmModal
+        show={confirmPromo !== null}
+        titulo="¿Eliminar promoción?"
+        mensaje="Se eliminará esta promoción de forma permanente. Esta acción no se puede deshacer."
+        labelOk="Eliminar"
+        onConfirm={confirmarEliminarPromo}
+        onCancel={() => setConfirmPromo(null)}
+      />
+
+      <ConfirmModal
+        show={confirmBlog !== null}
+        titulo="¿Eliminar entrada de blog?"
+        mensaje="Se eliminará esta entrada del blog de forma permanente. Esta acción no se puede deshacer."
+        labelOk="Eliminar"
+        onConfirm={confirmarEliminarBlog}
+        onCancel={() => setConfirmBlog(null)}
+      />
 
       <Footer />
     </>

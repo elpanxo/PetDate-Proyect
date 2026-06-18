@@ -5,6 +5,7 @@ import Navbar from '../navbar/Navbar';
 import Footer from '../footer/Footer';
 import api, { ApiError, BASE_URL, token } from '../../api/petdate-api';
 import { Dog, Cat, Bird, Rabbit, Turtle, Fish, PawPrint, Hourglass, TriangleAlert, Pencil, Trash2, User, Star, ChevronLeft, ChevronRight, Calendar, UploadCloud, Heart, Info, X, Eye, EyeOff, HeartHandshake } from 'lucide-react';
+import ConfirmModal from '../confirm/ConfirmModal';
 import './MisMascotas.css';
 
 // ─────────────────────────────────────────────
@@ -107,6 +108,11 @@ function MisMascotas() {
   const [errNombre, setErrNombre]     = useState(false);
   const [guardando, setGuardando]     = useState(false);
   const [errorModal, setErrorModal]   = useState('');
+
+  // Modales de confirmación
+  const [confirmCuenta, setConfirmCuenta]       = useState(false);
+  const [confirmCalif, setConfirmCalif]         = useState(null); // { id, tipo }
+  const [confirmMascota, setConfirmMascota]     = useState(null); // { id, e }
 
   // ─── Scroll horizontal del carrusel de mascotas ───
   const carruselRef = useRef(null);
@@ -261,9 +267,10 @@ function MisMascotas() {
   // ─────────────────────────────────────────────
   // Perfil: eliminar cuenta
   // ─────────────────────────────────────────────
-  const eliminarCuenta = async () => {
-    const confirm1 = window.confirm('¿Estás seguro de que quieres eliminar tu cuenta?\n\nEsto eliminará tu perfil, mascotas y calificaciones. Esta acción no se puede deshacer.');
-    if (!confirm1) return;
+  const eliminarCuenta = () => setConfirmCuenta(true);
+
+  const confirmarEliminarCuenta = async () => {
+    setConfirmCuenta(false);
     try {
       await api.usuarios.eliminar(usuario.id);
       localStorage.removeItem('user');
@@ -313,8 +320,11 @@ function MisMascotas() {
     }
   };
 
-  const eliminarCalif = async (tipo, id) => {
-    if (!window.confirm('¿Eliminar esta calificación?')) return;
+  const eliminarCalif = (tipo, id) => setConfirmCalif({ tipo, id });
+
+  const confirmarEliminarCalif = async () => {
+    const { tipo, id } = confirmCalif;
+    setConfirmCalif(null);
     try {
       if (tipo === 'blog') {
         await api.comentarios.blog.eliminar(id);
@@ -341,9 +351,14 @@ function MisMascotas() {
     setErrNombre(false); setErrorModal(''); setShowModal(true);
   };
 
-  const eliminar = async (id, e) => {
+  const eliminar = (id, e) => {
     e.stopPropagation();
-    if (!window.confirm('¿Seguro que quieres eliminar esta mascota?')) return;
+    setConfirmMascota({ id });
+  };
+
+  const confirmarEliminarMascota = async () => {
+    const { id } = confirmMascota;
+    setConfirmMascota(null);
     try {
       await api.mascotas.eliminar(id);
       setMascotas(prev => prev.filter(m => m.id !== id));
@@ -954,6 +969,33 @@ function MisMascotas() {
           </button>
         </div>
       </Modal>
+
+      <ConfirmModal
+        show={confirmCuenta}
+        titulo="¿Eliminar tu cuenta?"
+        mensaje="Se eliminarán tu perfil, mascotas y calificaciones de forma permanente. Esta acción no se puede deshacer."
+        labelOk="Eliminar cuenta"
+        onConfirm={confirmarEliminarCuenta}
+        onCancel={() => setConfirmCuenta(false)}
+      />
+
+      <ConfirmModal
+        show={!!confirmCalif}
+        titulo="¿Eliminar calificación?"
+        mensaje="Se eliminará tu calificación y comentario. Esta acción no se puede deshacer."
+        labelOk="Eliminar"
+        onConfirm={confirmarEliminarCalif}
+        onCancel={() => setConfirmCalif(null)}
+      />
+
+      <ConfirmModal
+        show={!!confirmMascota}
+        titulo="¿Eliminar mascota?"
+        mensaje="Se eliminará el perfil de esta mascota y todos sus datos. Esta acción no se puede deshacer."
+        labelOk="Eliminar"
+        onConfirm={confirmarEliminarMascota}
+        onCancel={() => setConfirmMascota(null)}
+      />
 
       <Footer />
     </>
