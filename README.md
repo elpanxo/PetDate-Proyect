@@ -129,6 +129,20 @@ Crear `Proyecto/Backend/.env` basándose en `.env.example`:
 JWT_SECRET=tu_clave_secreta_jwt
 MAIL_USERNAME=tu_correo@gmail.com
 MAIL_PASSWORD=tu_contrasena_de_aplicacion
+ADMIN_EMAIL=admin_correo@gmail.com
+ADMIN_PASSWORD=admin_contraseña_de_aplicacion
+MONGO_USER=reemplaza por nombre de usuario de la base de datos
+MONGO_PASSWORD=reemplaza por contraseña de la base de datos
+MONGO_DATABASE=reemplaza por nombre de la base de datos
+```
+### 2.1 Variables de entorno (Data)
+
+Crear `Proyecto/Data/.env` basándose en `.env.example`:
+
+```env
+MONGO_USER=reemplaza por nombre de usuario de la base de datos
+MONGO_PASSWORD=reemplaza por contraseña de la base de datos
+MONGO_DATABASE=reemplaza por nombre de la base de datos
 ```
 
 ### 3. Levantar la capa de datos
