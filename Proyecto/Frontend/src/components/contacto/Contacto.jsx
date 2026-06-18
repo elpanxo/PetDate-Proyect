@@ -1,25 +1,17 @@
 import { useState } from 'react'
 import AppNavbar from '../navbar/Navbar'
 import Footer from '../footer/Footer'
-import { CheckCircle2, Mail } from 'lucide-react'
+import { CheckCircle2, Mail, Send, User, Info } from 'lucide-react'
 import api from '../../api/petdate-api'
+import ContactDog from '../../assets/roots/contactDog.jpg'
 import './Contacto.css'
 
 const MAX_CHARS = 500
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-// Collage 4×1 — agrega tus fotos aquí
-const bgPhotos = [
-  { src: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&q=80', pos: 'center center' },
-  { src: 'https://images.unsplash.com/photo-1495360010541-f48722b34f7d?w=800&q=80', pos: 'center top'    },
-  { src: 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=800&q=80', pos: 'center center' },
-  { src: 'https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=800&q=80', pos: 'center 40%'   },
-]
+// ── Imagen de fondo del hero ── cámbiala aquí
+const HERO_IMG = ContactDog
 
-const zoomDuration = ['24s', '20s', '27s', '22s']
-const zoomDir      = ['normal', 'alternate', 'normal', 'alternate']
-
-// Icono WhatsApp SVG simple
 function WhatsAppIcon({ size = 20 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
@@ -45,33 +37,30 @@ function InstagramIcon({ size = 20 }) {
 }
 
 function Contacto() {
-  const [form, setForm] = useState({ nombre: '', correo: '', mensaje: '' })
+  const [form, setForm]       = useState({ nombre: '', correo: '', mensaje: '' })
   const [touched, setTouched] = useState({ nombre: false, correo: false, mensaje: false })
-  const [enviado, setEnviado] = useState(false)
+  const [enviado, setEnviado]   = useState(false)
   const [enviando, setEnviando] = useState(false)
   const [errorEnvio, setErrorEnvio] = useState('')
 
   const errores = {
-    nombre:  form.nombre.trim() === '' ? 'El nombre o empresa es obligatorio.' : '',
+    nombre:  form.nombre.trim() === '' ? 'El nombre es obligatorio.' : '',
     correo:  form.correo.trim() === ''
-      ? 'El correo electrónico es obligatorio.'
-      : !EMAIL_REGEX.test(form.correo)
-        ? 'Ingresa un correo válido (ej: usuario@dominio.cl)'
-        : '',
-    mensaje: form.mensaje.trim() === '' ? 'El mensaje o consulta es obligatorio.' : '',
+      ? 'El correo es obligatorio.'
+      : !EMAIL_REGEX.test(form.correo) ? 'Ingresa un correo válido.' : '',
+    mensaje: form.mensaje.trim() === '' ? 'El mensaje es obligatorio.' : '',
   }
 
-  const formularioValido = Object.values(errores).every((e) => e === '')
+  const formularioValido = Object.values(errores).every(e => e === '')
 
   function handleChange(e) {
     const { name, value } = e.target
     if (name === 'mensaje' && value.length > MAX_CHARS) return
-    setForm((prev) => ({ ...prev, [name]: value }))
+    setForm(prev => ({ ...prev, [name]: value }))
   }
 
   function handleBlur(e) {
-    const { name } = e.target
-    setTouched((prev) => ({ ...prev, [name]: true }))
+    setTouched(prev => ({ ...prev, [e.target.name]: true }))
   }
 
   async function handleSubmit(e) {
@@ -86,186 +75,154 @@ function Contacto() {
       setForm({ nombre: '', correo: '', mensaje: '' })
       setTouched({ nombre: false, correo: false, mensaje: false })
     } catch {
-      setErrorEnvio('No se pudo enviar el mensaje. Por favor intenta nuevamente.')
+      setErrorEnvio('No se pudo enviar el mensaje. Intenta nuevamente.')
     } finally {
       setEnviando(false)
     }
   }
 
-  const remaining = MAX_CHARS - form.mensaje.length
+  const used = form.mensaje.length
 
   return (
     <>
       <AppNavbar />
 
-      {/* ── Hero collage 4×1 ── */}
+      {/* Hero */}
       <section className="contacto-hero">
-
-        {/* Collage de fondo */}
-        <div className="contacto-hero__collage" aria-hidden="true">
-          {bgPhotos.map((photo, i) => (
-            <div key={i} className="contacto-hero__cell">
-              {photo.src ? (
-                <img
-                  src={photo.src}
-                  alt=""
-                  className="contacto-hero__cell-img"
-                  style={{
-                    objectPosition: photo.pos,
-                    animationDuration: zoomDuration[i],
-                    animationDirection: zoomDir[i],
-                  }}
-                />
-              ) : (
-                <div className="contacto-hero__cell-placeholder">
-                  <span>🐾</span>
-                </div>
-              )}
-            </div>
-          ))}
+        <div className="contacto-hero__bg" aria-hidden="true">
+          {HERO_IMG
+            ? <img src={HERO_IMG} alt="" className="contacto-hero__bg-img" />
+            : <div className="contacto-hero__bg-placeholder" />
+          }
         </div>
-
-        {/* Viñeta radial */}
         <div className="contacto-hero__vignette" aria-hidden="true" />
-
-        {/* Texto centrado */}
         <div className="contacto-hero__content">
           <h1 className="contacto-hero__title">Contacto</h1>
           <p className="contacto-hero__slogan">¿Tienes alguna consulta? Estamos para ayudarte.</p>
         </div>
-
       </section>
 
-      {/* ── Sección principal: formulario + info ── */}
+      {/* Sección principal */}
       <section className="contacto-section">
- 
-        {/* Formulario */}
-        <div className="contacto-left">
-          <h2 className="contacto-section__title">Escríbenos</h2>
- 
-          {enviado ? (
-            <div className="contacto-success">
-              <CheckCircle2 size={48} className="contacto-success__icon" />
-              <h2 className="contacto-success__title">¡Mensaje enviado!</h2>
-              <p className="contacto-success__text">Gracias por contactarnos. Te responderemos a la brevedad.</p>
-              <button className="contacto-btn" onClick={() => setEnviado(false)}>
-                Enviar otro mensaje
-              </button>
+        <div className="contacto-grid">
+
+          {/* Formulario */}
+          <div className="contacto-card">
+            <div className="contacto-card__header">
+              <div className="contacto-card__icono"><Mail size={22} /></div>
+              <h2 className="contacto-card__titulo">Escríbenos</h2>
+              <p className="contacto-card__desc">Si tienes dudas o necesitas ayuda, estaremos encantados de ayudarte.</p>
             </div>
-          ) : (
-            <form className="contacto-form" onSubmit={handleSubmit} noValidate>
- 
-              <div className="contacto-field">
-                <input
-                  id="nombre" name="nombre" type="text"
-                  className={`contacto-field__input ${touched.nombre && errores.nombre ? 'contacto-field__input--error' : ''}`}
-                  placeholder="Nombre"
-                  value={form.nombre}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                />
-                {touched.nombre && errores.nombre && (
-                  <span className="contacto-field__error">{errores.nombre}</span>
-                )}
-              </div>
- 
-              <div className="contacto-field">
-                <input
-                  id="correo" name="correo" type="email"
-                  className={`contacto-field__input ${touched.correo && errores.correo ? 'contacto-field__input--error' : ''}`}
-                  placeholder="Email"
-                  value={form.correo}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                />
-                {touched.correo && errores.correo && (
-                  <span className="contacto-field__error">{errores.correo}</span>
-                )}
-              </div>
- 
-              <div className="contacto-field">
-                <textarea
-                  id="mensaje" name="mensaje"
-                  className={`contacto-field__textarea ${touched.mensaje && errores.mensaje ? 'contacto-field__input--error' : ''}`}
-                  placeholder="Mensaje"
-                  rows={6}
-                  value={form.mensaje}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                />
-                {touched.mensaje && errores.mensaje && (
-                  <span className="contacto-field__error">{errores.mensaje}</span>
-                )}
-                <span className={`contacto-field__counter ${remaining <= 50 ? 'contacto-field__counter--warn' : ''}`}>
-                  {remaining} caracteres restantes
-                </span>
-              </div>
- 
-              {errorEnvio && (
-                <span className="contacto-field__error">{errorEnvio}</span>
-              )}
-              <div className="contacto-form__footer">
-                <button type="submit" className="contacto-btn" disabled={enviando}>
-                  {enviando ? 'Enviando...' : 'Enviar mensaje'}
+
+            {enviado ? (
+              <div className="contacto-success">
+                <CheckCircle2 size={44} className="contacto-success__icon" />
+                <h3 className="contacto-success__title">¡Mensaje enviado!</h3>
+                <p className="contacto-success__text">Gracias por contactarnos. Te responderemos a la brevedad.</p>
+                <button className="contacto-btn" onClick={() => setEnviado(false)}>
+                  Enviar otro mensaje
                 </button>
               </div>
- 
-            </form>
-          )}
+            ) : (
+              <form className="contacto-form" onSubmit={handleSubmit} noValidate>
+
+                <div className="contacto-field">
+                  <div className={`contacto-field__wrap ${touched.nombre && errores.nombre ? 'contacto-field__wrap--error' : ''}`}>
+                    <span className="contacto-field__ico"><User size={16} /></span>
+                    <input
+                      name="nombre" type="text"
+                      className="contacto-field__input"
+                      placeholder="Nombre"
+                      value={form.nombre}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                    />
+                  </div>
+                  {touched.nombre && errores.nombre && <span className="contacto-field__error">{errores.nombre}</span>}
+                </div>
+
+                <div className="contacto-field">
+                  <div className={`contacto-field__wrap ${touched.correo && errores.correo ? 'contacto-field__wrap--error' : ''}`}>
+                    <span className="contacto-field__ico"><Mail size={16} /></span>
+                    <input
+                      name="correo" type="email"
+                      className="contacto-field__input"
+                      placeholder="Email"
+                      value={form.correo}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                    />
+                  </div>
+                  {touched.correo && errores.correo && <span className="contacto-field__error">{errores.correo}</span>}
+                </div>
+
+                <div className="contacto-field">
+                  <div className={`contacto-field__wrap contacto-field__wrap--textarea ${touched.mensaje && errores.mensaje ? 'contacto-field__wrap--error' : ''}`}>
+                    <span className="contacto-field__ico contacto-field__ico--top">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/>
+                      </svg>
+                    </span>
+                    <textarea
+                      name="mensaje"
+                      className="contacto-field__input contacto-field__textarea"
+                      placeholder="Mensaje"
+                      rows={5}
+                      value={form.mensaje}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                    />
+                  </div>
+                  {touched.mensaje && errores.mensaje && <span className="contacto-field__error">{errores.mensaje}</span>}
+                  <span className="contacto-field__counter">{used} / {MAX_CHARS} caracteres</span>
+                </div>
+
+                {errorEnvio && <span className="contacto-field__error">{errorEnvio}</span>}
+
+                <div className="contacto-form__footer">
+                  <button type="submit" className="contacto-btn" disabled={enviando}>
+                    <Send size={16} />
+                    {enviando ? 'Enviando...' : 'Enviar mensaje'}
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+
+          {/* Info de contacto */}
+          <div className="contacto-card">
+            <div className="contacto-card__header">
+              <div className="contacto-card__icono contacto-card__icono--green"><Info size={22} /></div>
+              <h2 className="contacto-card__titulo">Información de contacto</h2>
+              <p className="contacto-card__desc">También puedes comunicarte con nosotros a través de nuestros canales.</p>
+            </div>
+
+            <ul className="contacto-info">
+              <li className="contacto-info__item">
+                <div className="contacto-info__ico-wrap"><InstagramIcon size={18} /></div>
+                <a href="https://instagram.com/petdate_cl" target="_blank" rel="noreferrer" className="contacto-info__link">Instagram</a>
+              </li>
+              <li className="contacto-info__item">
+                <div className="contacto-info__ico-wrap"><FacebookIcon size={18} /></div>
+                <a href="https://facebook.com/PetDateCL" target="_blank" rel="noreferrer" className="contacto-info__link">Facebook</a>
+              </li>
+              <li className="contacto-info__item">
+                <div className="contacto-info__ico-wrap"><WhatsAppIcon size={18} /></div>
+                <a href="https://wa.me/56900000000" target="_blank" rel="noreferrer" className="contacto-info__link">WhatsApp</a>
+              </li>
+              <li className="contacto-info__item">
+                <div className="contacto-info__ico-wrap"><Mail size={18} /></div>
+                <a href="mailto:contacto@petdate.cl" className="contacto-info__link">contacto@petdate.cl</a>
+              </li>
+            </ul>
+          </div>
+
         </div>
- 
-        {/* Info de contacto */}
-        <div className="contacto-right">
-          <h2 className="contacto-section__title">Información de Contacto</h2>
- 
-          <ul className="contacto-info">
-            <li className="contacto-info__item">
-              <InstagramIcon size={20} />
-              <a
-                href="https://instagram.com/petdate_cl"
-                target="_blank"
-                rel="noreferrer"
-                className="contacto-info__link"
-              >
-                Instagram
-              </a>
-            </li>
-            <li className="contacto-info__item">
-              <FacebookIcon size={20} />
-              <a
-                href="https://facebook.com/PetDateCL"
-                target="_blank"
-                rel="noreferrer"
-                className="contacto-info__link"
-              >
-                Facebook
-              </a>
-            </li>
-            <li className="contacto-info__item">
-              <WhatsAppIcon size={20} />
-              <a
-                href="https://wa.me/56900000000"
-                target="_blank"
-                rel="noreferrer"
-                className="contacto-info__link"
-              >
-                WhatsApp
-              </a>
-            </li>
-            <li className="contacto-info__item">
-              <Mail size={20} className="contacto-info__icon" />
-              <a href="mailto:contacto@petdate.cl" className="contacto-info__link">
-                contacto@petdate.cl
-              </a>
-            </li>
-          </ul>
-        </div>
- 
       </section>
- 
+
       <Footer />
     </>
   )
 }
- 
+
 export default Contacto
