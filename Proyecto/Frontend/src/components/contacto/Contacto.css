@@ -65,7 +65,7 @@
 
 /* ── Sección principal ── */
 .contacto-section {
-  background: #f5f3fb;
+  background: #f5f0f0;
   padding: 56px 5vw 72px;
   min-height: calc(100vh - 260px);
   display: flex;
@@ -275,10 +275,6 @@
 }
 
 .contacto-info__item {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 14px 18px;
   border: 1.5px solid #f0ecf5;
   border-radius: 14px;
   transition: border-color 0.15s, background 0.15s;
@@ -302,6 +298,10 @@
 }
 
 .contacto-info__link {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
   font-family: 'Jost', sans-serif;
   font-size: 0.95rem;
   font-weight: 500;

@@ -52,6 +52,18 @@ export const token = {
   },
 }
 
+/**
+ * Cierra la sesión local por completo: borra el token JWT y los datos de usuario,
+ * y avisa al resto de la app (navbar, etc.) mediante el evento 'userChanged'.
+ * Úsala en cualquier punto donde se quiera "cerrar sesión" para que siempre se
+ * limpien las dos cosas de forma consistente.
+ */
+export function clearSession() {
+  token.remove()
+  localStorage.removeItem('user')
+  window.dispatchEvent(new Event('userChanged'))
+}
+
 // ─────────────────────────────────────────────
 // Núcleo HTTP
 // ─────────────────────────────────────────────

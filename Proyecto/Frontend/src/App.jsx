@@ -25,12 +25,15 @@ import AdminComentarios from './components/admin/sections/AdminComentarios'
 import AdminBlogs from './components/admin/sections/AdminBlogs'
 import AdminServicios from './components/admin/sections/AdminServicios'
 import AdminLogs from './components/admin/sections/AdminLogs'
+import SessionManager from './components/session/SessionManager'
 import './App.css'
 
 // AQUI ESTA LAS RUTAS DE LA APP, HACIA DONDE SE REDIRIGE
 
 function App() {
   return (
+    <>
+    <SessionManager />
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
@@ -61,6 +64,7 @@ function App() {
 
       <Route path="/" element={<Home />} />
     </Routes>
+    </>
   )
 }
 

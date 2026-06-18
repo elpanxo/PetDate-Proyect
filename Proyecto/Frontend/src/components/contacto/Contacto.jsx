@@ -199,20 +199,28 @@ function Contacto() {
 
             <ul className="contacto-info">
               <li className="contacto-info__item">
-                <div className="contacto-info__ico-wrap"><InstagramIcon size={18} /></div>
-                <a href="https://instagram.com/petdate_cl" target="_blank" rel="noreferrer" className="contacto-info__link">Instagram</a>
+                <a href="https://instagram.com/petdate_cl" target="_blank" rel="noreferrer" className="contacto-info__link">
+                  <div className="contacto-info__ico-wrap"><InstagramIcon size={18} /></div>
+                  <span>Instagram</span>
+                </a>
               </li>
               <li className="contacto-info__item">
-                <div className="contacto-info__ico-wrap"><FacebookIcon size={18} /></div>
-                <a href="https://facebook.com/PetDateCL" target="_blank" rel="noreferrer" className="contacto-info__link">Facebook</a>
+                <a href="https://facebook.com/PetDateCL" target="_blank" rel="noreferrer" className="contacto-info__link">
+                  <div className="contacto-info__ico-wrap"><FacebookIcon size={18} /></div>
+                  <span>Facebook</span>
+                </a>
               </li>
               <li className="contacto-info__item">
-                <div className="contacto-info__ico-wrap"><WhatsAppIcon size={18} /></div>
-                <a href="https://wa.me/56900000000" target="_blank" rel="noreferrer" className="contacto-info__link">WhatsApp</a>
+                <a href="https://wa.me/56900000000" target="_blank" rel="noreferrer" className="contacto-info__link">
+                  <div className="contacto-info__ico-wrap"><WhatsAppIcon size={18} /></div>
+                  <span>WhatsApp</span>
+                </a>
               </li>
               <li className="contacto-info__item">
-                <div className="contacto-info__ico-wrap"><Mail size={18} /></div>
-                <a href="mailto:contacto@petdate.cl" className="contacto-info__link">contacto@petdate.cl</a>
+                <a href="mailto:contacto@petdate.cl" className="contacto-info__link">
+                  <div className="contacto-info__ico-wrap"><Mail size={18} /></div>
+                  <span>contacto@petdate.cl</span>
+                </a>
               </li>
             </ul>
           </div>
