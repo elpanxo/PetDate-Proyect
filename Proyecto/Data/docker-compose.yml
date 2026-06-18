@@ -10,7 +10,9 @@ services:
     networks:
       - petdate-network
     environment:
-      MONGO_INITDB_DATABASE: db-PetDate
+      MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
     healthcheck:
       test: ["CMD", "mongosh", "--username", "${MONGO_USER}", "--password", "${MONGO_PASSWORD}", "--eval", "db.adminCommand('ping')"]
       interval: 10s
@@ -42,11 +44,12 @@ services:
     environment:
       MONGO_USER: ${MONGO_USER}
       MONGO_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_DATABASE: ${MONGO_DATABASE}
     entrypoint: >
       /bin/sh -c "
         while true; do
           FECHA=$$(date +%Y-%m-%d_%H-%M-%S);
-          mongodump --host petdate-db --port 27017 --username $$MONGO_USER --password $$MONGO_PASSWORD --authenticationDatabase admin --db db-PetDate --archive=/backups/backup_$$FECHA.gz --gzip;
+          mongodump --host petdate-db --port 27017 --username $$MONGO_USER --password $$MONGO_PASSWORD --authenticationDatabase admin --db $$MONGO_DATABASE --archive=/backups/backup_$$FECHA.gz --gzip;
           echo \"Backup creado: backup_$$FECHA.gz\";
           find /backups -name '*.gz' -mtime +7 -delete;
           sleep 86400;

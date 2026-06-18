@@ -7,10 +7,10 @@ spring:
 
   data:
     mongodb:
-      uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/db-PetDate}
+      uri: ${SPRING_DATA_MONGODB_URI}
 
   mongodb:
-    uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/db-PetDate}
+    uri: ${SPRING_DATA_MONGODB_URI}
 
   servlet:
     multipart:
