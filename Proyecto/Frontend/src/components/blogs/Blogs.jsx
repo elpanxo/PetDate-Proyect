@@ -98,7 +98,14 @@ function Blogs() {
               const servicio = servicios[post.idServicio]
               const color    = TIPO_COLOR[servicio?.tipoServicio] || '#7e6492'
               return (
-                <article key={post.idBlog} className="hp-blog-card">
+                <article
+                  key={post.idBlog}
+                  className="hp-blog-card"
+                  onClick={() => navigate(`/blogs/${post.idBlog}`)}
+                  role="link"
+                  tabIndex={0}
+                  onKeyDown={(e) => { if (e.key === 'Enter') navigate(`/blogs/${post.idBlog}`) }}
+                >
                   <div className="hp-blog-card__img-wrap">
                     {post.imagen
                       ? <img src={`${BASE_URL}${post.imagen}`} alt={post.titulo} className="hp-blog-card__img" />
