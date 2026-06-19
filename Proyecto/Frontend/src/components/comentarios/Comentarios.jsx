@@ -22,7 +22,7 @@ function formatearFecha(fecha) {
   return new Date(fecha).toLocaleDateString('es-CL', { day: '2-digit', month: 'short', year: 'numeric' })
 }
 
-function Estrellas({ valor = 0, tamano = 16 }) {
+export function Estrellas({ valor = 0, tamano = 16 }) {
   return (
     <span className="cm-estrellas" aria-label={`${valor} de 5 estrellas`}>
       {[1, 2, 3, 4, 5].map((n) => (
@@ -70,7 +70,7 @@ function SelectorEstrellas({ valor, onChange, tamano = 24 }) {
  * @param {number|string} id - idBlog o idServicio según corresponda
  * @param {string} [color]   - color de acento (por defecto el morado de PetDate)
  */
-function Comentarios({ tipo, id, color = '#7e6492' }) {
+function Comentarios({ tipo, id, color = '#7e6492', onResumen }) {
   const usuario   = obtenerUsuario()
   const esCliente = !!usuario && usuario.role === 'cliente'
   const apiTipo   = tipo === 'blog' ? api.comentarios.blog : api.comentarios.servicio
@@ -107,6 +107,12 @@ function Comentarios({ tipo, id, color = '#7e6492' }) {
   const promedio = lista.length
     ? lista.reduce((acc, c) => acc + (c.calificacion || 0), 0) / lista.length
     : 0
+
+  // Avisa el resumen (promedio + total) hacia el componente padre, para que
+  // pueda mostrarlo en otro lugar (p. ej. el sidebar del detalle del blog).
+  useEffect(() => {
+    if (onResumen) onResumen({ promedio, total: lista.length })
+  }, [lista, promedio, onResumen])
 
   const abrirNuevo = () => {
     setForm({ texto: '', calificacion: 0 })

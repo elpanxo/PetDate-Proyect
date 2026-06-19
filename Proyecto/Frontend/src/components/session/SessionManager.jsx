@@ -13,8 +13,8 @@ import '../confirm/ConfirmModal.css'
 //  Ejemplo actual: a los 13 min de inactividad aparece el aviso y, si no
 //  respondes, a los 15 min se cierra la sesión (aviso de 2 min).
 //  Para probar rápido puedes poner, por ejemplo, MINUTOS_INACTIVIDAD = 1.
-const MINUTOS_INACTIVIDAD  = 10
-const MINUTOS_AVISO_PREVIO = 2
+const MINUTOS_INACTIVIDAD  = 2
+const MINUTOS_AVISO_PREVIO = 1
 // ─────────────────────────────────────────────────────────────
 
 const LIMITE_MS = MINUTOS_INACTIVIDAD * 60 * 1000

@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import AppNavbar from '../navbar/Navbar'
 import Footer from '../footer/Footer'
-import Comentarios from '../comentarios/Comentarios'
+import Comentarios, { Estrellas } from '../comentarios/Comentarios'
 import api, { BASE_URL } from '../../api/petdate-api'
 import { TIPO_COLOR } from '../servicios/serviciosData'
 import { Calendar, Clock, ArrowLeft, ExternalLink } from 'lucide-react'
@@ -30,6 +30,9 @@ export default function BlogDetalle() {
   const [servicio, setServicio] = useState(null)
   const [loading, setLoading]   = useState(true)
   const [error, setError]       = useState('')
+  const [resumen, setResumen]   = useState({ promedio: 0, total: 0 })
+
+  const handleResumen = useCallback((r) => setResumen(r), [])
 
   useEffect(() => {
     const cargar = async () => {
@@ -157,7 +160,7 @@ export default function BlogDetalle() {
 
             {/* Comentarios */}
             <div className="bd-comentarios">
-              <Comentarios tipo="blog" id={blog.idBlog} />
+              <Comentarios tipo="blog" id={blog.idBlog} onResumen={handleResumen} />
             </div>
           </main>
 
@@ -190,6 +193,20 @@ export default function BlogDetalle() {
                 >
                   Ver perfil de la empresa
                 </Link>
+              </div>
+            )}
+
+            {/* Calificación del blog */}
+            {resumen.total > 0 && (
+              <div className="bd-sidebar__card">
+                <h3 className="bd-sidebar__titulo">Calificación</h3>
+                <div className="bd-sidebar__rating">
+                  <Estrellas valor={Math.round(resumen.promedio)} tamano={20} />
+                  <span className="bd-sidebar__rating-prom">{resumen.promedio.toFixed(1)} / 5</span>
+                </div>
+                <p className="bd-sidebar__rating-conteo">
+                  {resumen.total} {resumen.total === 1 ? 'comentario' : 'comentarios'}
+                </p>
               </div>
             )}
           </aside>
