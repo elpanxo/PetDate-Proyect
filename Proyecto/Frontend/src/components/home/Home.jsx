@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import AppNavbar from '../navbar/Navbar'
 import Footer from '../footer/Footer'
 import api, { BASE_URL } from '../../api/petdate-api'
@@ -36,6 +36,7 @@ function formatFecha(fechaStr) {
 }
 
 function Home() {
+  const navigate = useNavigate()
   const [user, setUser]                   = useState(null)
   const [promos, setPromos]               = useState([])
   const [cargandoPromos, setCargandoPromos] = useState(true)
@@ -188,7 +189,14 @@ function Home() {
                   const color = TIPO_COLOR[svc.tipoServicio] || '#7e6492'
                   const foto  = svc.imagenUrl ? `${BASE_URL}${svc.imagenUrl}` : null
                   return (
-                    <div key={promo.id} className="hp-promo-card">
+                    <div
+                      key={promo.id}
+                      className="hp-promo-card"
+                      onClick={() => navigate(`/servicios/${svc.idServicio}`)}
+                      role="link"
+                      tabIndex={0}
+                      onKeyDown={(e) => { if (e.key === 'Enter') navigate(`/servicios/${svc.idServicio}`) }}
+                    >
                       {/* Foto superior */}
                       <div className="hp-promo-card__img-wrap">
                         {foto
@@ -284,7 +292,14 @@ function Home() {
                   const color = TIPO_COLOR[svc?.tipoServicio] || '#7e6492'
                   const mins  = calcLectura(blog.texto)
                   return (
-                    <article key={blog.idBlog} className="hp-blog-card">
+                    <article
+                      key={blog.idBlog}
+                      className="hp-blog-card"
+                      onClick={() => navigate(`/blogs/${blog.idBlog}`)}
+                      role="link"
+                      tabIndex={0}
+                      onKeyDown={(e) => { if (e.key === 'Enter') navigate(`/blogs/${blog.idBlog}`) }}
+                    >
                       <div className="hp-blog-card__img-wrap">
                         {blog.imagen
                           ? <img src={`${BASE_URL}${blog.imagen}`} alt={blog.titulo} className="hp-blog-card__img" />
@@ -299,7 +314,7 @@ function Home() {
                           {blog.fecha && <span><Calendar size={12} /> {formatFecha(blog.fecha)}</span>}
                           <span><Clock size={12} /> {mins} min de lectura</span>
                         </div>
-                        <Link to="/blogs" className="hp-blog-card__ver-mas">Ver más</Link>
+                        <Link to={`/blogs/${blog.idBlog}`} className="hp-blog-card__ver-mas">Ver más</Link>
                       </div>
                     </article>
                   )
