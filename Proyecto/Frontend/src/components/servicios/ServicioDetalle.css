@@ -302,8 +302,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 18px 12px;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 16px 12px;
   background: transparent;
   border: none;
   border-bottom: 3px solid transparent;
@@ -318,6 +319,33 @@
 
 .detalle-tab-btn--activo {
   color: #7e6492;
+}
+
+/* Resumen de calificación dentro de la pestaña de comentarios */
+.detalle-tab-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.detalle-tab-rating__txt {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #999;
+}
+
+/* Distintivo "¡Opina!" para invitar a comentar a quien aún no lo ha hecho */
+.detalle-tab-cta {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.03rem;
+  text-transform: uppercase;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
 }
 
 /* Cuerpo con scroll propio */

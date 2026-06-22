@@ -36,6 +36,21 @@ const RUBROS_EMPRESA = [
 ];
 
 const HORARIOS_PRESET = ['Lunes a Viernes', 'Lunes a Sábado', 'Todos los días', 'Lunes a Domingo 24/7'];
+
+// Separa un horario guardado ("Lunes a Sábado · 09:00–18:30") en día + horas.
+function separarHorario(horario) {
+  const raw = (horario || '').trim();
+  const partes = raw.split('·');
+  if (partes.length === 2) {
+    const dia = partes[0].trim();
+    const horas = partes[1].trim().split('–');
+    if (horas.length === 2) {
+      return { dia, desde: horas[0].trim(), hasta: horas[1].trim() };
+    }
+    return { dia, desde: '', hasta: '' };
+  }
+  return { dia: raw, desde: '', hasta: '' };
+}
 const TIPOS_IMAGEN_PERMITIDOS = ['image/jpeg', 'image/png', 'image/webp'];
 const TAMANO_MAX_MB = 5;
 
@@ -54,6 +69,7 @@ function MiEmpresa() {
   });
   const [guardado, setGuardado]   = useState(false);
   const [guardando, setGuardando] = useState(false);
+  const [errWsp, setErrWsp]       = useState('');
 
   const [imagenUrl, setImagenUrl]           = useState('');
   const [imagenPreview, setImagenPreview]   = useState(null);
@@ -91,15 +107,16 @@ function MiEmpresa() {
           api.promociones.porServicio(user.servicioId, { size: 100 }),
           api.blogs.porServicio(user.servicioId, { size: 100, sort: 'fecha,desc' }),
         ]);
+        const { dia: horarioDia, desde: horaDesde, hasta: horaHasta } = separarHorario(svc.horario);
         setFormServicio({
           nombre:      svc.nombreServicio || '',
           tipo:        svc.tipoServicio   || '',
           descripcion: svc.descripcion    || '',
           direccion:   svc.direccion      || '',
           comuna:      svc.comuna         || '',
-          horario:     svc.horario        || '',
-          horaDesde:   '',
-          horaHasta:   '',
+          horario:     horarioDia,
+          horaDesde,
+          horaHasta,
           telefono:    svc.telefono       || '',
           wsp:         svc.whatsApp       || '',
           web:         svc.sitioWeb       || '',
@@ -121,14 +138,22 @@ function MiEmpresa() {
   const campo = (f, v) => setFormServicio(p => ({ ...p, [f]: v }));
 
   const guardarServicio = async () => {
+    if (formServicio.wsp && !/^\d+$/.test(formServicio.wsp)) {
+      setErrWsp('El WhatsApp solo admite números (sin +, espacios ni guiones). Ej: 56912345678');
+      return;
+    }
+    setErrWsp('');
     setGuardando(true);
     try {
       const u = JSON.parse(localStorage.getItem('user'));
+      const horarioCompleto = (formServicio.horaDesde && formServicio.horaHasta)
+        ? `${formServicio.horario} · ${formServicio.horaDesde}–${formServicio.horaHasta}`
+        : formServicio.horario;
       await api.servicios.actualizar(u.servicioId, {
         nombreServicio: formServicio.nombre, tipoServicio: formServicio.tipo,
         rutEmpresa: u.rut || '', correo: u.email || '', contrasena: u.contrasena || '',
         descripcion: formServicio.descripcion, direccion: formServicio.direccion,
-        comuna: formServicio.comuna, horario: formServicio.horario,
+        comuna: formServicio.comuna, horario: horarioCompleto,
         telefono: formServicio.telefono, whatsApp: formServicio.wsp,
         sitioWeb: formServicio.web, instagram: formServicio.instagram, facebook: formServicio.facebook,
       });
@@ -413,7 +438,13 @@ function MiEmpresa() {
                   </div>
                   <div className="me-campo">
                     <label className="me-campo__label">WhatsApp (solo números)</label>
-                    <input className="me-campo__input" value={formServicio.wsp} onChange={e => campo('wsp', e.target.value)} />
+                    <input
+                      className={`me-campo__input${errWsp ? ' me-campo__input--error' : ''}`}
+                      value={formServicio.wsp}
+                      onChange={e => { campo('wsp', e.target.value); if (errWsp) setErrWsp(''); }}
+                      placeholder="56912345678"
+                    />
+                    {errWsp && <span className="me-campo__error">{errWsp}</span>}
                   </div>
                   <div className="me-campo">
                     <label className="me-campo__label">Instagram (sin @)</label>
