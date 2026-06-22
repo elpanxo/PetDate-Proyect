@@ -445,6 +445,13 @@
   margin-bottom: 3px;
 }
 
+/* Estado de vencimiento (sutil, solo en la fecha) */
+.me-item__venc { font-weight: 600; }
+.me-item__fecha--pronto  { color: #d98a1f; }   /* por vencer: ámbar */
+.me-item__fecha--urgente { color: #dc3545; }   /* hoy/mañana: rojo */
+.me-item__fecha--vencida { color: #999; }      /* vencida: gris */
+.me-item__fecha--vencida .me-item__venc { font-style: italic; }
+
 .me-item__acciones {
   display: flex;
   gap: 8px;

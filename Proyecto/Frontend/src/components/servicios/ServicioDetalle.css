@@ -384,12 +384,26 @@
   margin-top: 4px;
 }
 
+/* Color del badge según el estado de vencimiento */
+.promo-detalle__estado--normal  { background: #e3f5ea; color: #2e9e5b; }  /* Activa: verde */
+.promo-detalle__estado--pronto  { background: #fbeed6; color: #d98a1f; }  /* Por vencer: ámbar */
+.promo-detalle__estado--urgente { background: #fde2e4; color: #dc3545; }  /* Último día: rojo */
+.promo-detalle__estado--vencida { background: #ececec; color: #888; }     /* Finalizada: gris */
+
 .promo-detalle__fecha {
   font-family: 'Jost', sans-serif;
   font-size: 0.78rem;
   color: #999;
   margin-top: 2px;
 }
+
+/* Estado de vencimiento (sutil, solo en la fecha) */
+.promo-detalle__venc { font-weight: 600; }
+.promo-detalle__fecha--normal  { color: #2e9e5b; }   /* activa: verde */
+.promo-detalle__fecha--pronto  { color: #d98a1f; }   /* por vencer: ámbar */
+.promo-detalle__fecha--urgente { color: #dc3545; }   /* hoy/mañana: rojo */
+.promo-detalle__fecha--vencida { color: #999; }      /* vencida: gris */
+.promo-detalle__fecha--vencida .promo-detalle__venc { font-style: italic; }
 
 /* Comentarios dentro del tab */
 .detalle-comentarios .cm-wrap {

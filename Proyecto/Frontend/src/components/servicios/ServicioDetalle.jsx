@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import AppNavbar from '../navbar/Navbar'
 import Footer from '../footer/Footer'
-import { TIPO_COLOR, TIPO_ICON } from './serviciosData'
+import { TIPO_COLOR, TIPO_ICON, estadoVencimientoPromo } from './serviciosData'
 import { Store, MapPin, Clock, Phone, MessageCircle, Globe, Camera, User, Tag, PawPrint, Hourglass, MessageSquare, SquarePen, ArrowLeft, Mail, Star } from 'lucide-react'
 import api, { BASE_URL } from '../../api/petdate-api'
 import Comentarios from '../comentarios/Comentarios'
@@ -14,6 +14,14 @@ function resolverColor(tipoServicio) {
 
 function resolverIcon(tipoServicio) {
   return TIPO_ICON[tipoServicio] || Store
+}
+
+// Texto del badge de la promoción según su estado de vencimiento
+const BADGE_VENC = {
+  normal:  'Activa',
+  pronto:  'Por vencer',
+  urgente: '¡Último día!',
+  vencida: 'Finalizada',
 }
 
 function obtenerUsuario() {
@@ -326,18 +334,22 @@ function ServicioDetalle() {
                   </div>
                 ) : (
                   <div className="detalle-promos__lista">
-                    {promociones.map((promo) => (
+                    {promociones.map((promo) => {
+                      const venc = estadoVencimientoPromo(promo.fechaTermino);
+                      return (
                       <div key={promo.idPromocion} className="promo-detalle" style={{ borderLeftColor: color }}>
                         <h3 className="promo-detalle__titulo">{promo.titulo}</h3>
                         {promo.descripcion && <p className="promo-detalle__desc">{promo.descripcion}</p>}
-                        <span className="promo-detalle__estado" style={{ backgroundColor: `${color}1f`, color }}>
-                          Activa
+                        <span className={`promo-detalle__estado promo-detalle__estado--${venc.nivel}`}>
+                          {BADGE_VENC[venc.nivel]}
                         </span>
-                        <small className="promo-detalle__fecha">
+                        <small className={`promo-detalle__fecha promo-detalle__fecha--${venc.nivel}`}>
                           Válido hasta {promo.fechaTermino}
+                          {venc.texto && <span className="promo-detalle__venc"> · {venc.texto}</span>}
                         </small>
                       </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )
               )}

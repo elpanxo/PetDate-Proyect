@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Modal, Button, Form } from 'react-bootstrap';
 import Navbar from '../navbar/Navbar';
 import Footer from '../footer/Footer';
-import { TIPO_COLOR, COMUNAS } from '../servicios/serviciosData';
+import { TIPO_COLOR, COMUNAS, estadoVencimientoPromo } from '../servicios/serviciosData';
 import { Building2, ClipboardList, CheckCircle2, Tag, Pencil, Trash2, Image as ImageIcon, Newspaper, MapPin, Phone, MessageCircle, Globe, Clock, Eye, BookOpen, X } from 'lucide-react';
 import ConfirmModal from '../confirm/ConfirmModal';
 
@@ -333,7 +333,7 @@ function MiEmpresa() {
                   <div className="me-seccion__icono" style={{ background: colorBg, color }}><Eye size={18} /></div>
                   <div>
                     <h2 className="me-seccion__titulo">Vista previa de tu perfil público</h2>
-                    <p className="me-seccion__desc">Así es como los usuarios verán tu información en PetDate.</p>
+                    <p className="me-seccion__desc">Así te ven los usuarios de PetDate.</p>
                   </div>
                 </div>
                 <button className="me-btn-outline" style={{ borderColor: color, color }} onClick={() => navigate(`/servicios/${user.servicioId}`)}>
@@ -469,19 +469,25 @@ function MiEmpresa() {
                 </div>
               ) : (
                 <div className="me-lista">
-                  {promociones.map(p => (
+                  {promociones.map(p => {
+                    const venc = estadoVencimientoPromo(p.fechaTermino);
+                    return (
                     <div className="me-item" key={p.idPromocion} style={{ borderLeftColor: color }}>
                       <div className="me-item__info">
                         <h3 className="me-item__titulo">{p.titulo}</h3>
                         {p.descripcion && <p className="me-item__desc">{p.descripcion}</p>}
-                        <small className="me-item__fecha">{p.fechaInicio} → {p.fechaTermino}</small>
+                        <small className={`me-item__fecha me-item__fecha--${venc.nivel}`}>
+                          {p.fechaInicio} → {p.fechaTermino}
+                          {venc.texto && <span className="me-item__venc"> · {venc.texto}</span>}
+                        </small>
                       </div>
                       <div className="me-item__acciones">
                         <button className="me-item__editar" onClick={() => abrirEditarPromo(p)}><Pencil size={13} /> Editar</button>
                         <button className="me-item__eliminar" onClick={() => eliminarPromo(p.idPromocion)}><Trash2 size={13} /> Eliminar</button>
                       </div>
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </section>

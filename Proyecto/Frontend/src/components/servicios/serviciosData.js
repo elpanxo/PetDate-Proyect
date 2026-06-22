@@ -169,3 +169,23 @@ export const servicios = [
     ],
   },
 ]
+
+/**
+ * Calcula el estado de vencimiento de una promoción según su fecha de término.
+ * Devuelve { nivel, dias, texto } para aplicar un estilo sutil a la fecha.
+ *   nivel: 'normal' | 'pronto' | 'urgente' | 'vencida'
+ */
+export function estadoVencimientoPromo(fechaTermino) {
+  if (!fechaTermino) return { nivel: 'normal', dias: null, texto: '' }
+
+  const hoy = new Date()
+  hoy.setHours(0, 0, 0, 0)
+  const fin = new Date(`${fechaTermino}T00:00:00`)
+  const dias = Math.round((fin - hoy) / 86400000)
+
+  if (dias < 0)  return { nivel: 'vencida', dias, texto: 'Vencida' }
+  if (dias === 0) return { nivel: 'urgente', dias, texto: '¡Último día!' }
+  if (dias === 1) return { nivel: 'urgente', dias, texto: 'Vence mañana' }
+  if (dias <= 5)  return { nivel: 'pronto',  dias, texto: `Vence en ${dias} días` }
+  return { nivel: 'normal', dias, texto: '' }
+}
