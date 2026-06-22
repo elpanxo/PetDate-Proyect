@@ -325,6 +325,22 @@ function MiEmpresa() {
                 </li>
               )}
             </ul>
+
+            {/* ── Vista previa del perfil público ── */}
+            <section className="me-seccion me-seccion--preview me-sidebar__preview">
+              <div className="me-seccion__cabecera" style={{ marginBottom: 0 }}>
+                <div className="me-seccion__cabecera-izq">
+                  <div className="me-seccion__icono" style={{ background: colorBg, color }}><Eye size={18} /></div>
+                  <div>
+                    <h2 className="me-seccion__titulo">Vista previa de tu perfil público</h2>
+                    <p className="me-seccion__desc">Así es como los usuarios verán tu información en PetDate.</p>
+                  </div>
+                </div>
+                <button className="me-btn-outline" style={{ borderColor: color, color }} onClick={() => navigate(`/servicios/${user.servicioId}`)}>
+                  <Eye size={14} /> Ver mi perfil público
+                </button>
+              </div>
+            </section>
           </aside>
 
           {/* ════ COLUMNA PRINCIPAL ════ */}
@@ -512,22 +528,6 @@ function MiEmpresa() {
                   ))}
                 </div>
               )}
-            </section>
-
-            {/* ── Sección: Vista previa ── */}
-            <section className="me-seccion me-seccion--preview">
-              <div className="me-seccion__cabecera" style={{ marginBottom: 0 }}>
-                <div className="me-seccion__cabecera-izq">
-                  <div className="me-seccion__icono" style={{ background: colorBg, color }}><Eye size={18} /></div>
-                  <div>
-                    <h2 className="me-seccion__titulo">Vista previa de tu perfil público</h2>
-                    <p className="me-seccion__desc">Así es como los usuarios verán tu información en PetDate.</p>
-                  </div>
-                </div>
-                <button className="me-btn-outline" style={{ borderColor: color, color }} onClick={() => navigate(`/servicios/${user.servicioId}`)}>
-                  <Eye size={14} /> Ver mi perfil público
-                </button>
-              </div>
             </section>
 
           </main>
