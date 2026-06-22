@@ -594,6 +594,170 @@
 .admin-method--delete { background: #fce4ec; color: #b71c1c; }
 
 /* ════════════════════════════════════════════════════
+   DASHBOARD — gráficos
+   ════════════════════════════════════════════════════ */
+
+.admin-charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.admin-chart-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px 22px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.admin-chart-card--wide { grid-column: 1 / -1; }
+
+.admin-chart-card__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.admin-chart-card__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #f4f6fb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b8cbf;
+  flex-shrink: 0;
+}
+
+.admin-chart-card__title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a1f2e;
+  margin: 0;
+}
+
+.admin-chart-card__sub {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.8rem;
+  color: #999;
+  margin: 2px 0 0;
+}
+
+.admin-chart-card__body { width: 100%; }
+
+.admin-chart-svg { width: 100%; height: auto; display: block; }
+
+.admin-chart-axis {
+  font-family: 'Jost', sans-serif;
+  font-size: 11px;
+  fill: #aaa;
+}
+
+.admin-chart-empty {
+  padding: 40px;
+  text-align: center;
+  color: #bbb;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.85rem;
+}
+
+/* ── Dona ── */
+.admin-donut {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.admin-donut__svg { width: 160px; height: 160px; flex-shrink: 0; }
+
+.admin-donut__total {
+  font-family: 'Poppins', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  fill: #1a1f2e;
+}
+
+.admin-donut__caption {
+  font-family: 'Jost', sans-serif;
+  font-size: 11px;
+  fill: #999;
+}
+
+.admin-donut__legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  min-width: 140px;
+}
+
+.admin-donut__legend li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.85rem;
+  color: #444;
+}
+
+.admin-donut__dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+.admin-donut__label { flex: 1; }
+.admin-donut__value { font-weight: 700; color: #1a1f2e; }
+
+/* ── Barras horizontales ── */
+.admin-barlist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.admin-barlist__row { display: flex; align-items: center; gap: 12px; }
+
+.admin-barlist__label {
+  width: 90px;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.82rem;
+  color: #555;
+  flex-shrink: 0;
+}
+
+.admin-barlist__track {
+  flex: 1;
+  height: 10px;
+  background: #f0f2f8;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.admin-barlist__fill {
+  height: 100%;
+  border-radius: 6px;
+  min-width: 2px;
+  transition: width 0.4s ease;
+}
+
+.admin-barlist__value {
+  width: 36px;
+  text-align: right;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1a1f2e;
+  flex-shrink: 0;
+}
+
+/* ════════════════════════════════════════════════════
    RESPONSIVE
    ════════════════════════════════════════════════════ */
 
@@ -612,4 +776,5 @@
 
   .admin-main { padding: 20px 16px; }
   .admin-stats-grid { grid-template-columns: 1fr 1fr; }
+  .admin-charts-grid { grid-template-columns: 1fr; }
 }
