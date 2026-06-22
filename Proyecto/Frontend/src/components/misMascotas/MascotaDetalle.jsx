@@ -4,7 +4,7 @@ import { Modal } from 'react-bootstrap';
 import Navbar from '../navbar/Navbar';
 import Footer from '../footer/Footer';
 import api, { ApiError, BASE_URL } from '../../api/petdate-api';
-import { Dog, Cat, Bird, Rabbit, Turtle, Fish, PawPrint, Stethoscope, Syringe, Microscope, Pill, Hospital, ClipboardList, Scissors, Bath, Pin, Hourglass, TriangleAlert, Calendar, Clock, Pencil, Trash2, X } from 'lucide-react';
+import { Dog, Cat, Bird, Rabbit, Turtle, Fish, PawPrint, Stethoscope, Syringe, Microscope, Pill, Hospital, ClipboardList, Scissors, Bath, Pin, Hourglass, TriangleAlert, Calendar, Clock, Pencil, Trash2, X, ChevronDown, Check } from 'lucide-react';
 import ConfirmModal from '../confirm/ConfirmModal';
 import './MascotaDetalle.css';
 
@@ -115,6 +115,17 @@ function MascotaDetalle() {
   const fechaEventoRef = useRef(null);
   const [errorModal, setErrorModal]         = useState('');
   const [confirmEvento, setConfirmEvento]   = useState(null); // idEvento
+  const [menuEstadoId, setMenuEstadoId]     = useState(null); // idEvento con dropdown abierto
+
+  // Cerrar el dropdown de estado al hacer clic fuera
+  useEffect(() => {
+    if (menuEstadoId === null) return;
+    const handleClickFuera = (e) => {
+      if (!e.target.closest('.md-estado-dropdown')) setMenuEstadoId(null);
+    };
+    document.addEventListener('mousedown', handleClickFuera);
+    return () => document.removeEventListener('mousedown', handleClickFuera);
+  }, [menuEstadoId]);
 
   const abrirCalendarioEvento = () => {
     const input = fechaEventoRef.current;
@@ -425,21 +436,45 @@ function MascotaDetalle() {
                 <div className="md-evento-body">
                   <div className="md-evento-top">
                     <span className="md-evento-tipo">{cita.descripcion || cita.tipoEvento}</span>
-                    <span
-                      className="md-evento-estado"
-                      style={{
-                        color: ESTADO_COLOR[cita.estado],
-                        backgroundColor: ESTADO_BG[cita.estado],
-                      }}
-                      title="Clic para cambiar estado"
-                      onClick={() => {
-                        const idx = ESTADOS.indexOf(cita.estado);
-                        const siguiente = ESTADOS[(idx + 1) % ESTADOS.length];
-                        cambiarEstado(cita.idEvento, siguiente);
-                      }}
-                    >
-                      {ESTADO_LABEL[cita.estado] || cita.estado}
-                    </span>
+                    <div className="md-estado-dropdown">
+                      <button
+                        type="button"
+                        className="md-evento-estado"
+                        style={{
+                          color: ESTADO_COLOR[cita.estado],
+                          backgroundColor: ESTADO_BG[cita.estado],
+                        }}
+                        title="Cambiar estado"
+                        onClick={() => setMenuEstadoId(prev => prev === cita.idEvento ? null : cita.idEvento)}
+                      >
+                        {ESTADO_LABEL[cita.estado] || cita.estado}
+                        <ChevronDown
+                          size={13}
+                          className={`md-estado-chevron ${menuEstadoId === cita.idEvento ? 'md-estado-chevron--open' : ''}`}
+                        />
+                      </button>
+
+                      {menuEstadoId === cita.idEvento && (
+                        <div className="md-estado-menu" role="menu">
+                          {ESTADOS.map(est => (
+                            <button
+                              key={est}
+                              type="button"
+                              role="menuitem"
+                              className={`md-estado-opcion ${est === cita.estado ? 'md-estado-opcion--activo' : ''}`}
+                              onClick={() => {
+                                if (est !== cita.estado) cambiarEstado(cita.idEvento, est);
+                                setMenuEstadoId(null);
+                              }}
+                            >
+                              <span className="md-estado-punto" style={{ backgroundColor: ESTADO_COLOR[est] }} />
+                              <span className="md-estado-opcion-label">{ESTADO_LABEL[est]}</span>
+                              {est === cita.estado && <Check size={14} className="md-estado-check" />}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                   {cita.descripcion && <p className="md-evento-subtipo">{cita.tipoEvento}</p>}
                   <div className="md-evento-fecha">

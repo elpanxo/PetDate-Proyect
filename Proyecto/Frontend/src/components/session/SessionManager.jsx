@@ -4,21 +4,13 @@ import { Clock } from 'lucide-react'
 import { clearSession } from '../../api/petdate-api'
 import '../confirm/ConfirmModal.css'
 
-// ─────────────────────────────────────────────────────────────
 //  CONFIGURACIÓN — edita solo estos dos números
-// ─────────────────────────────────────────────────────────────
-//  MINUTOS_INACTIVIDAD : tiempo total sin actividad antes de cerrar la sesión.
-//  MINUTOS_AVISO_PREVIO: cuánto ANTES del cierre aparece el aviso "¿sigues ahí?".
-//
-//  Ejemplo actual: a los 13 min de inactividad aparece el aviso y, si no
-//  respondes, a los 15 min se cierra la sesión (aviso de 2 min).
-//  Para probar rápido puedes poner, por ejemplo, MINUTOS_INACTIVIDAD = 1.
+
 const MINUTOS_INACTIVIDAD  = 10
 const MINUTOS_AVISO_PREVIO = 1
-// ─────────────────────────────────────────────────────────────
 
 const LIMITE_MS = MINUTOS_INACTIVIDAD * 60 * 1000
-// El aviso nunca puede durar más que el propio límite.
+
 const AVISO_MS  = Math.min(MINUTOS_AVISO_PREVIO, MINUTOS_INACTIVIDAD) * 60 * 1000
 const ULTIMA_ACTIVIDAD_KEY = 'petdate_last_activity'
 
@@ -35,16 +27,6 @@ function formatear(segundos) {
   return `${m}:${String(s).padStart(2, '0')}`
 }
 
-/**
- * Cierra la sesión automáticamente tras un período de inactividad.
- * Se monta una sola vez a nivel de toda la app (ver App.jsx).
- *
- * - Mientras hay actividad (mouse, teclado, scroll, toques…) el reloj se reinicia.
- * - A falta de AVISO_MS para el límite, muestra un modal de aviso con cuenta atrás.
- * - Si se agota, borra la sesión y redirige al login (hay que volver a iniciar sesión).
- * - Cubre también el caso "ventana cerrada": guarda la marca de última actividad y,
- *   al reabrir, si ya pasó el límite, cierra la sesión de inmediato.
- */
 export default function SessionManager() {
   const navigate = useNavigate()
   const [mostrarAviso, setMostrarAviso] = useState(false)
