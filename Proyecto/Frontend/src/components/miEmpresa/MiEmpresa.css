@@ -164,6 +164,25 @@
 }
 .me-sidebar__lista li:hover .me-sidebar__editar { color: #7e6492; }
 
+/* Vista previa dentro del sidebar */
+.me-sidebar__preview {
+  width: 100%;
+  margin-top: 12px;
+  padding: 18px 16px;
+  box-sizing: border-box;
+}
+
+.me-sidebar__preview .me-seccion__cabecera {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+}
+
+.me-sidebar__preview .me-btn-outline {
+  justify-content: center;
+  width: 100%;
+}
+
 /* ─────────────────────────────────────────────
    MAIN (columna derecha)
 ───────────────────────────────────────────── */
@@ -425,6 +444,13 @@
   display: block;
   margin-bottom: 3px;
 }
+
+/* Estado de vencimiento (sutil, solo en la fecha) */
+.me-item__venc { font-weight: 600; }
+.me-item__fecha--pronto  { color: #d98a1f; }   /* por vencer: ámbar */
+.me-item__fecha--urgente { color: #dc3545; }   /* hoy/mañana: rojo */
+.me-item__fecha--vencida { color: #999; }      /* vencida: gris */
+.me-item__fecha--vencida .me-item__venc { font-style: italic; }
 
 .me-item__acciones {
   display: flex;
