@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Form } from 'react-bootstrap';
 import AuthNavbar from '../navbar/AuthNavbar';
@@ -45,36 +45,6 @@ const Register = () => {
   const [empresa, setEmpresa]               = useState(FORM_EMPRESA_INICIAL);
   const [errorEmpresa, setErrorEmpresa]     = useState('');
   const [loadingEmpresa, setLoadingEmpresa] = useState(false);
-
-  // ── Parallax ──
-  // Guardamos el translateY de cada teaser
-  const [offsetCliente, setOffsetCliente] = useState(0);
-  const [offsetEmpresa, setOffsetEmpresa] = useState(0);
-  const refCliente = useRef(null);
-  const refEmpresa = useRef(null);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const calcOffset = (el) => {
-        if (!el) return 0;
-        const rect = el.getBoundingClientRect();
-        const viewH = window.innerHeight;
-        // Centro del elemento respecto al centro de la ventana
-        const elCenter = rect.top + rect.height / 2;
-        const viewCenter = viewH / 2;
-        const dist = elCenter - viewCenter;
-        // Cuanto más lejos del centro, más se desplaza (factor 0.18)
-        // Cuando está cerca del centro (dist ≈ 0) el offset vuelve a 0
-        return dist * 0.18;
-      };
-      setOffsetCliente(calcOffset(refCliente.current));
-      setOffsetEmpresa(calcOffset(refEmpresa.current));
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // calcular al montar
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   const campoCliente = (field, value) => setCliente(p => ({ ...p, [field]: value }));
   const campoEmpresa = (field, value) => setEmpresa(p => ({ ...p, [field]: value }));
@@ -153,13 +123,9 @@ const Register = () => {
         <div
           className={`reg-panel reg-panel--cliente ${tipo === 'cliente' ? 'reg-panel--active' : 'reg-panel--inactive'}`}
           onClick={tipo !== 'cliente' ? () => switchTo('cliente') : undefined}
-          ref={refCliente}
         >
           {tipo !== 'cliente' ? (
-            <div
-              className="reg-teaser"
-              style={{ transform: `translateY(${offsetCliente}px)`, transition: 'transform 0.1s linear' }}
-            >
+            <div className="reg-teaser">
               <PawPrint size={40} className="reg-teaser-icon" />
               <h2>Dueño de mascota</h2>
               <p>Crea tu cuenta como cliente</p>
@@ -212,20 +178,13 @@ const Register = () => {
           )}
         </div>
 
-        {/* ── Divisor ── */}
-        <div className="reg-divider"><span>o</span></div>
-
         {/* ── Panel Empresa ── */}
         <div
           className={`reg-panel reg-panel--empresa ${tipo === 'empresa' ? 'reg-panel--active' : 'reg-panel--inactive'}`}
           onClick={tipo !== 'empresa' ? () => switchTo('empresa') : undefined}
-          ref={refEmpresa}
         >
           {tipo !== 'empresa' ? (
-            <div
-              className="reg-teaser"
-              style={{ transform: `translateY(${offsetEmpresa}px)`, transition: 'transform 0.1s linear' }}
-            >
+            <div className="reg-teaser">
               <Building2 size={40} className="reg-teaser-icon" />
               <h2>Empresa / Servicio</h2>
               <p>Crea tu cuenta como proveedor</p>
