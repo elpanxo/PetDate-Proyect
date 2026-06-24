@@ -108,8 +108,9 @@ public class ComentarioBlogController {
         return ResponseEntity.noContent().build();
     }
 
-    // Solo el propio usuario (token de usuario cuyo id coincide con idUsuario del comentario)
+    // El propio usuario dueño del comentario, o un ADMIN, pueden modificar/eliminar
     private boolean esPropioUsuario(Long tokenId, String tokenRol, Long idUsuario) {
+        if ("ADMIN".equals(tokenRol)) return true;
         return !"SERVICIO".equals(tokenRol) && tokenId != null && tokenId.equals(idUsuario);
     }
 }
