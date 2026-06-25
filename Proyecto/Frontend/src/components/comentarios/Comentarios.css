@@ -296,6 +296,10 @@
   color: #555;
   font-size: 0.9rem;
   line-height: 1.6;
+  /* Evita que textos largos sin espacios desborden el contenedor */
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: normal;
 }
 
 .cm-item-acciones {
