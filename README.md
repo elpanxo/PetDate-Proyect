@@ -2,7 +2,7 @@
 
 PetDate es una plataforma web orientada a centralizar información relacionada con el cuidado de mascotas. El sistema permite registrar usuarios, administrar mascotas, consultar servicios, gestionar publicaciones, promociones, comentarios y tener una agenda de eventos veterinarios asociados a las mascotas.
 
-El proyecto fue desarrollado para la asignatura **Taller Aplicado de Programación (TPY1101)**, bajo una arquitectura cliente-servidor con frontend en React, backend en Spring Boot, base de datos MongoDB y despliegue mediante Docker.
+El proyecto fue desarrollado para la asignatura **Taller Aplicado de Programación (TPY1101)**, bajo una arquitectura cliente-servidor con frontend en React, backend en Spring Boot, base de datos MongoDB y despliegue en un ambiente de QA sobre AWS.
 
 ## Tabla de contenidos
 1. [Integrantes](#integrantes)
@@ -17,7 +17,7 @@ El proyecto fue desarrollado para la asignatura **Taller Aplicado de Programaci�
 10. [Estructura del proyecto](#estructura-del-proyecto)
 11. [Requisitos previos](#requisitos-previos)
 12. [Variables de entorno](#variables-de-entorno)
-13. [Instalación y ejecución con Docker](#instalación-y-ejecución-con-docker)
+13. [Despliegue en ambiente QA sobre AWS](#despliegue-en-ambiente-qa-sobre-aws)
 14. [Ejecución en modo desarrollo](#ejecución-en-modo-desarrollo)
 15. [Rutas principales del frontend](#rutas-principales-del-frontend)
 16. [Microservicios y endpoints principales](#microservicios-y-endpoints-principales)
@@ -227,8 +227,10 @@ Servidor de imágenes Nginx
 | Spring Mail | Envío de correos para recuperación de contraseña y contacto. |
 | Swagger / OpenAPI | Documentación y prueba de endpoints. |
 | MongoDB | Persistencia de datos. |
-| Docker | Contenerización del sistema. |
-| Docker Compose | Orquestación local de servicios. |
+| Docker | Contenerización de los servicios del sistema. |
+| AWS / Amazon EKS | Despliegue del ambiente QA mediante clúster Kubernetes administrado. |
+| Amazon ECR | Almacenamiento de imágenes Docker utilizadas en el despliegue. |
+| Kubernetes | Orquestación de frontend, backend, API Gateway y microservicios en QA. |
 
 ### Base de datos e infraestructura
 
@@ -296,8 +298,11 @@ Proyecto/
 
 Para ejecutar el proyecto se requiere:
 
-- Docker Desktop instalado y en ejecución.
-- Docker Compose habilitado.
+- Acceso a AWS.
+- Clúster Amazon EKS configurado.
+- Imágenes Docker publicadas en Amazon ECR.
+- Manifiestos Kubernetes para frontend, API Gateway, microservicios y servicios asociados.
+- Variables de entorno configuradas para el ambiente QA.
 - Node.js 20 o superior, solo si se ejecuta el frontend en modo desarrollo.
 - Java 17, solo si se ejecutan microservicios fuera de Docker.
 - Maven, solo si se ejecutan microservicios fuera de Docker.
@@ -336,9 +341,27 @@ ADMIN_PASSWORD=password_admin
 - Utilizar contraseñas de aplicación para Gmail si se habilitan correos.
 - Mantener fuera del repositorio archivos de respaldo con datos sensibles.
 
-## Instalación y ejecución con Docker
+## Despliegue en ambiente QA sobre AWS
 
-El levantamiento recomendado se realiza en tres pasos: base de datos, backend y frontend.
+El despliegue del proyecto para validación funcional se realizó en un ambiente de QA sobre AWS, utilizando contenedores Docker publicados en Amazon ECR y desplegados en un clúster Amazon EKS mediante manifiestos Kubernetes.
+
+El ambiente QA considera frontend, API Gateway, microservicios backend, base de datos MongoDB y servidor de imágenes, permitiendo validar los flujos funcionales en un entorno más cercano a producción que una ejecución local.
+
+### Componentes considerados en QA
+
+| Componente | Descripción |
+|---|---|
+| Frontend | Aplicación React desplegada como contenedor para acceso web. |
+| API Gateway | Punto de entrada hacia los microservicios backend. |
+| Microservicios | Servicios Spring Boot desplegados como contenedores. |
+| MongoDB | Base de datos configurada para datos de prueba del ambiente QA. |
+| Servidor de imágenes | Servicio Nginx para exponer archivos e imágenes cargadas. |
+| Amazon ECR | Repositorio de imágenes Docker utilizadas por el despliegue. |
+| Amazon EKS | Clúster Kubernetes administrado donde se ejecuta el ambiente QA. |
+
+### Ejecución local alternativa
+
+Esta sección describe una forma alternativa de levantar el sistema en un entorno local utilizando Docker Compose. Este flujo no corresponde al ambiente principal de pruebas funcionales finales, ya que dichas pruebas fueron consideradas sobre un ambiente de QA desplegado en AWS.
 
 ### 1. Levantar base de datos, red, volumen de imágenes y servidor de imágenes
 
@@ -482,7 +505,7 @@ Orden recomendado en local:
 7. api-gateway.
 8. frontend.
 
-Para uso normal del proyecto se recomienda Docker Compose, ya que configura red, variables y dependencias entre servicios.
+Para validación funcional final del proyecto se considera como ambiente principal el entorno de QA desplegado en AWS. La ejecución mediante Docker Compose se mantiene únicamente como alternativa local para desarrollo, revisión técnica o pruebas controladas en equipo local.
 
 ---
 
@@ -520,7 +543,11 @@ Para uso normal del proyecto se recomienda Docker Compose, ya que configura red,
 
 ## Microservicios y endpoints principales
 
-Todas las rutas públicas y protegidas se consumen mediante el API Gateway:
+Todas las rutas públicas y protegidas se consumen mediante el API Gateway.
+
+En el ambiente QA, el frontend consume los servicios backend mediante la URL expuesta del API Gateway configurada en AWS.
+
+Para ejecución local alternativa, el API Gateway puede utilizar:
 
 ```text
 http://localhost:8080
@@ -704,9 +731,9 @@ Endpoints reservados para administrador.
 
 ### MongoDB
 
-La base de datos principal se ejecuta en Docker usando MongoDB 7.0.
+La base de datos principal utilizada en el ambiente QA corresponde a MongoDB configurada para la validación funcional del sistema.
 
-Puerto local:
+En ejecución local alternativa, MongoDB puede levantarse mediante Docker y utilizar el puerto local:
 
 ```text
 27017
@@ -720,7 +747,9 @@ MONGO_DATABASE=petdate
 
 ### Imágenes
 
-El sistema usa un volumen compartido llamado:
+En el ambiente QA, las imágenes se gestionan mediante el servicio de imágenes configurado para el despliegue.
+
+En ejecución local alternativa, el sistema usa un volumen compartido llamado:
 
 ```text
 petdate-uploads
@@ -730,7 +759,7 @@ Este volumen es utilizado por microservicios que cargan imágenes y por el servi
 
 ### Respaldos automáticos
 
-El servicio `mongo-backup` realiza respaldos mediante `mongodump` y los almacena en:
+En ejecución local alternativa, el servicio `mongo-backup` realiza respaldos mediante `mongodump` y los almacena en:
 
 ```text
 Proyecto/Data/backups/
@@ -779,6 +808,8 @@ El sistema implementa autenticación mediante JWT.
 ## Pruebas funcionales
 
 Para la Evaluación Parcial 3, las pruebas se trabajan bajo un enfoque funcional global. Esto significa que se valida el sistema desde la experiencia del usuario en la interfaz web, comprobando que la acción realizada en el frontend sea procesada correctamente por el backend y reflejada en el sistema.
+
+Las pruebas funcionales fueron ejecutadas considerando un ambiente de QA desplegado en AWS, validando los principales flujos desde la interfaz web y comprobando la integración entre frontend, API Gateway, microservicios backend y base de datos.
 
 ### Enfoque de pruebas
 
@@ -837,7 +868,25 @@ Data/backups/*.gz
 
 ## Problemas frecuentes
 
-### El frontend no conecta con el backend
+### Problemas frecuentes en ambiente QA AWS
+
+#### El frontend no conecta con el backend
+
+Verificar que la URL configurada para el API Gateway corresponda al endpoint expuesto en AWS y que el servicio se encuentre activo en el clúster EKS.
+
+También revisar que las variables de entorno del frontend apunten a la URL correcta del ambiente QA.
+
+#### Servicios backend sin respuesta
+
+Revisar el estado de los pods, servicios y despliegues del clúster EKS. Además, validar que las imágenes Docker utilizadas hayan sido publicadas correctamente en Amazon ECR.
+
+#### Error de conexión con base de datos
+
+Verificar las variables de entorno del ambiente QA, la disponibilidad del servicio MongoDB y la conectividad entre los microservicios backend y la base de datos.
+
+### Problemas frecuentes en ejecución local
+
+#### El frontend no conecta con el backend
 
 Verificar que el API Gateway esté activo:
 
@@ -851,11 +900,11 @@ http://localhost:8080
 
 También revisar que el cliente API apunte a la URL correcta.
 
-### Error de CORS
+#### Error de CORS
 
 Verificar configuración CORS en el API Gateway y que el frontend esté usando el origen permitido.
 
-### El backend no conecta con MongoDB
+#### El backend no conecta con MongoDB
 
 Revisar:
 
@@ -863,7 +912,7 @@ Revisar:
 - Que exista la red `petdate-network`.
 - Que las variables `MONGO_USER`, `MONGO_PASSWORD` y `MONGO_DATABASE` coincidan en `Data/.env` y `Backend/.env`.
 
-### Error con volumen `petdate-uploads`
+#### Error con volumen `petdate-uploads`
 
 Levantar primero el stack de `Data/`, ya que ahí se crea el volumen compartido:
 
@@ -874,7 +923,7 @@ docker compose up -d --build
 
 Luego levantar backend.
 
-### Login de administrador no funciona
+#### Login de administrador no funciona
 
 Verificar variables:
 
@@ -885,7 +934,7 @@ ADMIN_PASSWORD=password_admin
 
 Estas credenciales se cargan por variable de entorno y no necesariamente se guardan como usuario común en la base de datos.
 
-### Recuperación de contraseña no envía correo
+#### Recuperación de contraseña no envía correo
 
 Verificar:
 
@@ -899,4 +948,4 @@ Verificar:
 
 Proyecto académico en etapa de integración, validación funcional y documentación final.
 
-La versión actual permite demostrar los principales flujos funcionales de la plataforma mediante pruebas globales desde la interfaz web, considerando frontend, backend, base de datos y despliegue con Docker.
+La versión actual permite demostrar los principales flujos funcionales de la plataforma mediante pruebas globales desde la interfaz web, considerando frontend, backend, base de datos y despliegue en un ambiente de QA sobre AWS.
