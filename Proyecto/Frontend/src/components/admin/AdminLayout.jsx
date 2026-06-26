@@ -19,7 +19,7 @@ const NAV_ITEMS = [
 ];
 
 const AdminLayout = ({ children }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(() => window.innerWidth > 768);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -27,8 +27,20 @@ const AdminLayout = ({ children }) => {
     navigate('/admin/login');
   };
 
+  const closeSidebarOnMobile = () => {
+    if (window.innerWidth <= 768) setSidebarOpen(false);
+  };
+
   return (
     <div className={`admin-layout ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
+      {/* Overlay para cerrar sidebar en mobile al tocar fuera */}
+      {sidebarOpen && (
+        <div
+          className="admin-mobile-overlay"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* ── Sidebar ── */}
       <aside className="admin-sidebar">
         <div className="admin-sidebar__header">
@@ -48,6 +60,7 @@ const AdminLayout = ({ children }) => {
               className={({ isActive }) =>
                 `admin-nav-item ${isActive ? 'admin-nav-item--active' : ''}`
               }
+              onClick={closeSidebarOnMobile}
             >
               <span className="admin-nav-item__icon">{icon}</span>
               {sidebarOpen && <span className="admin-nav-item__label">{label}</span>}
@@ -63,6 +76,18 @@ const AdminLayout = ({ children }) => {
 
       {/* ── Contenido principal ── */}
       <main className="admin-main">
+        {/* Topbar visible solo en mobile */}
+        <header className="admin-mobile-topbar">
+          <button
+            className="admin-sidebar__toggle"
+            onClick={() => setSidebarOpen(true)}
+            aria-label="Abrir menú"
+          >
+            <Menu size={20} />
+          </button>
+          <span className="admin-mobile-topbar__brand">PetDate Admin</span>
+        </header>
+
         {children}
       </main>
     </div>

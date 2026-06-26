@@ -35,7 +35,6 @@ const LoginEmpresa = () => {
         role:       'empresa',
         servicioId: servicioId,
         rut:        servicio.rutEmpresa,
-        contrasena: password,
       }));
       window.dispatchEvent(new Event('userChanged'));
       navigate('/');

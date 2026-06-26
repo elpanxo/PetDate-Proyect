@@ -36,7 +36,8 @@ public class AuditoriaFilter extends OncePerRequestFilter {
 
     // Recursos que contienen datos personales y deben quedar auditados
     private static final Set<String> RECURSOS_AUDITABLES = Set.of(
-            "usuarios", "mascotas", "citas", "servicios", "promociones", "auth", "uploads"
+            "usuarios", "mascotas", "citas", "servicios", "promociones", "auth", "uploads",
+            "blogs", "comentarios"
     );
 
     private final AuditoriaAsyncService auditoriaAsyncService;

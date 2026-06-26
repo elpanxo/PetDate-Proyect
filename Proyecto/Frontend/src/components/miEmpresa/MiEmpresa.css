@@ -31,6 +31,14 @@
   align-items: start;
 }
 
+.me-layout > * {
+  min-width: 0;
+}
+
+.me-main {
+  overflow: hidden;
+}
+
 /* ─────────────────────────────────────────────
    SIDEBAR
 ───────────────────────────────────────────── */
@@ -416,7 +424,7 @@
 
 .me-item__blog-img img { width: 100%; height: 100%; object-fit: cover; }
 
-.me-item__info { flex: 1; min-width: 0; }
+.me-item__info { flex: 1; min-width: 0; overflow: hidden; }
 
 .me-item__titulo {
   font-family: 'Jost', sans-serif;
@@ -424,6 +432,8 @@
   font-weight: 700;
   color: #333;
   margin: 0 0 3px;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .me-item__desc {
@@ -435,6 +445,8 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .me-item__fecha {

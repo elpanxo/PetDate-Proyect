@@ -648,9 +648,9 @@ export const servicios = {
     http.get(`/servicios/comuna/${encodeURIComponent(comuna)}${pageParams(pagination)}`),
 
   /**
-   * Actualiza un servicio.
+   * Actualiza un servicio (sin contraseña — usar flujo de recuperación para cambiarla).
    * @param {number} id
-   * @param {ServicioRequest} data
+   * @param {Omit<ServicioRequest, 'contrasena'>} data
    * @returns {Promise<ServicioResponse>}
    */
   actualizar: (id, data) => http.put(`/servicios/${id}`, data),

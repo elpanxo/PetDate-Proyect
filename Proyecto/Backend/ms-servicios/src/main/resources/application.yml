@@ -25,7 +25,7 @@ spring:
             enable: true
 
 jwt:
-  secret: ${JWT_SECRET:defaultSecretKey}
+  secret: ${JWT_SECRET}
 
 management:
   endpoints:

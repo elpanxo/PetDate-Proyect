@@ -97,7 +97,7 @@ const Register = () => {
         telefono:       empresa.telefono,
       });
       await api.auth.loginEmpresa(empresa.email, empresa.password);
-      localStorage.setItem('user', JSON.stringify({ id: servicioCreado.idServicio, email: servicioCreado.correo, name: servicioCreado.nombreServicio, role: 'empresa', servicioId: servicioCreado.idServicio, rut: empresa.rut, contrasena: empresa.password }));
+      localStorage.setItem('user', JSON.stringify({ id: servicioCreado.idServicio, email: servicioCreado.correo, name: servicioCreado.nombreServicio, role: 'empresa', servicioId: servicioCreado.idServicio, rut: empresa.rut }));
       window.dispatchEvent(new Event('userChanged'));
       navigate('/mi-empresa');
     } catch (err) {

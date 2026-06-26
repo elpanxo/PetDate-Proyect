@@ -2,6 +2,7 @@ package cl.PetDate.ms_servicios.controllers;
 
 import cl.PetDate.ms_servicios.dto.ServicioRequest;
 import cl.PetDate.ms_servicios.dto.ServicioResponse;
+import cl.PetDate.ms_servicios.dto.ServicioUpdateRequest;
 import cl.PetDate.ms_servicios.services.ServicioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -72,7 +73,7 @@ public class ServicioController {
     @PutMapping("/{id}")
     public ResponseEntity<ServicioResponse> actualizarServicio(
             @PathVariable Long id,
-            @Valid @RequestBody ServicioRequest request,
+            @Valid @RequestBody ServicioUpdateRequest request,
             @RequestHeader(value = "X-Usuario-Id", required = false) Long tokenId,
             @RequestHeader(value = "X-Usuario-Rol", required = false) String tokenRol) {
         if (!esPropioServicio(tokenId, tokenRol, id)) {

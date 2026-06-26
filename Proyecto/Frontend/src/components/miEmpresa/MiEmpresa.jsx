@@ -151,7 +151,7 @@ function MiEmpresa() {
         : formServicio.horario;
       await api.servicios.actualizar(u.servicioId, {
         nombreServicio: formServicio.nombre, tipoServicio: formServicio.tipo,
-        rutEmpresa: u.rut || '', correo: u.email || '', contrasena: u.contrasena || '',
+        rutEmpresa: u.rut || '', correo: u.email || '',
         descripcion: formServicio.descripcion, direccion: formServicio.direccion,
         comuna: formServicio.comuna, horario: horarioCompleto,
         telefono: formServicio.telefono, whatsApp: formServicio.wsp,
