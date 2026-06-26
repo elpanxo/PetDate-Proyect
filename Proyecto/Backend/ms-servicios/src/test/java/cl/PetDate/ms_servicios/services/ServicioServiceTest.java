@@ -2,6 +2,7 @@ package cl.PetDate.ms_servicios.services;
 
 import cl.PetDate.ms_servicios.dto.ServicioRequest;
 import cl.PetDate.ms_servicios.dto.ServicioResponse;
+import cl.PetDate.ms_servicios.dto.ServicioUpdateRequest;
 import cl.PetDate.ms_servicios.exceptions.CorreoDuplicadoException;
 import cl.PetDate.ms_servicios.exceptions.ServicioNotFoundException;
 import cl.PetDate.ms_servicios.models.Servicio;
@@ -43,6 +44,7 @@ class ServicioServiceTest {
     private ServicioService servicioService;
 
     private ServicioRequest requestValido;
+    private ServicioUpdateRequest updateRequestValido;
     private Servicio servicioGuardado;
     private Pageable pageable;
 
@@ -82,6 +84,13 @@ class ServicioServiceTest {
         servicioGuardado.setFacebook("facebook.com/petcare");
 
         pageable = PageRequest.of(0, 10);
+
+        updateRequestValido = new ServicioUpdateRequest();
+        updateRequestValido.setNombreServicio("Veterinaria PetCare");
+        updateRequestValido.setTipoServicio("Veterinaria");
+        updateRequestValido.setRutEmpresa("76123456-7");
+        updateRequestValido.setCorreo("petcare@mail.com");
+        updateRequestValido.setComuna("Santiago");
     }
 
     // ─────────────────────────────────────────────
@@ -269,12 +278,11 @@ class ServicioServiceTest {
     @Test
     @DisplayName("actualizarServicio - debe actualizar y retornar el servicio")
     void actualizarServicio_exitoso() {
-        ServicioRequest requestActualizado = new ServicioRequest();
+        ServicioUpdateRequest requestActualizado = new ServicioUpdateRequest();
         requestActualizado.setNombreServicio("Veterinaria PetCare Plus");
         requestActualizado.setTipoServicio("Veterinaria");
         requestActualizado.setRutEmpresa("76123456-7");
         requestActualizado.setCorreo("petcare_plus@mail.com");
-        requestActualizado.setContrasena("newpass123");
         requestActualizado.setComuna("Providencia");
 
         Servicio servicioActualizado = new Servicio();
@@ -285,7 +293,6 @@ class ServicioServiceTest {
         servicioActualizado.setComuna("Providencia");
 
         when(servicioRepository.findById(1L)).thenReturn(Optional.of(servicioGuardado));
-        when(passwordEncoder.encode("newpass123")).thenReturn("$2a$nuevo_hash");
         when(servicioRepository.save(any(Servicio.class))).thenReturn(servicioActualizado);
 
         ServicioResponse response = servicioService.actualizarServicio(1L, requestActualizado);
@@ -293,7 +300,6 @@ class ServicioServiceTest {
         assertThat(response.getNombreServicio()).isEqualTo("Veterinaria PetCare Plus");
         assertThat(response.getComuna()).isEqualTo("Providencia");
         verify(servicioRepository).save(any(Servicio.class));
-        verify(passwordEncoder).encode("newpass123");
     }
 
     @Test
@@ -301,7 +307,7 @@ class ServicioServiceTest {
     void actualizarServicio_servicioNoExiste() {
         when(servicioRepository.findById(99L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> servicioService.actualizarServicio(99L, requestValido))
+        assertThatThrownBy(() -> servicioService.actualizarServicio(99L, updateRequestValido))
                 .isInstanceOf(ServicioNotFoundException.class);
 
         verify(servicioRepository, never()).save(any());

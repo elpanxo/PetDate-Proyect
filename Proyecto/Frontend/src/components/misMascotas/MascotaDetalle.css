@@ -38,6 +38,10 @@
   align-items: start;
 }
 
+.md-layout > * {
+  min-width: 0;
+}
+
 .md-perfil,
 .md-col-left,
 .md-col-right {
@@ -92,6 +96,8 @@
   font-weight: 400;
   color: #333;
   margin: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .md-badges {
@@ -339,6 +345,7 @@
 .md-evento-body {
   flex: 1;
   min-width: 0;
+  overflow: hidden;
 }
 
 .md-evento-top {
@@ -353,6 +360,8 @@
   font-weight: 700;
   color: #333;
   font-size: 0.98rem;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .md-evento-subtipo {
@@ -464,6 +473,8 @@
   margin: 0 0 4px;
   color: #444;
   font-size: 0.95rem;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .md-evento-obs {

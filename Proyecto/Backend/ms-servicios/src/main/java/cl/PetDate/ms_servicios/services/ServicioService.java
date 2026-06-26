@@ -2,6 +2,7 @@ package cl.PetDate.ms_servicios.services;
 
 import cl.PetDate.ms_servicios.dto.ServicioRequest;
 import cl.PetDate.ms_servicios.dto.ServicioResponse;
+import cl.PetDate.ms_servicios.dto.ServicioUpdateRequest;
 import cl.PetDate.ms_servicios.exceptions.CorreoDuplicadoException;
 import cl.PetDate.ms_servicios.exceptions.ServicioNotFoundException;
 import cl.PetDate.ms_servicios.models.Servicio;
@@ -79,14 +80,15 @@ public class ServicioService {
                 .map(this::toResponse);
     }
 
-    public ServicioResponse actualizarServicio(Long id, ServicioRequest request) {
+    public ServicioResponse actualizarServicio(Long id, ServicioUpdateRequest request) {
         Servicio servicio = servicioRepository.findById(id)
                 .orElseThrow(() -> new ServicioNotFoundException(id));
         servicio.setNombreServicio(request.getNombreServicio());
         servicio.setTipoServicio(request.getTipoServicio());
         servicio.setRutEmpresa(request.getRutEmpresa());
         servicio.setCorreo(request.getCorreo());
-        servicio.setContrasena(passwordEncoder.encode(request.getContrasena()));
+        // La contraseña no se toca en la edición del perfil; solo cambia
+        // mediante el flujo de recuperación de contraseña.
         servicio.setDescripcion(request.getDescripcion());
         servicio.setDireccion(request.getDireccion());
         servicio.setComuna(request.getComuna());

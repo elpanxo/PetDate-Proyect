@@ -761,6 +761,16 @@
    RESPONSIVE
    ════════════════════════════════════════════════════ */
 
+/* Overlay mobile — oculto en desktop */
+.admin-mobile-overlay {
+  display: none;
+}
+
+/* Topbar mobile — oculta en desktop */
+.admin-mobile-topbar {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .admin-layout.sidebar-open,
   .admin-layout.sidebar-closed { grid-template-columns: 1fr; }
@@ -772,9 +782,58 @@
     z-index: 100;
     width: 240px;
     transform: translateX(-100%);
+    transition: transform 0.25s ease;
+  }
+
+  /* Mostrar sidebar cuando está abierto en mobile */
+  .admin-layout.sidebar-open .admin-sidebar {
+    transform: translateX(0);
+  }
+
+  /* Overlay que oscurece el fondo y cierra el sidebar al tocar */
+  .admin-mobile-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 99;
+  }
+
+  /* Topbar con hamburguesa visible en mobile */
+  .admin-mobile-topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 0 16px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #e4e7f0;
+  }
+
+  .admin-mobile-topbar__brand {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1a1f2e;
   }
 
   .admin-main { padding: 20px 16px; }
   .admin-stats-grid { grid-template-columns: 1fr 1fr; }
   .admin-charts-grid { grid-template-columns: 1fr; }
+
+  /* Evitar que el search bar desborde en pantallas estrechas */
+  .admin-search__input {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .admin-section__actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-stats-grid { grid-template-columns: 1fr; }
+  .admin-main { padding: 16px 12px; }
+  .admin-section__title { font-size: 1.2rem; }
 }

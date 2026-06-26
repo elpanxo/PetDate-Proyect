@@ -483,3 +483,25 @@
     padding-right: 20px;
   }
 }
+
+@media (max-width: 480px) {
+  .detalle-wrapper {
+    padding-top: 76px;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-bottom: 40px;
+  }
+
+  .detalle-info {
+    padding: 20px 16px;
+  }
+
+  .detalle-tabs__body {
+    padding: 16px;
+    max-height: none;
+  }
+
+  .detalle-info__nombre {
+    font-size: 1.4rem;
+  }
+}

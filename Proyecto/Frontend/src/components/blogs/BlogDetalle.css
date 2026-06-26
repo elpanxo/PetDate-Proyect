@@ -101,6 +101,15 @@
   align-items: start;
 }
 
+.bd-layout > * {
+  min-width: 0;
+}
+
+/* Solo el contenido principal clipa el overflow, no el sidebar sticky */
+.bd-layout > *:first-child {
+  overflow: hidden;
+}
+
 /* ─────────────────────────────────────────────
    COLUMNA PRINCIPAL
 ───────────────────────────────────────────── */
@@ -146,6 +155,8 @@
   color: #2d2d2d;
   margin: 0 0 18px;
   line-height: 1.2;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .bd-autor {
@@ -189,6 +200,8 @@
   font-size: 0.97rem;
   color: #444;
   line-height: 1.8;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .bd-texto p {
